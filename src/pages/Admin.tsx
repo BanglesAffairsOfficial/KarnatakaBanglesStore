@@ -11,11 +11,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useFormCache } from "@/hooks/useFormCache";
+import { useUnsavedChangesWarning, useDetectChanges } from "@/hooks/useUnsavedChanges";
 import { Loader2, Plus, Pencil, Trash2, Package, Settings, Image as ImageIcon, Share2, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ColorPickerInput } from "@/components/ColorPickerInput";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
 
 interface ColorItem {
   name: string;
@@ -55,6 +58,8 @@ export default function Admin() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBangle, setEditingBangle] = useState<Bangle | null>(null);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [pendingDialogClose, setPendingDialogClose] = useState(false);
 
   const [socialLinks, setSocialLinks] = useState({
     instagram: "",
@@ -79,6 +84,20 @@ export default function Admin() {
   const [occasions, setOccasions] = useState<Array<any>>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedOccasionIds, setSelectedOccasionIds] = useState<string[]>([]);
+  const [initialForm, setInitialForm] = useState(form);
+  const [initialSocialLinks, setInitialSocialLinks] = useState(socialLinks);
+
+  // Form caching
+  const { clearCache: clearFormCache } = useFormCache('admin_product_form', form, setForm, !editingBangle);
+  const { clearCache: clearSocialCache } = useFormCache('admin_social_links', socialLinks, setSocialLinks, true);
+
+  // Detect unsaved changes
+  const formHasChanges = useDetectChanges(initialForm, form);
+  const socialHasChanges = useDetectChanges(initialSocialLinks, socialLinks) || whatsappNumber !== (initialSocialLinks as any).whatsapp_number;
+  const hasUnsavedChanges = formHasChanges || socialHasChanges || selectedCategoryId !== null;
+
+  // Warn before leaving with unsaved changes
+  useUnsavedChangesWarning(hasUnsavedChanges && dialogOpen);
 
   useEffect(() => {
     if (!authLoading) {
@@ -127,9 +146,11 @@ export default function Admin() {
 
   const resetForm = () => {
     setForm({ name: "", description: "", price: "", image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setInitialForm({ name: "", description: "", price: "", image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
     setEditingBangle(null);
     setSelectedCategoryId(null);
     setSelectedOccasionIds([]);
+    clearFormCache();
   };
 
   const openEditDialog = (bangle: Bangle) => {
@@ -246,6 +267,8 @@ export default function Admin() {
       }
 
       toast({ title: `Bangle ${editingBangle ? "updated" : "added"} successfully` });
+      setInitialForm(form);
+      clearFormCache();
       setDialogOpen(false);
       resetForm();
       fetchBangles();
@@ -295,17 +318,35 @@ export default function Admin() {
     };
 
     try {
-      const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id", returning: "minimal" });
+      console.log("[Settings] Saving payload:", payload);
+      const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id" });
+      
       if (res.error) {
-        console.error("Supabase upsert error:", res.error);
-        toast({ title: "Error saving settings", description: res.error.message || String(res.error), variant: "destructive" });
-      } else {
-        toast({ title: "Settings saved successfully" });
-        fetchSettings();
+        console.error("[Settings] Supabase upsert error:", res.error);
+        const errorMsg = res.error?.message || res.error?.hint || String(res.error);
+        toast({ 
+          title: "Error saving settings", 
+          description: `${errorMsg}. Please check browser console for details.`,
+          variant: "destructive" 
+        });
+        return;
       }
+      
+      console.log("[Settings] Successfully saved:", res.data);
+      setInitialSocialLinks(socialLinks);
+      clearSocialCache();
+      toast({ 
+        title: "Settings saved successfully",
+        description: "Your social links and WhatsApp number have been updated."
+      });
+      fetchSettings();
     } catch (err: any) {
-      console.error("Unexpected error saving settings:", err);
-      toast({ title: "Error", description: err?.message || String(err), variant: "destructive" });
+      console.error("[Settings] Unexpected error:", err);
+      toast({ 
+        title: "Error", 
+        description: err?.message || "Failed to save settings. Please try again.",
+        variant: "destructive" 
+      });
     } finally {
       setSavingSocial(false);
     }
@@ -352,7 +393,15 @@ export default function Admin() {
           <TabsContent value="products" className="space-y-4">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Manage Products</h2>
-              <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
+              <Dialog open={dialogOpen} onOpenChange={(open) => {
+                if (!open && formHasChanges) {
+                  setShowUnsavedDialog(true);
+                  setPendingDialogClose(true);
+                } else {
+                  setDialogOpen(open);
+                  if (!open) resetForm();
+                }
+              }}>
                 <DialogTrigger asChild>
                   <Button className="gap-2 gradient-gold text-foreground">
                   <Plus className="w-4 h-4" />
@@ -689,6 +738,32 @@ export default function Admin() {
             </Button>
           </TabsContent>
         </Tabs>
+
+        {/* Unsaved Changes Confirmation Dialog */}
+        <UnsavedChangesDialog
+          open={showUnsavedDialog}
+          onSave={async () => {
+            await handleSave();
+            setShowUnsavedDialog(false);
+            if (pendingDialogClose) {
+              setDialogOpen(false);
+              resetForm();
+            }
+          }}
+          onDiscard={() => {
+            setShowUnsavedDialog(false);
+            resetForm();
+            if (pendingDialogClose) {
+              setDialogOpen(false);
+            }
+          }}
+          onCancel={() => {
+            setShowUnsavedDialog(false);
+            setPendingDialogClose(false);
+          }}
+          title="Unsaved Changes"
+          description="You have unsaved changes to this product. Would you like to save them before closing?"
+        />
       </div>
     </div>
   );

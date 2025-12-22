@@ -11,6 +11,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useFormCache } from "@/hooks/useFormCache";
+import { useUnsavedChangesWarning, useDetectChanges } from "@/hooks/useUnsavedChanges";
 import { Loader2, User, MapPin, Package, Plus, Trash2, RotateCcw } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
 
@@ -85,6 +87,17 @@ export default function Profile() {
     transport_name: "",
     profile_pic_url: null,
   });
+  const [initialProfile, setInitialProfile] = useState<Profile>({
+    full_name: "",
+    phone: "",
+    email: "",
+    shop_name: "",
+    gst_no: "",
+    address: "",
+    pincode: "",
+    transport_name: "",
+    profile_pic_url: null,
+  });
   const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +110,23 @@ export default function Profile() {
     state: "",
     pincode: "",
   });
+  const [initialNewAddress, setInitialNewAddress] = useState({
+    address_line1: "",
+    address_line2: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
+
+  // Form caching and change detection
+  const { clearCache: clearProfileCache } = useFormCache('profile_form', profile, setProfile, !profile.full_name);
+  const { clearCache: clearAddressCache } = useFormCache('address_form', newAddress, setNewAddress, !showAddressForm);
+  
+  const profileHasChanges = useDetectChanges(initialProfile, profile);
+  const addressHasChanges = useDetectChanges(initialNewAddress, newAddress);
+  const hasUnsavedChanges = profileHasChanges || addressHasChanges;
+
+  useUnsavedChangesWarning(hasUnsavedChanges);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -117,7 +147,7 @@ export default function Profile() {
       .maybeSingle();
 
     if (profileData) {
-      setProfile({
+      const profileObj = {
         full_name: profileData.full_name || "",
         phone: profileData.phone || "",
         email: profileData.email || user.email || "",
@@ -127,7 +157,9 @@ export default function Profile() {
         pincode: (profileData as any).pincode || "",
         transport_name: (profileData as any).transport_name || "",
         profile_pic_url: (profileData as any).profile_pic_url || null,
-      });
+      };
+      setProfile(profileObj);
+      setInitialProfile(profileObj);
     }
 
     // Fetch addresses
@@ -159,30 +191,42 @@ export default function Profile() {
     if (!user) return;
     setSaving(true);
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        full_name: profile.full_name,
-        phone: profile.phone,
-        shop_name: profile.shop_name,
-        gst_no: profile.gst_no,
-        address: profile.address,
-        pincode: profile.pincode,
-        transport_name: profile.transport_name,
-        profile_pic_url: profile.profile_pic_url,
-      } as any)
-      .eq("id", user.id);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: profile.full_name,
+          phone: profile.phone,
+          shop_name: profile.shop_name,
+          gst_no: profile.gst_no,
+          address: profile.address,
+          pincode: profile.pincode,
+          transport_name: profile.transport_name,
+          profile_pic_url: profile.profile_pic_url,
+        } as any)
+        .eq("id", user.id);
 
-    if (error) {
+      if (error) {
+        console.error("Profile update error:", error);
+        toast({
+          title: "Error updating profile",
+          description: error.message || "Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        setInitialProfile(profile);
+        clearProfileCache();
+        toast({
+          title: "Profile updated",
+          description: "Your profile has been updated successfully.",
+        });
+      }
+    } catch (err) {
+      console.error("Unexpected error updating profile:", err);
       toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
+        title: "Error updating profile",
+        description: "An unexpected error occurred. Please check the console.",
         variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
       });
     }
 
@@ -203,26 +247,38 @@ export default function Profile() {
 
     setSaving(true);
 
-    const { error } = await supabase.from("delivery_addresses").insert({
-      user_id: user.id,
-      ...newAddress,
-      is_default: addresses.length === 0,
-    });
+    try {
+      const { error } = await supabase.from("delivery_addresses").insert({
+        user_id: user.id,
+        ...newAddress,
+        is_default: addresses.length === 0,
+      });
 
-    if (error) {
+      if (error) {
+        console.error("Add address error:", error);
+        toast({
+          title: "Error adding address",
+          description: error.message || "Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        setInitialNewAddress({ address_line1: "", address_line2: "", city: "", state: "", pincode: "" });
+        setNewAddress({ address_line1: "", address_line2: "", city: "", state: "", pincode: "" });
+        clearAddressCache();
+        toast({
+          title: "Address added",
+          description: "Your delivery address has been added.",
+        });
+        setShowAddressForm(false);
+        fetchData();
+      }
+    } catch (err) {
+      console.error("Unexpected error adding address:", err);
       toast({
-        title: "Error",
-        description: "Failed to add address. Please try again.",
+        title: "Error adding address",
+        description: "An unexpected error occurred. Please check the console.",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Address added",
-        description: "Your delivery address has been added.",
-      });
-      setNewAddress({ address_line1: "", address_line2: "", city: "", state: "", pincode: "" });
-      setShowAddressForm(false);
-      fetchData();
     }
 
     setSaving(false);
