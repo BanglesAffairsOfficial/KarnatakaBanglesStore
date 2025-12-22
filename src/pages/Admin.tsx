@@ -239,45 +239,55 @@ export default function Admin() {
         hex: typeof c === 'object' ? c.hex : '#888888',
       }));
 
-      // Prepare bangle data - all JSON fields go as objects/arrays
+      // Prepare sizes
+      const sizesArray = Array.isArray(form.available_sizes) 
+        ? form.available_sizes.filter(s => s && typeof s === 'string')
+        : [];
+
+      // Prepare bangle data - match Supabase schema exactly
       const bangleData = {
         name: form.name.trim(),
         description: form.description?.trim() || null,
         price: Math.max(0, parseFloat(form.price) || 0),
-        image_url: form.image_url || null,
-        available_sizes: form.available_sizes || [],
+        image_url: form.image_url?.trim() || null,
+        available_sizes: sizesArray,
         available_colors: colorData,
         category_id: selectedCategoryId,
         is_active: form.is_active,
       };
 
-      console.log("[Bangle] Prepared data:", bangleData);
-      console.log("[Bangle] Data types:", {
-        name: typeof bangleData.name,
-        price: typeof bangleData.price,
-        available_sizes: Array.isArray(bangleData.available_sizes),
-        available_colors: Array.isArray(bangleData.available_colors),
-        category_id: typeof bangleData.category_id,
+      console.log("[Bangle] Prepared data:", JSON.stringify(bangleData, null, 2));
+      console.log("[Bangle] Field details:", {
+        name: { value: bangleData.name, type: typeof bangleData.name, length: bangleData.name?.length },
+        price: { value: bangleData.price, type: typeof bangleData.price, isValid: !isNaN(bangleData.price) },
+        category_id: { value: bangleData.category_id, type: typeof bangleData.category_id, isNull: !bangleData.category_id },
+        available_sizes: { value: bangleData.available_sizes, isArray: Array.isArray(bangleData.available_sizes), length: bangleData.available_sizes?.length },
+        available_colors: { value: bangleData.available_colors, isArray: Array.isArray(bangleData.available_colors), length: bangleData.available_colors?.length },
       });
 
       let productId = editingBangle?.id;
       if (editingBangle) {
-        console.log("[Bangle] Updating bangle:", editingBangle.id, bangleData);
+        console.log("[Bangle] Updating bangle:", editingBangle.id);
         const { error } = await (supabase as any).from("bangles").update(bangleData).eq("id", editingBangle.id);
         if (error) {
           console.error("[Bangle] Update error:", error);
           throw error;
         }
       } else {
-        console.log("[Bangle] Inserting new bangle:", bangleData);
-        const res = await (supabase as any).from("bangles").insert(bangleData).select("id").single();
-        if (res.error) {
-          console.error("[Bangle] Insert error:", res.error);
-          throw res.error;
+        console.log("[Bangle] Inserting new bangle...");
+        try {
+          const res = await (supabase as any).from("bangles").insert(bangleData).select("id").single();
+          if (res.error) {
+            console.error("[Bangle] Insert error response:", JSON.stringify(res.error, null, 2));
+            throw res.error;
+          }
+          // @ts-ignore
+          productId = res.data.id;
+          console.log("[Bangle] New bangle created with ID:", productId);
+        } catch (insertErr: any) {
+          console.error("[Bangle] Insert exception:", insertErr);
+          throw insertErr;
         }
-        // @ts-ignore
-        productId = res.data.id;
-        console.log("[Bangle] New bangle created with ID:", productId);
       }
 
       // Manage bangle_occasions: remove existing and insert selected
@@ -303,12 +313,36 @@ export default function Admin() {
       fetchOccasions();
     } catch (err: any) {
       console.error("[Bangle] Save error:", err);
-      const errorMessage = err?.message || err?.hint || String(err);
-      toast({ 
-        title: "Failed to add bangle", 
-        description: `${errorMessage}. Check browser console for details.`,
-        variant: "destructive" 
-      });
+      
+      // Enhanced error logging
+      if (err?.status === 400) {
+        console.error("[Bangle] 400 Bad Request Details:");
+        console.error("  - Message:", err.message);
+        console.error("  - Error:", err.error);
+        console.error("  - Full response:", err);
+        
+        // Try to parse any additional error details
+        if (typeof err.message === 'string' && err.message.includes('column')) {
+          toast({
+            title: "Schema Error",
+            description: `${err.message}. Check that all column names match the database schema.`,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Invalid data format",
+            description: `${err.message || 'Bad request to database'}. Open console (F12) to see details.`,
+            variant: "destructive"
+          });
+        }
+      } else {
+        const errorMessage = err?.message || err?.hint || String(err);
+        toast({ 
+          title: "Failed to add bangle", 
+          description: `${errorMessage}. Check browser console for details.`,
+          variant: "destructive" 
+        });
+      }
     } finally {
       setSaving(false);
     }
