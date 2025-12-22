@@ -249,23 +249,37 @@ export default function Admin() {
 
       let productId = editingBangle?.id;
       if (editingBangle) {
+        console.log("[Bangle] Updating bangle:", editingBangle.id, bangleData);
         const { error } = await (supabase as any).from("bangles").update(bangleData).eq("id", editingBangle.id);
-        if (error) throw error;
+        if (error) {
+          console.error("[Bangle] Update error:", error);
+          throw error;
+        }
       } else {
+        console.log("[Bangle] Inserting new bangle:", bangleData);
         const res = await (supabase as any).from("bangles").insert(bangleData).select("id").single();
-        if (res.error) throw res.error;
+        if (res.error) {
+          console.error("[Bangle] Insert error:", res.error);
+          throw res.error;
+        }
         // @ts-ignore
         productId = res.data.id;
+        console.log("[Bangle] New bangle created with ID:", productId);
       }
 
       // Manage bangle_occasions: remove existing and insert selected
+      console.log("[Bangle] Managing occasions for bangle:", productId, selectedOccasionIds);
       await (supabase as any).from("bangle_occasions").delete().eq("bangle_id", productId);
       if (selectedOccasionIds && selectedOccasionIds.length > 0) {
         const inserts = selectedOccasionIds.map(occId => ({ bangle_id: productId, occasion_id: occId }));
         const { error: occError } = await (supabase as any).from("bangle_occasions").insert(inserts);
-        if (occError) throw occError;
+        if (occError) {
+          console.error("[Bangle] Occasion insert error:", occError);
+          throw occError;
+        }
       }
 
+      console.log("[Bangle] Successfully saved bangle");
       toast({ title: `Bangle ${editingBangle ? "updated" : "added"} successfully` });
       setInitialForm(form);
       clearFormCache();
@@ -275,8 +289,13 @@ export default function Admin() {
       fetchCategories();
       fetchOccasions();
     } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error", description: err?.message || String(err), variant: "destructive" });
+      console.error("[Bangle] Save error:", err);
+      const errorMessage = err?.message || err?.hint || String(err);
+      toast({ 
+        title: "Failed to add bangle", 
+        description: `${errorMessage}. Check browser console for details.`,
+        variant: "destructive" 
+      });
     } finally {
       setSaving(false);
     }
