@@ -80,7 +80,7 @@ export function ImageUpload({
       const tolerance = 0.05; // allow 5% tolerance
 
       if (width < requiredWidth || height < requiredHeight) {
-        toast({ title: "Image too small", description: `Banner should be at least ${requiredWidth}×${requiredHeight}px.`, variant: "destructive" });
+        toast({ title: "Image too small", description: `Image too small. Required banner size is ${requiredWidth}×${requiredHeight} pixels.`, variant: "destructive" });
         return;
       }
 

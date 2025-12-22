@@ -199,7 +199,7 @@ export default function EditHomePage() {
                     currentImageUrl={form.image_url || null}
                     onUpload={(url) => setForm({ ...form, image_url: url })}
                     onRemove={() => setForm({ ...form, image_url: "" })}
-                    aspectRatio="wide"
+                    imageType="banner"
                   />
                 </div>
                 <div className="flex items-center gap-2">

@@ -299,7 +299,7 @@ export default function Admin() {
                       currentImageUrl={form.image_url || null}
                       onUpload={(url) => setForm({ ...form, image_url: url })}
                       onRemove={() => setForm({ ...form, image_url: "" })}
-                      aspectRatio="wide"
+                      imageType="product"
                     />
                   </div>
                   <div className="space-y-2">
