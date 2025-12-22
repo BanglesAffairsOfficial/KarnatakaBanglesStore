@@ -190,7 +190,22 @@ const EnhancedHomepage = () => {
 >
   View Offers
 </Button>
+-- Create settings table (run in Supabase SQL editor)
+create table if not exists public.settings (
+  id int8 primary key,
+  instagram_link text,
+  facebook_link text,
+  twitter_link text,
+  email text,
+  whatsapp_number text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
 
+-- Optional: seed default row if not exists
+insert into public.settings (id, instagram_link, facebook_link, twitter_link, email, whatsapp_number)
+select 1, '', '', '', '', '919876543210'
+where not exists (select 1 from public.settings where id = 1);
               <a href="https://wa.me/+91 63617 15136" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white shadow-lg gap-2">
                   <MessageCircle className="w-4 h-4" />

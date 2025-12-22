@@ -22,23 +22,12 @@ interface Bangle {
   available_colors: string[];
   available_sizes: string[];
   created_at: string;
+  category_id?: string | null;
+  occasion_ids?: string[];
 }
 
-const CATEGORIES = [
-  { id: "glass", name: "Glass Bangles" },
-  { id: "silk", name: "Silk Thread" },
-  { id: "lac", name: "Lac Bangles" },
-  { id: "bridal", name: "Bridal Collection" },
-  { id: "oxidized", name: "Oxidized" },
-  { id: "kids", name: "Kids Special" },
-];
-
-const OCCASIONS = [
-  { id: "wedding", name: "Wedding" },
-  { id: "festival", name: "Festival" },
-  { id: "daily", name: "Daily Wear" },
-  { id: "party", name: "Party" },
-];
+const CATEGORIES: Array<{id: string, name: string}> = [];
+const OCCASIONS: Array<{id: string, name: string}> = [];
 
 export default function Shop() {
   const navigate = useNavigate();
@@ -46,6 +35,8 @@ export default function Shop() {
   const { toast } = useToast();
 
   const [products, setProducts] = useState<Bangle[]>([]);
+  const [categories, setCategories] = useState<Array<{id:string,name:string}>>([]);
+  const [occasionsList, setOccasionsList] = useState<Array<{id:string,name:string}>>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("latest");
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -61,19 +52,31 @@ export default function Shop() {
 
   useEffect(() => {
     fetchProducts();
+    fetchTaxonomy();
   }, []);
 
   const fetchProducts = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("bangles")
-      .select("*")
+      .select(`*, bangle_occasions(occasion_id)`)
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
-      setProducts(data);
+      const mapped = data.map((p: any) => ({
+        ...p,
+        occasion_ids: p.bangle_occasions ? p.bangle_occasions.map((o: any) => o.occasion_id) : [],
+      }));
+      setProducts(mapped);
     }
     setLoading(false);
+  };
+
+  const fetchTaxonomy = async () => {
+    const { data: cats } = await (supabase as any).from('categories').select('*').order('display_order', { ascending: true });
+    if (cats) setCategories(cats);
+    const { data: occs } = await (supabase as any).from('occasions').select('*').order('display_order', { ascending: true });
+    if (occs) setOccasionsList(occs);
   };
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -93,16 +96,15 @@ export default function Shop() {
     // Filter by categories
     if (selectedCategories.length > 0) {
       result = result.filter(p => {
-        const category = p.name.toLowerCase();
-        return selectedCategories.some(cat => category.includes(cat));
+        return selectedCategories.includes(p.category_id || "");
       });
     }
 
     // Filter by occasions
     if (selectedOccasions.length > 0) {
       result = result.filter(p => {
-        const occasion = p.description?.toLowerCase() || "";
-        return selectedOccasions.some(occ => occasion.includes(occ));
+        const occIds = p.occasion_ids || [];
+        return selectedOccasions.some(occ => occIds.includes(occ));
       });
     }
 
@@ -252,7 +254,7 @@ export default function Shop() {
               <div className="mb-8 pb-8 border-b">
                 <Label className="font-semibold mb-4 block">Categories</Label>
                 <div className="space-y-3">
-                  {CATEGORIES.map(cat => (
+                  {categories.map(cat => (
                     <div key={cat.id} className="flex items-center gap-2">
                       <Checkbox
                         id={cat.id}
@@ -269,7 +271,7 @@ export default function Shop() {
               <div className="mb-8 pb-8 border-b">
                 <Label className="font-semibold mb-4 block">Occasions</Label>
                 <div className="space-y-3">
-                  {OCCASIONS.map(occ => (
+                  {occasionsList.map(occ => (
                     <div key={occ.id} className="flex items-center gap-2">
                       <Checkbox
                         id={occ.id}
@@ -380,7 +382,7 @@ export default function Shop() {
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="cursor-pointer"
                   >
-                    <ProductCard bangle={product} />
+                    <ProductCard bangle={product} categoryName={categories.find(c => c.id === product.category_id)?.name} />
                   </div>
                 ))}
               </div>

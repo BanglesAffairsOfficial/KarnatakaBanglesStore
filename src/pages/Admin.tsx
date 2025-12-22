@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -74,6 +75,10 @@ export default function Admin() {
     available_colors: DEFAULT_COLORS,
     is_active: true,
   });
+  const [categories, setCategories] = useState<Array<any>>([]);
+  const [occasions, setOccasions] = useState<Array<any>>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedOccasionIds, setSelectedOccasionIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -85,9 +90,21 @@ export default function Admin() {
       } else {
         fetchBangles();
         fetchSettings();
+        fetchCategories();
+        fetchOccasions();
       }
     }
   }, [user, isAdmin, authLoading, navigate]);
+
+  const fetchCategories = async () => {
+    const { data } = await (supabase as any).from("categories").select("*").order("display_order", { ascending: true });
+    if (data) setCategories(data);
+  };
+
+  const fetchOccasions = async () => {
+    const { data } = await (supabase as any).from("occasions").select("*").order("display_order", { ascending: true });
+    if (data) setOccasions(data);
+  };
 
   const fetchBangles = async () => {
     const { data } = await supabase.from("bangles").select("*").order("created_at", { ascending: false });
@@ -96,7 +113,7 @@ export default function Admin() {
   };
 
   const fetchSettings = async () => {
-    const { data } = await supabase.from("settings").select("*").single();
+    const { data } = await (supabase as any).from("settings").select("*").single();
     if (data) {
       setSocialLinks({
         instagram: data.instagram_link || "",
@@ -111,6 +128,8 @@ export default function Admin() {
   const resetForm = () => {
     setForm({ name: "", description: "", price: "", image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
     setEditingBangle(null);
+    setSelectedCategoryId(null);
+    setSelectedOccasionIds([]);
   };
 
   const openEditDialog = (bangle: Bangle) => {
@@ -140,42 +159,104 @@ export default function Admin() {
       available_colors: colors,
       is_active: bangle.is_active,
     });
+    // set category if available
+    // @ts-ignore
+    setSelectedCategoryId((bangle as any).category_id || null);
+    // fetch occasions for this bangle
+    (async () => {
+      const { data } = await (supabase as any).from("bangle_occasions").select("occasion_id").eq("bangle_id", bangle.id);
+      if (data) setSelectedOccasionIds(data.map((d: any) => d.occasion_id));
+    })();
     setDialogOpen(true);
   };
 
   const handleSave = async () => {
+    // DEBUG: Check authentication status
+    const { data: { session, user }, error: authError } = await (supabase as any).auth.getSession();
+    console.log('=== AUTH DEBUG ===');
+    console.log('Session:', session);
+    console.log('User ID:', user?.id);
+    console.log('Auth Error:', authError);
+    
+    if (!user) {
+      toast({ 
+        title: "Not authenticated", 
+        description: "Please log out and log back in.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    // Test the has_role function (use parameter names matching the DB function)
+    const { data: roleCheck, error: roleError } = await (supabase as any).rpc('has_role', { _user_id: user.id, _role: 'admin' });
+    console.log('Role check result:', roleCheck);
+    console.log('Role check error:', roleError);
+    
+    if (!roleCheck) {
+      toast({ 
+        title: "Access denied", 
+        description: "You don't have admin privileges.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     if (!form.name || !form.price) {
       toast({ title: "Missing fields", description: "Please fill in name and price.", variant: "destructive" });
       return;
     }
+    if (!selectedCategoryId) {
+      toast({ title: "Missing category", description: "Please select a category for this product.", variant: "destructive" });
+      return;
+    }
+
     setSaving(true);
+    try {
+      // Store colors as JSON strings to preserve hex values
+      const colorData = form.available_colors.map(c => JSON.stringify(c));
 
-    // Store colors as JSON strings to preserve hex values
-    const colorData = form.available_colors.map(c => JSON.stringify(c));
+      const bangleData = {
+        name: form.name,
+        description: form.description || null,
+        price: parseFloat(form.price),
+        image_url: form.image_url || null,
+        available_sizes: form.available_sizes,
+        available_colors: colorData,
+        category_id: selectedCategoryId,
+        is_active: form.is_active,
+      };
 
-    const bangleData = {
-      name: form.name,
-      description: form.description || null,
-      price: parseFloat(form.price),
-      image_url: form.image_url || null,
-      available_sizes: form.available_sizes,
-      available_colors: colorData,
-      is_active: form.is_active,
-    };
+      let productId = editingBangle?.id;
+      if (editingBangle) {
+        const { error } = await (supabase as any).from("bangles").update(bangleData).eq("id", editingBangle.id);
+        if (error) throw error;
+      } else {
+        const res = await (supabase as any).from("bangles").insert(bangleData).select("id").single();
+        if (res.error) throw res.error;
+        // @ts-ignore
+        productId = res.data.id;
+      }
 
-    const { error } = editingBangle
-      ? await supabase.from("bangles").update(bangleData).eq("id", editingBangle.id)
-      : await supabase.from("bangles").insert(bangleData);
+      // Manage bangle_occasions: remove existing and insert selected
+      await (supabase as any).from("bangle_occasions").delete().eq("bangle_id", productId);
+      if (selectedOccasionIds && selectedOccasionIds.length > 0) {
+        const inserts = selectedOccasionIds.map(occId => ({ bangle_id: productId, occasion_id: occId }));
+        const { error: occError } = await (supabase as any).from("bangle_occasions").insert(inserts);
+        if (occError) throw occError;
+      }
 
-    if (error) {
-      toast({ title: "Error", description: `Failed to ${editingBangle ? "update" : "add"} bangle.`, variant: "destructive" });
-    } else {
       toast({ title: `Bangle ${editingBangle ? "updated" : "added"} successfully` });
       setDialogOpen(false);
       resetForm();
       fetchBangles();
+      fetchCategories();
+      fetchOccasions();
+    } catch (err: any) {
+      console.error(err);
+      toast({ title: "Error", description: err?.message || String(err), variant: "destructive" });
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -198,6 +279,10 @@ export default function Admin() {
     }));
   };
 
+  const toggleOccasion = (id: string) => {
+    setSelectedOccasionIds(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
+  };
+
   const handleSaveSocialLinks = async () => {
     setSavingSocial(true);
     const payload = {
@@ -210,7 +295,7 @@ export default function Admin() {
     };
 
     try {
-      const res = await supabase.from("settings").upsert(payload, { onConflict: "id", returning: "minimal" });
+      const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id", returning: "minimal" });
       if (res.error) {
         console.error("Supabase upsert error:", res.error);
         toast({ title: "Error saving settings", description: res.error.message || String(res.error), variant: "destructive" });
@@ -244,7 +329,7 @@ export default function Admin() {
         <h1 className="text-3xl font-display font-bold text-foreground mb-8">Admin Panel</h1>
         
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="products" className="gap-2">
               <Package className="w-4 h-4" />
               Products
@@ -256,6 +341,10 @@ export default function Admin() {
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="w-4 h-4" />
               Settings
+            </TabsTrigger>
+            <TabsTrigger value="taxonomy" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Taxonomy
             </TabsTrigger>
           </TabsList>
 
@@ -299,8 +388,32 @@ export default function Admin() {
                       currentImageUrl={form.image_url || null}
                       onUpload={(url) => setForm({ ...form, image_url: url })}
                       onRemove={() => setForm({ ...form, image_url: "" })}
-                      imageType="product"
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Category *</Label>
+                    <select
+                      value={selectedCategoryId || ""}
+                      onChange={(e) => setSelectedCategoryId(e.target.value || null)}
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                    >
+                      <option value="">-- Select category --</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Occasions</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {occasions.map(occ => (
+                        <label key={occ.id} className="flex items-center gap-2 px-2 py-1 rounded-md border border-border cursor-pointer">
+                          <Checkbox id={`occ-${occ.id}`} checked={selectedOccasionIds.includes(occ.id)} onCheckedChange={() => toggleOccasion(occ.id)} />
+                          <span className="text-sm">{occ.name}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label>Available Sizes</Label>
@@ -399,6 +512,103 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Taxonomy Tab */}
+          <TabsContent value="taxonomy" className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="shadow-elegant">
+                <CardHeader>
+                  <CardTitle className="font-display flex items-center gap-2">Categories</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Input placeholder="New category name" value={(window as any).__newCatName || ""} onChange={(e) => (window as any).__newCatName = e.target.value} />
+                      <Button onClick={async () => {
+                        const name = (window as any).__newCatName;
+                        if (!name) return toast({ title: 'Enter a name', variant: 'destructive' });
+                        const { error } = await (supabase as any).from('categories').insert({ name });
+                        if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                        (window as any).__newCatName = '';
+                        fetchCategories();
+                        toast({ title: 'Category added' });
+                      }}>Add</Button>
+                    </div>
+                    <div className="space-y-2">
+                      {categories.map(cat => (
+                        <div key={cat.id} className="flex items-center justify-between p-2 border rounded-md">
+                          <div>{cat.name}</div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={async () => {
+                              const newName = prompt('Rename category', cat.name);
+                              if (!newName) return;
+                              const { error } = await (supabase as any).from('categories').update({ name: newName }).eq('id', cat.id);
+                              if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                              fetchCategories();
+                              toast({ title: 'Category updated' });
+                            }}>Rename</Button>
+                            <Button size="sm" variant="ghost" onClick={async () => {
+                              if (!confirm('Delete category?')) return;
+                              const { error } = await (supabase as any).from('categories').delete().eq('id', cat.id);
+                              if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                              fetchCategories();
+                              toast({ title: 'Category deleted' });
+                            }} className="text-destructive">Delete</Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-elegant">
+                <CardHeader>
+                  <CardTitle className="font-display flex items-center gap-2">Occasions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Input placeholder="New occasion name" value={(window as any).__newOccName || ""} onChange={(e) => (window as any).__newOccName = e.target.value} />
+                      <Button onClick={async () => {
+                        const name = (window as any).__newOccName;
+                        if (!name) return toast({ title: 'Enter a name', variant: 'destructive' });
+                        const { error } = await (supabase as any).from('occasions').insert({ name });
+                        if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                        (window as any).__newOccName = '';
+                        fetchOccasions();
+                        toast({ title: 'Occasion added' });
+                      }}>Add</Button>
+                    </div>
+                    <div className="space-y-2">
+                      {occasions.map(occ => (
+                        <div key={occ.id} className="flex items-center justify-between p-2 border rounded-md">
+                          <div>{occ.name}</div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={async () => {
+                              const newName = prompt('Rename occasion', occ.name);
+                              if (!newName) return;
+                              const { error } = await (supabase as any).from('occasions').update({ name: newName }).eq('id', occ.id);
+                              if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                              fetchOccasions();
+                              toast({ title: 'Occasion updated' });
+                            }}>Rename</Button>
+                            <Button size="sm" variant="ghost" onClick={async () => {
+                              if (!confirm('Delete occasion?')) return;
+                              const { error } = await (supabase as any).from('occasions').delete().eq('id', occ.id);
+                              if (error) return toast({ title: 'Error', description: error.message || String(error), variant: 'destructive' });
+                              fetchOccasions();
+                              toast({ title: 'Occasion deleted' });
+                            }} className="text-destructive">Delete</Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Settings Tab */}

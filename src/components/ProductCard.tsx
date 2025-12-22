@@ -9,6 +9,7 @@ interface ProductCardProps {
   imageUrl?: string;
   colors?: string[];
   sizes?: string[];
+  categoryName?: string;
   bangle?: {
     id: string;
     name: string;
@@ -81,7 +82,7 @@ export function ProductCard(props: ProductCardProps) {
                     />
                   ))}
                 </div>
-                <span className="text-muted-foreground text-sm">Glass Bangles</span>
+                <span className="text-muted-foreground text-sm">{props.categoryName || 'Glass Bangles'}</span>
               </div>
             </div>
           )}
@@ -90,6 +91,7 @@ export function ProductCard(props: ProductCardProps) {
           <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
             {name}
           </h3>
+          {props.categoryName && <div className="text-sm text-muted-foreground mb-2">{props.categoryName}</div>}
           <div className="flex items-center justify-between mb-3">
             <span className="text-2xl font-bold text-accent">₹{price}</span>
             <Badge variant="secondary" className="text-xs">

@@ -61,6 +61,8 @@ export default function ProductDetail() {
   const [bangle, setBangle] = useState<Bangle | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Bangle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [occasionNames, setOccasionNames] = useState<string[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [wishlist, setWishlist] = useState(false);
   const [pincode, setPincode] = useState("");
@@ -86,6 +88,18 @@ export default function ProductDetail() {
         setBangle(null);
       } else if (data) {
         setBangle(data);
+        // fetch category name
+        if (data.category_id) {
+          const { data: cat } = await (supabase as any).from('categories').select('name').eq('id', data.category_id).single();
+          if (cat) setCategoryName(cat.name);
+        }
+        // fetch occasions
+        const { data: occLinks } = await (supabase as any).from('bangle_occasions').select('occasion_id').eq('bangle_id', id);
+        if (occLinks && occLinks.length > 0) {
+          const occIds = occLinks.map((o: any) => o.occasion_id);
+          const { data: occs } = await (supabase as any).from('occasions').select('name').in('id', occIds as string[]);
+          if (occs) setOccasionNames(occs.map((o: any) => o.name));
+        }
         // Fetch related products
         const { data: related } = await supabase
           .from("bangles")
@@ -266,6 +280,12 @@ export default function ProductDetail() {
           {/* Product Info */}
           <div>
             <Badge className="mb-3">In Stock</Badge>
+            {categoryName && <Badge className="mb-3 ml-2">{categoryName}</Badge>}
+            {occasionNames.length > 0 && (
+              <div className="flex gap-2 mb-3">
+                {occasionNames.map((n, i) => <Badge key={i} variant="secondary">{n}</Badge>)}
+              </div>
+            )}
             <h1 className="text-4xl font-display font-bold text-foreground mb-3">
               {bangle.name}
             </h1>
