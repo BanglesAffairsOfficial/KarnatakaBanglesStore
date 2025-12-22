@@ -233,19 +233,32 @@ export default function Admin() {
 
     setSaving(true);
     try {
-      // Store colors as JSON strings to preserve hex values
-      const colorData = form.available_colors.map(c => JSON.stringify(c));
+      // Prepare colors as array of objects with name and hex
+      const colorData = form.available_colors.map(c => ({
+        name: typeof c === 'string' ? c : c.name,
+        hex: typeof c === 'object' ? c.hex : '#888888',
+      }));
 
+      // Prepare bangle data - all JSON fields go as objects/arrays
       const bangleData = {
-        name: form.name,
-        description: form.description || null,
-        price: parseFloat(form.price),
+        name: form.name.trim(),
+        description: form.description?.trim() || null,
+        price: Math.max(0, parseFloat(form.price) || 0),
         image_url: form.image_url || null,
-        available_sizes: form.available_sizes,
+        available_sizes: form.available_sizes || [],
         available_colors: colorData,
         category_id: selectedCategoryId,
         is_active: form.is_active,
       };
+
+      console.log("[Bangle] Prepared data:", bangleData);
+      console.log("[Bangle] Data types:", {
+        name: typeof bangleData.name,
+        price: typeof bangleData.price,
+        available_sizes: Array.isArray(bangleData.available_sizes),
+        available_colors: Array.isArray(bangleData.available_colors),
+        category_id: typeof bangleData.category_id,
+      });
 
       let productId = editingBangle?.id;
       if (editingBangle) {
@@ -329,17 +342,18 @@ export default function Admin() {
     setSavingSocial(true);
     const payload = {
       id: 1,
-      instagram_link: socialLinks.instagram,
-      facebook_link: socialLinks.facebook,
-      twitter_link: socialLinks.twitter,
-      email: socialLinks.email,
-      whatsapp_number: whatsappNumber,
+      instagram_link: socialLinks.instagram?.trim() || null,
+      facebook_link: socialLinks.facebook?.trim() || null,
+      twitter_link: socialLinks.twitter?.trim() || null,
+      email: socialLinks.email?.trim() || null,
+      whatsapp_number: whatsappNumber?.trim() || null,
     };
 
     try {
       console.log("[Settings] Saving payload:", payload);
       const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id" });
       
+      console.log("[Settings] Upsert response:", res);
       if (res.error) {
         console.error("[Settings] Supabase upsert error:", res.error);
         const errorMsg = res.error?.message || res.error?.hint || String(res.error);
