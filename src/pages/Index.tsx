@@ -149,7 +149,7 @@ const EnhancedHomepage = () => {
               <ShoppingBag className="w-6 h-6" />
             </div>
             <div>
-                    <h1 className="text-xl font-display font-bold text-primary">Karnataka Bangles Stores</h1>
+              <h1 className="text-xl font-display font-bold text-primary">Karnataka Bangles Stores</h1>
               <p className="text-xs text-muted-foreground">Since 1985</p>
             </div>
           </div>
@@ -183,29 +183,13 @@ const EnhancedHomepage = () => {
             <p className="text-xl mb-8 text-rose-400 drop-shadow-md">{heroSlides[currentSlide]?.subtitle || "Discover our exclusive collection"}</p>
             <div className="flex gap-4 flex-wrap">
               <Button size="lg" className="gradient-gold shadow-gold" onClick={() => navigate('/shop')}>Explore Collection <ChevronRight className="w-4 h-4 ml-2" /></Button>
-             <Button
-  size="lg"
-  variant="outline"
-  className="bg-gradient-to-r from-rose-100 to-amber-100 backdrop-blur-sm text-indigo-500 border-white hover:from-rose-200 hover:to-amber-200"
->
-  View Offers
-</Button>
--- Create settings table (run in Supabase SQL editor)
-create table if not exists public.settings (
-  id int8 primary key,
-  instagram_link text,
-  facebook_link text,
-  twitter_link text,
-  email text,
-  whatsapp_number text,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
--- Optional: seed default row if not exists
-insert into public.settings (id, instagram_link, facebook_link, twitter_link, email, whatsapp_number)
-select 1, '', '', '', '', '919876543210'
-where not exists (select 1 from public.settings where id = 1);
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-gradient-to-r from-rose-100 to-amber-100 backdrop-blur-sm text-indigo-500 border-white hover:from-rose-200 hover:to-amber-200"
+              >
+                View Offers
+              </Button>
               <a href="https://wa.me/+91 63617 15136" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white shadow-lg gap-2">
                   <MessageCircle className="w-4 h-4" />
