@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -86,6 +88,40 @@ export default function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Google Sign-in failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+      // The user will be redirected to Google's consent screen
+      // After successful authentication, they'll be redirected back to your app
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -243,10 +279,20 @@ export default function Login() {
                 type="button"
                 variant="outline"
                 className="w-full h-11 gap-2 font-medium"
-                disabled={loading}
+                disabled={loading || googleLoading}
+                onClick={handleGoogleSignIn}
               >
-                <Mail className="w-4 h-4" />
-                Sign in with Google
+                {googleLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Connecting to Google...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="w-4 h-4" />
+                    Sign in with Google
+                  </>
+                )}
               </Button>
 
               <Button

@@ -32,9 +32,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 gradient-gold rounded-full flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5 text-foreground" />
-            </div>
+            <img src="/logo.png" alt="Karnataka Bangles Stores" className="w-10 h-10 rounded-full object-cover" />
             <div className="hidden sm:block">
               <h1 className="text-lg font-display font-bold text-primary">Karnataka Bangles Stores</h1>
               <p className="text-xs text-muted-foreground -mt-1">Premium Glass Bangles</p>

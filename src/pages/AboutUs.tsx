@@ -48,7 +48,7 @@ export default function AboutUs() {
               <div className="p-8">
                 <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-6xl font-bold text-primary mb-2">40+</div>
+                    <div className="text-6xl font-bold text-primary mb-2">20+</div>
                     <p className="text-lg font-semibold text-foreground">Years of Excellence</p>
                     <p className="text-muted-foreground mt-2">Serving customers with pride</p>
                   </div>
@@ -144,11 +144,11 @@ export default function AboutUs() {
           <h2 className="text-3xl font-display font-bold text-foreground text-center mb-12">Why Choose Us?</h2>
           <div className="space-y-4">
             {[
-              { title: "40+ Years Experience", desc: "Decades of expertise in selecting and curating the finest bangles" },
+              { title: "20+ Years Experience", desc: "Decades of expertise in selecting and curating the finest bangles" },
               { title: "100% Authentic", desc: "All bangles sourced directly from master craftsmen and artisans" },
               { title: "Quality Guarantee", desc: "Rigorous quality checks ensure every piece meets our standards" },
               { title: "Competitive Pricing", desc: "Direct sourcing means we can offer the best prices without compromising quality" },
-              { title: "Fast Shipping", desc: "5-7 day delivery across India with reliable courier partners" },
+              { title: "Global Shipping", desc: "Available worldwide with reliable international shipping partners" },
               { title: "Easy Returns", desc: "Hassle-free 7-day return policy for your peace of mind" },
               { title: "Expert Support", desc: "Our team is available to help with sizing, styling, and any questions" },
               { title: "Wide Selection", desc: "From traditional to contemporary, we have bangles for every style and occasion" },

@@ -114,7 +114,7 @@
 ### 9. **AboutUs.tsx** - About Us Page
 - **Purpose**: Brand storytelling and trust building
 - **Features**:
-  - Company history since 1985 (40+ years)
+  - Company history since 1985 (20+ years)
   - Mission statement
   - Vision statement
   - 6 core values with icons:

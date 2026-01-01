@@ -99,21 +99,28 @@ export default function Admin() {
   // Warn before leaving with unsaved changes
   useUnsavedChangesWarning(hasUnsavedChanges && dialogOpen);
 
-  useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        navigate("/auth");
-      } else if (!isAdmin) {
-        toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
-        navigate("/");
-      } else {
-        fetchBangles();
+  const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
+
+useEffect(() => {
+  if (!authLoading) {
+    if (!user) {
+      navigate("/auth");
+    } else if (!isAdmin) {
+      toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
+      navigate("/");
+    } else {
+      fetchBangles();
+      fetchCategories();
+      fetchOccasions();
+      
+      // Only fetch settings once on initial load
+      if (!hasLoadedSettings) {
         fetchSettings();
-        fetchCategories();
-        fetchOccasions();
+        setHasLoadedSettings(true);
       }
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }
+}, [user, isAdmin, authLoading, navigate, hasLoadedSettings]);
 
   const fetchCategories = async () => {
     const { data } = await (supabase as any).from("categories").select("*").order("display_order", { ascending: true });
@@ -134,13 +141,21 @@ export default function Admin() {
   const fetchSettings = async () => {
     const { data } = await (supabase as any).from("settings").select("*").single();
     if (data) {
-      setSocialLinks({
+      const loadedLinks = {
         instagram: data.instagram_link || "",
         facebook: data.facebook_link || "",
         twitter: data.twitter_link || "",
         email: data.email || "",
-      });
+      };
+      
+      setSocialLinks(loadedLinks);
       setWhatsappNumber(data.whatsapp_number || "");
+      
+      // Set initial values for comparison
+      setInitialSocialLinks({
+        ...loadedLinks,
+        whatsapp_number: data.whatsapp_number || ""
+      } as any);
     }
   };
 
@@ -192,14 +207,17 @@ export default function Admin() {
   };
 
   const handleSave = async () => {
-    // DEBUG: Check authentication status
-    const { data: { session, user }, error: authError } = await (supabase as any).auth.getSession();
-    console.log('=== AUTH DEBUG ===');
-    console.log('Session:', session);
-    console.log('User ID:', user?.id);
-    console.log('Auth Error:', authError);
+    // FIXED: Get user properly from Supabase
+    const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
     
-    if (!user) {
+    if (import.meta.env.DEV) {
+      console.log('=== AUTH DEBUG ===');
+      console.log('Current User:', currentUser);
+      console.log('User ID:', currentUser?.id);
+      console.log('Auth Error:', authError);
+    }
+    
+    if (!currentUser) {
       toast({ 
         title: "Not authenticated", 
         description: "Please log out and log back in.", 
@@ -208,10 +226,16 @@ export default function Admin() {
       return;
     }
 
-    // Test the has_role function (use parameter names matching the DB function)
-    const { data: roleCheck, error: roleError } = await (supabase as any).rpc('has_role', { _user_id: user.id, _role: 'admin' });
-    console.log('Role check result:', roleCheck);
-    console.log('Role check error:', roleError);
+    // Test the has_role function - IMPORTANT: Use correct parameter names
+    const { data: roleCheck, error: roleError } = await (supabase as any).rpc('has_role', { 
+      u: currentUser.id, 
+      r: 'admin' 
+    });
+    
+    if (import.meta.env.DEV) {
+      console.log('Role check result:', roleCheck);
+      console.log('Role check error:', roleError);
+    }
     
     if (!roleCheck) {
       toast({ 
@@ -226,6 +250,7 @@ export default function Admin() {
       toast({ title: "Missing fields", description: "Please fill in name and price.", variant: "destructive" });
       return;
     }
+    
     if (!selectedCategoryId) {
       toast({ title: "Missing category", description: "Please select a category for this product.", variant: "destructive" });
       return;
@@ -384,7 +409,7 @@ export default function Admin() {
     };
 
     try {
-      console.log("[Settings] Saving payload:", payload);
+        console.log("[Settings] Saving payload:", payload);
       const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id" });
       
       console.log("[Settings] Upsert response:", res);
@@ -400,13 +425,17 @@ export default function Admin() {
       }
       
       console.log("[Settings] Successfully saved:", res.data);
-      setInitialSocialLinks(socialLinks);
+      setInitialSocialLinks({
+        ...socialLinks,
+        whatsapp_number: whatsappNumber
+      } as any);
       clearSocialCache();
       toast({ 
         title: "Settings saved successfully",
         description: "Your social links and WhatsApp number have been updated."
       });
-      fetchSettings();
+      // DON'T refetch - we already have the correct data
+      // fetchSettings();
     } catch (err: any) {
       console.error("[Settings] Unexpected error:", err);
       toast({ 
@@ -607,28 +636,123 @@ export default function Admin() {
             </Card>
           </TabsContent>
 
-          {/* Banner Tab */}
-          <TabsContent value="banner" className="space-y-4">
-            <Card className="shadow-elegant">
-              <CardHeader>
-                <CardTitle className="font-display flex items-center gap-2">
-                  <ImageIcon className="w-5 h-5" />
-                  Hero Banner Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <p className="text-muted-foreground mb-4">
-                    Upload a banner image for the home page. Recommended size: 3000 × 600 px (5:1 aspect ratio)
-                  </p>
-                  <Button variant="outline" onClick={() => navigate("/admin/home-page")} className="gap-2 w-full">
-                    <Pencil className="w-4 h-4" />
-                    Manage Hero Slides
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          // Replace the Banner Tab section (around line 530) with this updated version:
+
+{/* Banner Tab */}
+<TabsContent value="banner" className="space-y-4">
+  <Card className="shadow-elegant">
+    <CardHeader>
+      <CardTitle className="font-display flex items-center gap-2">
+        <ImageIcon className="w-5 h-5" />
+        Hero Banner Management
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="space-y-6">
+        {/* Banner Size Guidelines */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+          <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+            <ImageIcon className="w-5 h-5 text-blue-600" />
+            Recommended Banner Size
+          </h3>
+          <div className="bg-white dark:bg-gray-900 p-4 rounded-md mb-4">
+            <p className="text-3xl font-bold text-center text-blue-600 mb-2">
+              1920 × 600 pixels
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
+              (Amazon-style responsive banner)
+            </p>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex items-start gap-2">
+              <span className="text-green-600 font-bold mt-0.5">✓</span>
+              <p className="text-sm">Works perfectly on desktop, tablet, and mobile devices</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-green-600 font-bold mt-0.5">✓</span>
+              <p className="text-sm">Industry standard e-commerce hero banner size</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-green-600 font-bold mt-0.5">✓</span>
+              <p className="text-sm">Single image adapts to all screen sizes automatically</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Design Tips */}
+        <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+          <h4 className="font-semibold mb-3 flex items-center gap-2 text-amber-800 dark:text-amber-200">
+            <span>💡</span> Design Tips
+          </h4>
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-start gap-2">
+              <span className="text-amber-600 font-bold">•</span>
+              <span><strong>Safe Zone:</strong> Keep important content (text, products) in the center 60% of the image</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-600 font-bold">•</span>
+              <span><strong>File Format:</strong> Use JPG for photos (keep under 300KB for fast loading)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-600 font-bold">•</span>
+              <span><strong>Focal Point:</strong> Place main subject in the center so it's visible on all devices</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-600 font-bold">•</span>
+              <span><strong>Aspect Ratio:</strong> Maintain ~3:1 ratio (width to height)</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Size Comparison Table */}
+        <div className="border rounded-lg overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted">
+              <tr>
+                <th className="text-left p-3 font-semibold">Device</th>
+                <th className="text-left p-3 font-semibold">Banner Height</th>
+                <th className="text-left p-3 font-semibold">Display</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              <tr>
+                <td className="p-3">📱 Mobile</td>
+                <td className="p-3 font-mono">400px</td>
+                <td className="p-3 text-muted-foreground">Auto-scaled from 1920×600</td>
+              </tr>
+              <tr>
+                <td className="p-3">💻 Tablet</td>
+                <td className="p-3 font-mono">500-600px</td>
+                <td className="p-3 text-muted-foreground">Auto-scaled from 1920×600</td>
+              </tr>
+              <tr>
+                <td className="p-3">🖥️ Desktop</td>
+                <td className="p-3 font-mono">600-700px</td>
+                <td className="p-3 text-muted-foreground">Full size 1920×600</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Action Button */}
+        <Button 
+          variant="default" 
+          onClick={() => navigate("/admin/home-page")} 
+          className="gap-2 w-full gradient-gold text-foreground h-12 text-base"
+        >
+          <Pencil className="w-5 h-5" />
+          Manage Hero Slides & Upload Banners
+        </Button>
+
+        {/* Additional Info */}
+        <div className="text-xs text-muted-foreground text-center pt-2 border-t">
+          <p>Your banner uses CSS background-size: cover, which automatically adapts one image to all screen sizes</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+</TabsContent>
 
           {/* Taxonomy Tab */}
           <TabsContent value="taxonomy" className="space-y-4">

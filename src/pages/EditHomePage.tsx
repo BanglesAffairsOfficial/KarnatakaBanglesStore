@@ -193,13 +193,14 @@ export default function EditHomePage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Background Image</Label>
+                  <p className="text-xs text-muted-foreground mb-2">Required:  1920×600 pixels, 3:1 aspect ratio, max 5MB</p>
                   <ImageUpload
                     bucket="bangle-images"
                     folder="hero"
                     currentImageUrl={form.image_url || null}
                     onUpload={(url) => setForm({ ...form, image_url: url })}
                     onRemove={() => setForm({ ...form, image_url: "" })}
-                    imageType="banner"
+                    aspectRatio="wide"
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -220,6 +221,8 @@ export default function EditHomePage() {
             </DialogContent>
           </Dialog>
         </div>
+
+        
 
         <Card className="shadow-elegant">
           <CardHeader>

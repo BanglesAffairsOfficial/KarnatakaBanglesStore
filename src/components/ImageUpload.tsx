@@ -73,10 +73,10 @@ export function ImageUpload({
       if (!dimCheck) return;
 
       const { width, height } = dimCheck;
-      const requiredWidth = 3000;
+      const requiredWidth = 1920;
       const requiredHeight = 600;
       const ratio = width / height;
-      const expectedRatio = 5; // 5:1
+      const expectedRatio = 5; // 3:1
       const tolerance = 0.05; // allow 5% tolerance
 
       if (width < requiredWidth || height < requiredHeight) {
@@ -84,9 +84,8 @@ export function ImageUpload({
         return;
       }
 
-      if (Math.abs(ratio - expectedRatio) > tolerance) {
-        toast({ title: "Incorrect aspect ratio", description: "Banner should have an aspect ratio close to 5:1 (e.g. 3000×600).", variant: "destructive" });
-        return;
+      if (Math.abs(width - requiredWidth) > 10 || Math.abs(height - requiredHeight) > 10) {
+  toast({ title: "Invalid dimensions", description: `Banner must be exactly ${requiredWidth}×${requiredHeight} pixels. Your image is ${width}×${height}.`, variant: "destructive" });
       }
     }
 

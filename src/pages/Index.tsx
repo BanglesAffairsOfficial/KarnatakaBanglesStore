@@ -10,6 +10,7 @@ import {
   Gift, Calendar, Users, Shield, Truck, RotateCcw, Instagram, Facebook, 
   Twitter, Mail, ChevronRight, Award, Package, Zap, Phone, MapPin, MessageCircle
 } from "lucide-react";
+import { parseColors } from "@/lib/colorHelpers"
 
 interface Bangle {
   id: string;
@@ -29,15 +30,13 @@ interface HeroSlide {
   image_url: string | null;
 }
 
-const parseColor = (color: string) => {
-  try {
-    if (color.includes("{")) return JSON.parse(color);
-    const hex = { Red: "#dc2626", Orange: "#ea580c", Yellow: "#eab308", Green: "#16a34a", Lime: "#65a30d", Blue: "#2563eb", Pink: "#db2777", Purple: "#9333ea" }[color] || "#888888";
-    return { name: color, hex };
-  } catch {
-    return { name: color, hex: "#888888" };
-  }
-};
+interface SocialLinks {
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  email: string;
+}
+
 
 const categories = [
   { name: "Glass Bangles", icon: Sparkles, color: "from-blue-500 to-cyan-400", count: "500+" },
@@ -57,8 +56,8 @@ const occasions = [
 
 const features = [
   { icon: Shield, title: "Premium Quality", desc: "100% authentic bangles" },
-  { icon: Truck, title: "Free Shipping", desc: "On orders above ₹999" },
-  { icon: RotateCcw, title: "Easy Returns", desc: "7-day return policy" },
+  { icon: Truck, title: "Global Shipping", desc: "Delivered worldwide with reliable international shipping partners" },
+  { icon: RotateCcw, title: "Easy to order", desc: "Sign up and place your order in minutes" },
   { icon: Award, title: "Since 1985", desc: "Trusted by thousands" },
 ];
 
@@ -73,6 +72,12 @@ const EnhancedHomepage = () => {
   const [bangles, setBangles] = useState<Bangle[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>({
+    instagram: "",
+    facebook: "",
+    twitter: "",
+    email: "",
+  });
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [email, setEmail] = useState("");
@@ -94,12 +99,22 @@ const EnhancedHomepage = () => {
       supabase.from("bangles").select("*").eq("is_active", true).order("created_at", { ascending: false }),
       supabase.from("hero_slides").select("*").eq("is_active", true).order("display_order", { ascending: true }),
       // @ts-ignore - settings table may be custom, ignore strict client typings
-      supabase.from("settings").select("whatsapp_number").single()
+      supabase.from("settings").select("*").single()
     ]);
+    
     if (banglesRes.data) setBangles(banglesRes.data);
     if (slidesRes.data) setHeroSlides(slidesRes.data);
+    
     const settingsData = (settingsRes as any)?.data;
-    if (settingsData && settingsData.whatsapp_number) setWhatsappNumber(settingsData.whatsapp_number);
+    if (settingsData) {
+      if (settingsData.whatsapp_number) setWhatsappNumber(settingsData.whatsapp_number);
+      setSocialLinks({
+        instagram: settingsData.instagram_link || "",
+        facebook: settingsData.facebook_link || "",
+        twitter: settingsData.twitter_link || "",
+        email: settingsData.email || "",
+      });
+    }
     setLoading(false);
   };
 
@@ -110,7 +125,7 @@ const EnhancedHomepage = () => {
   }, [bangles, searchQuery]);
 
   const ProductCard = ({ bangle }: { bangle: Bangle }) => {
-    const colors = bangle.available_colors?.map(parseColor).slice(0, 4) || [];
+    const colors = parseColors(bangle.available_colors).slice(0, 4);
     return (
       <Card className="group cursor-pointer overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2" onClick={() => navigate(`/product/${bangle.id}`)}>
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-secondary to-muted">
@@ -145,9 +160,7 @@ const EnhancedHomepage = () => {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b shadow-sm">
         <div className="container mx-auto px-4 flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 gradient-gold rounded-full flex items-center justify-center shadow-gold">
-              <ShoppingBag className="w-6 h-6" />
-            </div>
+            <img src="/logo.png" alt="Karnataka Bangles Stores" className="w-12 h-12 rounded-full object-cover shadow-gold" />
             <div>
               <h1 className="text-xl font-display font-bold text-primary">Karnataka Bangles Stores</h1>
               <p className="text-xs text-muted-foreground">Since 1985</p>
@@ -158,8 +171,18 @@ const EnhancedHomepage = () => {
           </nav>
           <div className="flex items-center gap-3">
             {whatsappNumber && (
-              <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-green-50 dark:hover:bg-green-950 rounded-full transition">
+              <a href={`https://wa.me/${whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-green-50 dark:hover:bg-green-950 rounded-full transition">
                 <MessageCircle className="w-6 h-6 text-green-500" />
+              </a>
+            )}
+            {socialLinks.instagram && (
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-pink-50 dark:hover:bg-pink-950 rounded-full transition">
+                <Instagram className="w-6 h-6 text-pink-500" />
+              </a>
+            )}
+            {socialLinks.facebook && (
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-full transition">
+                <Facebook className="w-6 h-6 text-blue-600" />
               </a>
             )}
             <Button className="gradient-gold shadow-gold" onClick={() => navigate('/shop')}>Shop Now</Button>
@@ -167,47 +190,69 @@ const EnhancedHomepage = () => {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative h-[600px] overflow-hidden">
+      {/* Hero - Responsive Banner */}
+      <section className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[650px] xl:h-[700px] overflow-hidden">
         <div className="absolute inset-0">
           {heroSlides.map((slide, idx) => (
-            <div key={slide.id} className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: slide.image_url ? `url(${slide.image_url})` : 'linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)))', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-              <div className="absolute inset-0 bg-black/50" />
+            <div 
+              key={slide.id} 
+              className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`} 
+              style={{ 
+                backgroundImage: slide.image_url ? `url(${slide.image_url})` : 'linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)))', 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center' 
+              }}
+            >
+              <div className="absolute inset-0 bg-black/15" />
             </div>
           ))}
         </div>
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
           <div className="max-w-2xl">
-            <Badge className="mb-4 bg-amber-100/80 border-0 text-rose-600">✨ Special Offer</Badge>
-            <h2 className="text-5xl md:text-7xl font-display font-bold mb-4 text-rose-800 drop-shadow-lg">{heroSlides[currentSlide]?.title || "Premium Glass Bangles"}</h2>
-            <p className="text-xl mb-8 text-rose-400 drop-shadow-md">{heroSlides[currentSlide]?.subtitle || "Discover our exclusive collection"}</p>
-            <div className="flex gap-4 flex-wrap">
-              <Button size="lg" className="gradient-gold shadow-gold" onClick={() => navigate('/shop')}>Explore Collection <ChevronRight className="w-4 h-4 ml-2" /></Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-gradient-to-r from-rose-100 to-amber-100 backdrop-blur-sm text-indigo-500 border-white hover:from-rose-200 hover:to-amber-200"
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold mb-3 md:mb-4 text-yellow-400 drop-shadow-lg">
+              {heroSlides[currentSlide]?.title || "Premium Glass Bangles"}
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-pink-400 drop-shadow-md">
+              {heroSlides[currentSlide]?.subtitle || "Discover our exclusive collection"}
+            </p>
+            <div className="flex gap-3 md:gap-4 flex-wrap">
+              <Button 
+                size="lg" 
+                className="gradient-gold shadow-gold text-sm md:text-base h-10 md:h-12 px-4 md:px-6" 
+                onClick={() => navigate('/shop')}
               >
-                View Offers
+                Explore Collection 
+                <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
-              <a href="https://wa.me/+91 63617 15136" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white shadow-lg gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp
-                </Button>
-              </a>
+              {whatsappNumber && (
+                <a href={`https://wa.me/${whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    size="lg" 
+                    className="bg-green-500 hover:bg-green-600 text-white shadow-lg gap-2 text-sm md:text-base h-10 md:h-12 px-4 md:px-6"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp
+                  </Button>
+                </a>
+              )}
             </div>
           </div>
         </div>
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-          {heroSlides.map((_, idx) => <button key={idx} onClick={() => setCurrentSlide(idx)} className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'w-8 bg-white' : 'bg-white/50'}`} />)}
+          {heroSlides.map((_, idx) => (
+            <button 
+              key={idx} 
+              onClick={() => setCurrentSlide(idx)} 
+              className={`h-2 rounded-full transition-all ${idx === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/50'}`} 
+            />
+          ))}
         </div>
       </section>
 
       {/* Stats */}
       <section className="py-8 bg-card border-y">
         <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[{ icon: Sparkles, value: "50+", label: "Colors" }, { icon: Package, value: "1000+", label: "Products" }, { icon: Users, value: "10k+", label: "Customers" }, { icon: Award, value: "40+", label: "Years" }].map((stat, i) => (
+          {[{ icon: Sparkles, value: "50+", label: "Colors" }, { icon: Package, value: "1000+", label: "Products" }, { icon: Users, value: "10k+", label: "Customers" }, { icon: Award, value: "20+", label: "Years" }].map((stat, i) => (
             <div key={i} className="group">
               <div className="w-16 h-16 mx-auto mb-3 gradient-gold rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-gold">
                 <stat.icon className="w-8 h-8" />
@@ -302,8 +347,8 @@ const EnhancedHomepage = () => {
             <div className="relative h-64 bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-white">
               <div className="text-center">
                 <Gift className="w-16 h-16 mx-auto mb-4" />
-                <h3 className="text-3xl font-bold mb-2">Festive Sale</h3>
-                <p className="text-xl mb-4">Up to 40% OFF</p>
+                <h3 className="text-3xl font-bold mb-2">Check Now !</h3>
+                <p className="text-xl mb-4">Find colors and Sizes that you want</p>
                 <Button className="bg-white text-primary hover:bg-white/90" onClick={() => navigate('/shop')}>Shop Now</Button>
               </div>
             </div>
@@ -313,7 +358,7 @@ const EnhancedHomepage = () => {
               <div className="text-center">
                 <TrendingUp className="w-16 h-16 mx-auto mb-4" />
                 <h3 className="text-3xl font-bold mb-2">New Arrivals</h3>
-                <p className="text-xl mb-4">Latest Designs</p>
+                <p className="text-xl mb-4">See the latest Designs</p>
                 <Button className="bg-white text-primary hover:bg-white/90" onClick={() => navigate('/shop')}>Explore</Button>
               </div>
             </div>
@@ -385,23 +430,6 @@ const EnhancedHomepage = () => {
         </div>
       </section>
 
-      {/* Instagram */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Follow Us</Badge>
-            <h2 className="text-4xl font-display font-bold mb-4">#KarnatakaBangles</h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-lg">
-                <Instagram className="w-12 h-12 text-primary" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer id="contact" className="bg-card border-t py-12">
         <div className="container mx-auto px-4">
@@ -413,11 +441,36 @@ const EnhancedHomepage = () => {
               </div>
               <p className="text-sm text-muted-foreground mb-4">Premium glass bangles since 1985</p>
               <div className="flex gap-3">
-                {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                  <button key={i} className="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
-                    <Icon className="w-4 h-4" />
-                  </button>
-                ))}
+                {socialLinks.facebook && (
+                  <a 
+                    href={socialLinks.facebook} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
+                  >
+                    <Facebook className="w-4 h-4" />
+                  </a>
+                )}
+                {socialLinks.instagram && (
+                  <a 
+                    href={socialLinks.instagram} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
+                  >
+                    <Instagram className="w-4 h-4" />
+                  </a>
+                )}
+                {socialLinks.twitter && (
+                  <a 
+                    href={socialLinks.twitter} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors"
+                  >
+                    <Twitter className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             </div>
             <div>
@@ -429,15 +482,32 @@ const EnhancedHomepage = () => {
             <div>
               <h3 className="font-bold mb-4">Customer Care</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                {['Shipping Policy', 'Return Policy', 'Track Order', 'FAQ'].map(item => <li key={item}><a href="#" className="hover:text-primary">{item}</a></li>)}
+                {['Shipping Policy', 'Track Order', 'FAQ'].map(item => <li key={item}><a href="#" className="hover:text-primary">{item}</a></li>)}
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-4">Contact</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2"><Phone className="w-4 h-4 mt-0.5" /><span>+91 98765 43210</span></li>
-                <li className="flex items-start gap-2"><Mail className="w-4 h-4 mt-0.5" /><span>info@karnatakabanglesstores.in</span></li>
-                <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5" /><span>123 Commercial St, Bangalore</span></li>
+                {whatsappNumber && (
+                  <li className="flex items-start gap-2">
+                    <Phone className="w-4 h-4 mt-0.5" />
+                    <a href={`https://wa.me/${whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                      +{whatsappNumber}
+                    </a>
+                  </li>
+                )}
+                {socialLinks.email && (
+                  <li className="flex items-start gap-2">
+                    <Mail className="w-4 h-4 mt-0.5" />
+                    <a href={`mailto:${socialLinks.email}`} className="hover:text-primary">
+                      {socialLinks.email}
+                    </a>
+                  </li>
+                )}
+                <li className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 mt-0.5" />
+                  <span>#29/1 Near Panduranga Swami Temple Santhushapet, Bangalore 560053</span>
+                </li>
               </ul>
             </div>
           </div>
