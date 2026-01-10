@@ -1,0 +1,517 @@
+﻿{
+  "header": {
+    "since": "2004 पासून",
+    "tagline": "प्रीमियम काचच्या बांगड्या",
+    "nav": {
+      "home": "मुख्यपृष्ठ",
+      "shop": "दुकान",
+      "faq": "FAQ",
+      "contact": "संपर्क",
+      "orders": "ऑर्डर्स",
+      "wishlist": "विशलिस्ट",
+      "profile": "माझे प्रोफाइल",
+      "admin": "ॲडमिन",
+      "categories": "वर्ग",
+      "featured": "फीचर्ड",
+      "reviews": "पुनरावलोकने",
+      "inbox": "इनबॉक्स"
+    },
+    "translate": "भाषांतर",
+    "searchLanguage": "भाषा शोधा",
+    "selectLanguage": "भाषा निवडा",
+    "shopNow": "आता खरेदी करा"
+  },
+  "nav": {
+    "home": "मुख्यपृष्ठ",
+    "shop": "दुकान",
+    "faq": "FAQ",
+    "contact": "संपर्क",
+    "orders": "ऑर्डर्स",
+    "wishlist": "विशलिस्ट",
+    "profile": "माझे प्रोफाइल",
+    "admin": "ॲडमिन",
+    "inbox": "इनबॉक्स"
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "loginSignup": "लॉगिन / साइन अप"
+  },
+  "loginPage": {
+    "branding": "प्रीमियम काचच्या बांगड्या - होलसेल आणि रिटेल",
+    "title": "पुन्हा स्वागत आहे",
+    "subtitle": "तुमच्या होलसेल खात्यात साइन इन करा",
+    "emailLabel": "ईमेल पत्ता",
+    "emailPlaceholder": "wholesale@example.com",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "********",
+    "forgot": "विसरलात?",
+    "remember": "मला लक्षात ठेवा",
+    "signIn": "साइन इन",
+    "signingIn": "साइन इन करत आहोत...",
+    "or": "किंवा",
+    "google": "Google ने साइन इन करा",
+    "phone": "फोनने साइन इन करा",
+    "guest": "पाहुणे म्हणून पुढे जा",
+    "noAccount": "खाते नाही?",
+    "createAccount": "खाते तयार करा",
+    "b2bTitle": "होलसेल खाते?",
+    "b2bHint": "आमच्या B2B टीमशी संपर्क करा",
+    "toast": {
+      "loginFailed": "लॉगिन अयशस्वी",
+      "invalidCreds": "अवैध ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.",
+      "welcome": "पुन्हा स्वागत आहे!",
+      "success": "तुम्ही यशस्वीपणे लॉगिन केले आहे.",
+      "googleFailed": "Google साइन-इन अयशस्वी",
+      "unexpected": "अनपेक्षित त्रुटी झाली. कृपया पुन्हा प्रयत्न करा."
+    },
+    "errors": {
+      "email": "कृपया वैध ईमेल पत्ता प्रविष्ट करा",
+      "password": "पासवर्ड किमान 6 अक्षरांचा असावा"
+    },
+    "aria": {
+      "showPassword": "पासवर्ड दाखवा",
+      "hidePassword": "पासवर्ड लपवा"
+    }
+  },
+  "hero": {
+    "fallbackTitle": "प्रीमियम काचच्या बांगड्या",
+    "fallbackSubtitle": "आमचा विशेष संग्रह शोधा",
+    "explore": "संग्रह पाहा",
+    "contact": "आमच्याशी संपर्क करा",
+    "whatsapp": "व्हॉट्सअॅप"
+  },
+  "categories": {
+    "badge": "प्रकारानुसार खरेदी करा",
+    "title": "वर्ग पाहा",
+    "subtitle": "तुमच्यासाठी योग्य शैली शोधा",
+    "empty": "अॅडमिनमध्ये जोडल्यावर वर्ग येथे दिसतील.",
+    "view": "संग्रह पाहा",
+    "fallback": "वर्ग"
+  },
+  "stats": {
+    "colors": "रंग",
+    "products": "उत्पादने",
+    "customers": "ग्राहक",
+    "years": "वर्षे"
+  },
+  "featured": {
+    "badge": "ट्रेंडिंग",
+    "title": "फीचर्ड संग्रह",
+    "searchPlaceholder": "बांगड्या शोधा..."
+  },
+  "offers": {
+    "checkTitle": "आता तपासा!",
+    "checkSubtitle": "तुम्हाला हवे ते रंग आणि आकार शोधा",
+    "shopNow": "आता खरेदी करा",
+    "newArrivalsTitle": "नवीन आगमने",
+    "newArrivalsSubtitle": "सर्वात नवीन डिझाईन्स पाहा",
+    "explore": "पहा"
+  },
+  "bestsellers": {
+    "badge": "बेस्टसेलर्स",
+    "title": "सर्वाधिक विकल्या जाणाऱ्या बांगड्या आणि वर्ग",
+    "subtitle": "आत्ता खरेदीदार काय जास्त घेत आहेत ते पहा.",
+    "topBangles": "टॉप बांगड्या",
+    "emptyBangles": "ऑर्डर्स आल्यावर टॉप विक्रेते येथे दिसतील.",
+    "unitsSold": "विकलेल्या युनिट्स:",
+    "topCategories": "टॉप वर्ग",
+    "emptyCategories": "ऑर्डर्स आल्यावर वर्ग दिसतील."
+  },
+  "whyChooseUs": {
+    "title": "आम्हाला का निवडावे"
+  },
+  "features": {
+    "premium": "प्रीमियम गुणवत्ता",
+    "premiumDesc": "100% अस्सल बांगड्या",
+    "shipping": "जागतिक शिपिंग",
+    "shippingDesc": "विश्वसनीय आंतरराष्ट्रीय भागीदारांसह जगभर वितरित",
+    "easy": "सुलभ ऑर्डर",
+    "easyDesc": "मिनिटांत साइन अप करा आणि ऑर्डर करा",
+    "since": "2004 पासून",
+    "sinceDesc": "हजारोंचा विश्वास"
+  },
+  "productCard": {
+    "new": "नवीन",
+    "noImage": "प्रतिमा नाही",
+    "bangle": "बांगडी"
+  },
+  "newsletter": {
+    "title": "अपडेट राहा",
+    "subtitle": "विशेष ऑफर आणि नवीन आगमने मिळवा",
+    "placeholder": "ईमेल प्रविष्ट करा",
+    "subscribe": "सबस्क्राइब करा"
+  },
+  "footer": {
+    "tagline": "2004 पासून प्रीमियम काचच्या बांगड्या",
+    "quickLinks": "जलद लिंक",
+    "customerCare": "ग्राहक सेवा",
+    "contact": "संपर्क",
+    "aboutUs": "आमच्याबद्दल",
+    "ourStory": "आमची कहाणी",
+    "wholesale": "होलसेल",
+    "bulkOrders": "थोक ऑर्डर्स",
+    "shippingPolicy": "शिपिंग धोरण",
+    "trackOrder": "ऑर्डर ट्रॅक करा",
+    "faq": "FAQ",
+    "rights": "सर्व हक्क राखीव."
+  },
+  "shop": {
+    "title": "आमचा संग्रह खरेदी करा",
+    "subtitle": "प्रत्येक शैलीसाठी आमच्या प्रीमियम बांगड्या शोधा",
+    "searchPlaceholder": "बांगड्या शोधा...",
+    "search": "शोधा",
+    "filters": {
+      "title": "फिल्टर्स",
+      "clear": "क्लिअर",
+      "clearAll": "सर्व फिल्टर क्लिअर करा",
+      "priceRange": "किंमत श्रेणी",
+      "categories": "वर्ग",
+      "sizes": "आकार",
+      "colors": "रंग",
+      "close": "फिल्टर बंद करा"
+    },
+    "results": "{{count}} उत्पादने सापडली",
+    "sort": {
+      "label": "क्रमबद्ध करा",
+      "latest": "नवीन आगमने",
+      "priceLow": "किंमत: कमी ते जास्त",
+      "priceHigh": "किंमत: जास्त ते कमी",
+      "popular": "सर्वाधिक लोकप्रिय"
+    },
+    "noResults": "तुमच्या फिल्टरशी जुळणारी उत्पादने सापडली नाहीत."
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "सामान्य प्रश्नांची त्वरित उत्तरे. अधिक मदतीसाठी संपर्क करा.",
+    "cardTitle": "वारंवार विचारले जाणारे प्रश्न",
+    "items": [
+      {
+        "q": "मी ऑर्डर कशी देऊ?",
+        "a": "शॉप ब्राउझ करा, आकार आणि रंग निवडा, कार्टमध्ये जोडा आणि चेकआउट पूर्ण करा."
+      },
+      {
+        "q": "आपण आंतरराष्ट्रीय शिपिंग करता का?",
+        "a": "होय. आम्ही विश्वासार्ह कुरिअरसह भागीदारी करतो आणि पाठवल्यानंतर ट्रॅकिंग शेअर करतो."
+      },
+      {
+        "q": "मी माझा ऑर्डर बदलू किंवा रद्द करू शकतो का?",
+        "a": "ऑर्डर शिप झालेला नसेल तर, तुमचा ऑर्डर आयडी देऊन सपोर्टशी संपर्क करा."
+      },
+      {
+        "q": "कोणते पेमेंट प्रकार समर्थित आहेत?",
+        "a": "कार्ड, UPI (जिथे उपलब्ध) आणि निवडक भागात COD. थोक/होलसेलसाठी आमच्याशी संपर्क करा."
+      }
+    ]
+  },
+  "contact": {
+    "title": "आमच्याशी संपर्क करा",
+    "subtitle": "आमच्या बांगड्यांबद्दल प्रश्न आहेत? आम्हाला सांगायला आवडेल. संदेश पाठवा आणि आम्ही लवकर प्रत्युत्तर देऊ.",
+    "form": {
+      "title": "आम्हाला संदेश पाठवा",
+      "nameLabel": "नाव *",
+      "namePlaceholder": "तुमचे नाव",
+      "emailLabel": "ईमेल *",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "संदेश *",
+      "messagePlaceholder": "आम्ही कशी मदत करू शकतो?",
+      "submit": "संदेश पाठवा"
+    },
+    "toastTitle": "संदेश पाठवला!",
+    "toastDescription": "संपर्क केल्याबद्दल धन्यवाद. आम्ही लवकरच उत्तर देऊ.",
+    "visit": {
+      "copy": "Karnataka Bangle Store\n#29/1 Near Panduranga Swami Temple Santhushapet\nBangalore, Karnataka 560053"
+    },
+    "call": {
+      "copy": "+91 63617 15136"
+    },
+    "email": {
+      "copy": "info.karnatakabanglesstores@gmail.com"
+    },
+    "mapUrl": "https://www.google.com/maps?q=Karnataka+Bangle+Store+Chickpet+Bengaluru&output=embed",
+    "mapTitle": "स्टोअरचे स्थान",
+    "errors": {
+      "name": "नाव किमान 2 अक्षरे असावे",
+      "email": "कृपया वैध ईमेल पत्ता प्रविष्ट करा",
+      "message": "संदेश किमान 10 अक्षरांचा असावा"
+    }
+  },
+  "orders": {
+    "title": "तुमचे ऑर्डर्स",
+    "subtitle": "अलीकडील खरेदी ट्रॅक करा आणि आवडीचे पुन्हा ऑर्डर करा.",
+    "refresh": "रिफ्रेश",
+    "historyTitle": "ऑर्डर इतिहास",
+    "loading": "ऑर्डर्स लोड होत आहेत...",
+    "empty": "अजून ऑर्डर्स नाहीत. येथे पाहण्यासाठी खरेदी सुरू करा.",
+    "delivery": "डिलिव्हरी",
+    "currency": "₹",
+    "cancelling": "रद्द करत आहोत...",
+    "cancelOrder": "ऑर्डर रद्द करा",
+    "repeatOrder": "ऑर्डर पुन्हा करा",
+    "hideDetails": "तपशील लपवा",
+    "viewDetails": "तपशील पाहा",
+    "noItems": "या ऑर्डरसाठी कोणतेही आयटम सापडले नाहीत.",
+    "cancelItem": "आयटम रद्द करा",
+    "status": {
+      "pending": "प्रलंबित",
+      "ready": "शिपिंगसाठी तयार"
+    },
+    "cancelReasonPrompt": "रद्द करण्याचे कारण (ऐच्छिक):",
+    "cancelReasonDefault": "माझा निर्णय बदलला"
+  },
+  "wishlist": {
+    "title": "विशलिस्ट",
+    "subtitle": "नंतर पाहण्यासाठी आयटम जतन करा.",
+    "loading": "विशलिस्ट लोड होत आहे...",
+    "empty": "अजून आयटम जतन केलेले नाहीत.",
+    "browse": "दुकान ब्राउझ करा",
+    "view": "पहा",
+    "remove": "काढा"
+  },
+  "profile": {
+    "title": "माझे प्रोफाइल",
+    "incomplete": {
+      "title": "तुमचे प्रोफाइल पूर्ण करा",
+      "desc": "चेकआउटसाठी पुढे जाण्यासाठी कृपया आवश्यक सर्व फील्ड (नाव, फोन, पत्ता) भरा."
+    },
+    "tabs": {
+      "profile": "प्रोफाइल",
+      "addresses": "डिलिव्हरी"
+    },
+    "customerInfo": "ग्राहक माहिती",
+    "photo": "प्रोफाइल फोटो",
+    "email": "ईमेल",
+    "name": "ग्राहक नाव",
+    "namePlaceholder": "तुमचे पूर्ण नाव प्रविष्ट करा",
+    "shopName": "दुकानाचे नाव",
+    "shopPlaceholder": "तुमच्या दुकानाचे नाव प्रविष्ट करा",
+    "gst": "GST नं.",
+    "gstPlaceholder": "उदा., 29ABCDE1234F1Z5",
+    "phone": "फोन नंबर",
+    "phonePlaceholder": "तुमचा फोन नंबर प्रविष्ट करा",
+    "transport": "ट्रान्सपोर्टचे नाव",
+    "save": "बदल जतन करा",
+    "addressesTitle": "डिलिव्हरी पत्ते",
+    "addAddress": "पत्ता जोडा",
+    "addressSave": "पत्ता जतन करा",
+    "cancel": "रद्द",
+    "noAddresses": "अजून पत्ते जतन केलेले नाहीत.",
+    "setDefault": "डीफॉल्ट करा",
+    "deliveryAddress": "डिलिव्हरी पत्ता",
+    "bangle": "बांगडी",
+    "size": "आकार",
+    "qty": "प्रमाण",
+    "toast": {
+      "loadErrorTitle": "प्रोफाइल लोड त्रुटी",
+      "loadErrorDesc": "तुमचा प्रोफाइल डेटा लोड करू शकलो नाही.",
+      "validationTitle": "व्हॅलिडेशन त्रुटी",
+      "validationDesc": "जतन करण्यापूर्वी त्रुटी दुरुस्त करा.",
+      "updateErrorTitle": "प्रोफाइल अपडेट त्रुटी",
+      "updateSuccessTitle": "प्रोफाइल अपडेट केले",
+      "updateSuccessDesc": "तुमचे प्रोफाइल यशस्वीपणे जतन केले आहे.",
+      "tryAgain": "कृपया पुन्हा प्रयत्न करा.",
+      "unexpected": "अनपेक्षित त्रुटी झाली.",
+      "addressMissingTitle": "फील्ड गायब",
+      "addressMissingDesc": "कृपया आवश्यक सर्व पत्त्यांची फील्ड भरा.",
+      "pincodeInvalidTitle": "अवैध पिनकोड",
+      "pincodeInvalidDesc": "पिनकोड 6 अंकांचा असावा.",
+      "addAddressErrorTitle": "पत्ता जोडताना त्रुटी",
+      "addAddressSuccessTitle": "पत्ता जोडला",
+      "addAddressSuccessDesc": "तुमचा डिलिव्हरी पत्ता जोडला आहे.",
+      "addressDeleted": "पत्ता हटवला",
+      "defaultUpdated": "डीफॉल्ट पत्ता अपडेट",
+      "orderLoadError": "ऑर्डर आयटम लोड करू शकलो नाही",
+      "repeatSuccessTitle": "आयटम कार्टमध्ये जोडले!",
+      "repeatSuccessDesc": "{{count}} आयटम जोडले. ऑर्डर पूर्ण करण्यासाठी कार्टमध्ये जा.",
+      "repeatEmptyTitle": "आयटम उपलब्ध नाहीत",
+      "repeatEmptyDesc": "काही उत्पादने आता उपलब्ध नसतील."
+    },
+    "errors": {
+      "name": "ग्राहक नाव आवश्यक आहे",
+      "phone": "फोन नंबर आवश्यक आहे",
+      "phoneInvalid": "कृपया वैध 10 अंकी फोन नंबर प्रविष्ट करा",
+      "address": "पत्ता आवश्यक आहे",
+      "gst": "अवैध GST क्रमांक फॉरमॅट",
+      "pincode": "पिनकोड 6 अंकांचा असावा"
+    }
+  },
+  "cart": {
+    "title": "शॉपिंग कार्ट",
+    "toast": {
+      "loginTitle": "कृपया लॉगिन करा",
+      "loginDesc": "ऑर्डर करण्यासाठी लॉगिन आवश्यक आहे.",
+      "empty": "कार्ट रिकामी आहे",
+      "completeProfileTitle": "तुमचे प्रोफाइल पूर्ण करा",
+      "completeProfileDesc": "ऑर्डर करण्यापूर्वी नाव, फोन नंबर आणि पत्ता भरा.",
+      "selectAddressTitle": "डिलिव्हरी पत्ता निवडा",
+      "selectAddressDesc": "कृपया डिलिव्हरी पत्ता निवडा किंवा जोडा.",
+      "orderCreatedTitle": "ऑर्डर तयार",
+      "orderCreatedDesc": "ऑर्डर #{{id}} तयार झाला. कृपया पेमेंट पूर्ण करा.",
+      "orderErrorTitle": "ऑर्डर करण्यास त्रुटी",
+      "tryAgain": "कृपया पुन्हा प्रयत्न करा."
+    },
+    "profilePrompt": {
+      "title": "तुमचे प्रोफाइल पूर्ण करा",
+      "desc": "ऑर्डर करण्यापूर्वी तुमचे प्रोफाइल (नाव, फोन, पत्ता) पूर्ण करा.",
+      "cta": "प्रोफाइल पूर्ण करा"
+    },
+    "empty": {
+      "title": "तुमचा कार्ट रिकामा आहे",
+      "desc": "तुमच्या कार्टमध्ये काही सुंदर बांगड्या जोडा!",
+      "cta": "उत्पादने पाहा"
+    },
+    "delivery": {
+      "pickupTitle": "स्टोअर पिकअप (फक्त बेंगळुरू)",
+      "pickupCharge": "टेक अवे - ₹25",
+      "pickupDesc": "तुमचा ऑर्डर करा, आम्ही बांगड्या सुरक्षित पॅक करू. तुम्ही स्टोअरमधून घेऊ शकता किंवा तुमचा डिलिव्हरी पार्टनर (उदा., Dunzo) पाठवू शकता.",
+      "pickupPill": {
+        "secure": "सुरक्षित पॅकिंग",
+        "quick": "जलद पिकअप",
+        "nearby": "तुम्ही जवळ असाल तर उत्तम"
+      },
+      "deliveryTitle": "स्टोअर डिलिव्हरी (बेंगळुरू बाहेर)",
+      "deliveryCharge": "पॅकेजिंग - ₹200*",
+      "deliveryDesc": "आम्ही तुमच्याकडे बांगड्या पाठवू. तुमचा ऑर्डर 2-3 दिवसांत सुरक्षित पोहोचेल. *स्थानानुसार डिलिव्हरी शुल्क बदलू शकते.",
+      "deliveryPill": {
+        "doorstep": "दारी डिलिव्हरी",
+        "safe": "सुरक्षित पॅकेजिंग",
+        "outstation": "बाहेरील ग्राहक"
+      }
+    },
+    "address": {
+      "loginPrompt": "डिलिव्हरी पत्ता निवडण्यासाठी लॉगिन करा",
+      "none": "पत्ते जतन केलेले नाहीत",
+      "select": "पत्ता निवडा",
+      "manage": "पत्ते व्यवस्थापित करा"
+    },
+    "summary": {
+      "items": "आयटम ({{count}})",
+      "pickup": "पिकअप शुल्क",
+      "packaging": "पॅकेजिंग शुल्क",
+      "total": "एकूण",
+      "loginCta": "ऑर्डर करण्यासाठी लॉगिन करा",
+      "profileCta": "प्रथम प्रोफाइल पूर्ण करा",
+      "placeOrder": "ऑर्डर करा",
+      "profileNote": "चेकआउट सक्षम करण्यासाठी प्रोफाइल पूर्ण करा"
+    }
+  },
+  "inbox": {
+    "title": "इनबॉक्स",
+    "subtitle": "पेमेंट मान्यतापत्रे आणि डिलिव्हरी अद्यतने.",
+    "refresh": "रिफ्रेश",
+    "notifications": "सूचना",
+    "loading": "इनबॉक्स लोड होत आहे...",
+    "empty": "अजून कोणतीही सूचना नाही.",
+    "viewOrder": "ऑर्डर पाहा",
+    "markRead": "वाचले म्हणून चिन्हांकित करा",
+    "marking": "चिन्हांकित करत आहोत...",
+    "toast": {
+      "loadNotifications": "सूचना लोड करण्यात अयशस्वी",
+      "loadBroadcasts": "ब्रॉडकास्ट लोड करण्यात अयशस्वी",
+      "updateFailed": "अपडेट अयशस्वी"
+    }
+  },
+  "productDetail": {
+    "inStock": "स्टॉकमध्ये",
+    "outOfStock": "स्टॉकमध्ये नाही",
+    "notFoundTitle": "उत्पादन सापडले नाही",
+    "notFoundDesc": "तुम्ही शोधत असलेले उत्पादन अस्तित्वात नाही किंवा काढले गेले आहे.",
+    "backHome": "होमवर परत या",
+    "backToProducts": "उत्पादनांकडे परत",
+    "hoverToZoom": "झूम करण्यासाठी होव्हर करा",
+    "noImage": "प्रतिमा उपलब्ध नाही",
+    "reviewsLabel": "({{count}} पुनरावलोकने)",
+    "addWishlist": "विशलिस्टमध्ये जोडा",
+    "removeWishlist": "विशलिस्टमधून काढा",
+    "viewWishlist": "विशलिस्ट पाहा",
+    "priceLabel": "प्रति (बॉक्स/डझन) किंमत",
+    "availableColors": "उपलब्ध रंग",
+    "selectionTitle": "आकार आणि रंगाची मात्रा निवडा",
+    "sizeHeading": "आकार (')",
+    "colorHeading": "रंग (\")",
+    "noSizesColors": "या उत्पादनासाठी आकार किंवा रंग उपलब्ध नाहीत.",
+    "selectAll": "सर्व निवडा:",
+    "clearAll": "सर्व साफ करा",
+    "orderSummary": "ऑर्डर सारांश",
+    "emptySelections": "आयटम निवडलेले नाहीत.",
+    "subtotal": "उपएकूण:",
+    "total": "एकूण:",
+    "addToCart": "कार्टमध्ये जोडा",
+    "related": "संबंधित उत्पादने",
+    "colorsCount": "{{count}} रंग",
+    "deliveryInfo": "{{pincode}} येथे 5-7 कामकाजाच्या दिवसांत डिलिव्हरी",
+    "shareTitle": "ही बांगडी पहा",
+    "toast": {
+      "loadErrorTitle": "उत्पादन लोड त्रुटी",
+      "loadErrorDesc": "उत्पादन तपशील लोड करू शकलो नाही. कृपया पुन्हा प्रयत्न करा.",
+      "unexpectedTitle": "त्रुटी",
+      "unexpectedDesc": "अनपेक्षित त्रुटी झाली.",
+      "invalidPincodeTitle": "अवैध पिनकोड",
+      "invalidPincodeDesc": "कृपया वैध 6 अंकी पिनकोड प्रविष्ट करा.",
+      "deliveryAvailableTitle": "डिलिव्हरी उपलब्ध",
+      "deliveryAvailableDesc": "आम्ही {{pincode}} येथे 5-7 कामकाजाच्या दिवसांत डिलिव्हरी करतो.",
+      "loginTitle": "कृपया लॉगिन करा",
+      "loginDesc": "कार्टमध्ये जोडण्यासाठी लॉगिन आवश्यक आहे.",
+      "noItemsTitle": "आयटम निवडलेले नाहीत",
+      "noItemsDesc": "कृपया किमान एक बांगडी निवडा.",
+      "addedTitle": "कार्टमध्ये जोडले",
+      "addedDesc": "{{count}} आयटम कार्टमध्ये जोडले.",
+      "linkCopiedTitle": "लिंक कॉपी केला!",
+      "linkCopiedDesc": "उत्पादन लिंक कॉपी केला.",
+      "addedWishlist": "विशलिस्टमध्ये जोडले",
+      "removedWishlist": "विशलिस्टमधून काढले"
+    }
+  },
+  "authPage": {
+    "titleLogin": "पुन्हा स्वागत आहे",
+    "titleSignup": "खाते तयार करा",
+    "subtitleLogin": "तुमच्या होलसेल खात्यात साइन इन करा",
+    "subtitleSignup": "तुमचे होलसेल खाते सेट करा",
+    "fullNameLabel": "पूर्ण नाव",
+    "fullNamePlaceholder": "तुमचे पूर्ण नाव",
+    "emailLabel": "ईमेल पत्ता",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "********",
+    "confirmLabel": "पासवर्ड पुष्टी करा",
+    "confirmPlaceholder": "पासवर्ड पुन्हा टाइप करा",
+    "forgot": "विसरलात?",
+    "toggleToSignup": "नवीन आहात? खाते तयार करा",
+    "toggleToLogin": "खाते आहे? साइन इन करा",
+    "submitLogin": "साइन इन",
+    "submitSignup": "खाते तयार करा",
+    "signingIn": "साइन इन करत आहोत...",
+    "signingUp": "खाते तयार करत आहोत...",
+    "or": "किंवा",
+    "google": "Google ने साइन इन करा",
+    "guest": "पाहुणे म्हणून पुढे जा",
+    "noAccount": "खाते नाही?",
+    "haveAccount": "खाते आहे?",
+    "toast": {
+      "loginFailed": "लॉगिन अयशस्वी",
+      "invalidCreds": "अवैध ईमेल किंवा पासवर्ड. कृपया पुन्हा प्रयत्न करा.",
+      "welcome": "पुन्हा स्वागत आहे!",
+      "success": "तुम्ही यशस्वीपणे लॉगिन केले आहे.",
+      "signupFailed": "साइन अप अयशस्वी",
+      "emailExists": "हा ईमेल आधीच नोंदणीकृत आहे. कृपया लॉगिन करा.",
+      "googleFailed": "Google साइन-इन अयशस्वी",
+      "unexpected": "अनपेक्षित त्रुटी झाली. कृपया पुन्हा प्रयत्न करा."
+    },
+    "errors": {
+      "email": "कृपया वैध ईमेल पत्ता प्रविष्ट करा",
+      "password": "पासवर्ड किमान 6 अक्षरांचा असावा",
+      "fullName": "नाव किमान 2 अक्षरे असावे",
+      "confirmPassword": "पासवर्ड जुळत नाहीत"
+    },
+    "verification": {
+      "title": "तुमचा ईमेल पत्ता सत्यापित करा",
+      "desc": "कृपया तुमचे इनबॉक्स तपासा आणि आम्ही पाठवलेली सत्यापन लिंक क्लिक करा",
+      "note": "नोंदणी पूर्ण करण्यासाठी आणि खाते वापरण्यासाठी ईमेल सत्यापन आवश्यक आहे.",
+      "close": "ओके",
+      "resend": "ईमेल पुन्हा पाठवा",
+      "resendFailed": "पुन्हा पाठवणे अयशस्वी",
+      "resendSuccess": "ईमेल पाठवला",
+      "resendDesc": "सत्यापन ईमेल पुन्हा तुमच्या इनबॉक्समध्ये पाठवला आहे."
+    }
+  }
+}

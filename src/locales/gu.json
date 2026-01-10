@@ -1,0 +1,517 @@
+﻿{
+  "header": {
+    "since": "2004 થી",
+    "tagline": "પ્રીમિયમ ગ્લાસ બંગડી",
+    "nav": {
+      "home": "હોમ",
+      "shop": "દુકાન",
+      "faq": "FAQ",
+      "contact": "સંપર્ક",
+      "orders": "ઓર્ડર",
+      "wishlist": "વિશલિસ્ટ",
+      "profile": "મારું પ્રોફાઇલ",
+      "admin": "એડમિન",
+      "categories": "શ્રેણીઓ",
+      "featured": "ફિચર્ડ",
+      "reviews": "સમીક્ષાઓ",
+      "inbox": "ઇનબોક્સ"
+    },
+    "translate": "ભાષાંતર",
+    "searchLanguage": "ભાષા શોધો",
+    "selectLanguage": "ભાષા પસંદ કરો",
+    "shopNow": "હવે ખરીદો"
+  },
+  "nav": {
+    "home": "હોમ",
+    "shop": "દુકાન",
+    "faq": "FAQ",
+    "contact": "સંપર્ક",
+    "orders": "ઓર્ડર",
+    "wishlist": "વિશલિસ્ટ",
+    "profile": "મારું પ્રોફાઇલ",
+    "admin": "એડમિન",
+    "inbox": "ઇનબોક્સ"
+  },
+  "auth": {
+    "login": "લોગિન",
+    "logout": "લોગઆઉટ",
+    "loginSignup": "લોગિન / સાઇન અપ"
+  },
+  "loginPage": {
+    "branding": "પ્રીમિયમ ગ્લાસ બંગડી - હોલસેલ અને રિટેલ",
+    "title": "પાછા આવો",
+    "subtitle": "તમારા હોલસેલ ખાતામાં સાઇન ઇન કરો",
+    "emailLabel": "ઇમેઇલ સરનામું",
+    "emailPlaceholder": "wholesale@example.com",
+    "passwordLabel": "પાસવર્ડ",
+    "passwordPlaceholder": "********",
+    "forgot": "ભૂલ્યા?",
+    "remember": "મને યાદ રાખો",
+    "signIn": "સાઇન ઇન",
+    "signingIn": "સાઇન ઇન કરી રહ્યા છીએ...",
+    "or": "અથવા",
+    "google": "Google દ્વારા સાઇન ઇન કરો",
+    "phone": "ફોનથી સાઇન ઇન કરો",
+    "guest": "મેહમાન તરીકે ચાલુ રાખો",
+    "noAccount": "ખાતું નથી?",
+    "createAccount": "એકાઉન્ટ બનાવો",
+    "b2bTitle": "હોલસેલ એકાઉન્ટ?",
+    "b2bHint": "અમારી B2B ટીમને સંપર્ક કરો",
+    "toast": {
+      "loginFailed": "લોગિન નિષ્ફળ",
+      "invalidCreds": "અમાન્ય ઇમેઇલ અથવા પાસવર્ડ. કૃપા કરી ફરી પ્રયાસ કરો.",
+      "welcome": "પાછા આવો!",
+      "success": "તમે સફળતાપૂર્વક લોગિન થયા છો.",
+      "googleFailed": "Google સાઇન-ઇન નિષ્ફળ",
+      "unexpected": "અનપેક્ષિત ભૂલ થઈ. કૃપા કરીને ફરી પ્રયાસ કરો."
+    },
+    "errors": {
+      "email": "કૃપા કરીને માન્ય ઇમેઇલ સરનામું નાખો",
+      "password": "પાસવર્ડ ઓછામાં ઓછા 6 અક્ષરનો હોવો જોઈએ"
+    },
+    "aria": {
+      "showPassword": "પાસવર્ડ બતાવો",
+      "hidePassword": "પાસવર્ડ છુપાવો"
+    }
+  },
+  "hero": {
+    "fallbackTitle": "પ્રીમિયમ ગ્લાસ બંગડી",
+    "fallbackSubtitle": "અમારા વિશિષ્ટ સંગ્રહ શોધો",
+    "explore": "સંગ્રહ તપાસો",
+    "contact": "સંપર્ક કરો",
+    "whatsapp": "વોટ્સએપ"
+  },
+  "categories": {
+    "badge": "પ્રકાર દ્વારા ખરીદી",
+    "title": "શ્રેણીઓ તપાસો",
+    "subtitle": "તમારો યોગ્ય સ્ટાઇલ શોધો",
+    "empty": "એડમિનમાં ઉમેરાયા બાદ શ્રેણીઓ અહીં દેખાશે.",
+    "view": "સંગ્રહ જુઓ",
+    "fallback": "શ્રેણી"
+  },
+  "stats": {
+    "colors": "રંગો",
+    "products": "ઉત્પાદનો",
+    "customers": "ગ્રાહકો",
+    "years": "વર્ષ"
+  },
+  "featured": {
+    "badge": "હમણાં ટ્રેન્ડિંગ",
+    "title": "ફિચર્ડ સંગ્રહ",
+    "searchPlaceholder": "બંગડી શોધો..."
+  },
+  "offers": {
+    "checkTitle": "હવે તપાસો!",
+    "checkSubtitle": "તમે ઇચ્છો તે રંગો અને સાઇઝ શોધો",
+    "shopNow": "હવે ખરીદો",
+    "newArrivalsTitle": "નવી આવકો",
+    "newArrivalsSubtitle": "નવીનતમ ડિઝાઇન જુઓ",
+    "explore": "તપાસો"
+  },
+  "bestsellers": {
+    "badge": "વેચાતી ટોચની",
+    "title": "સૌથી વધુ વેચાતી બંગડી અને શ્રેણીઓ",
+    "subtitle": "હમણાં ખરીદદારો સૌથી વધુ શું ખરીદી રહ્યા છે તે જુઓ.",
+    "topBangles": "ટોચની બંગડી",
+    "emptyBangles": "ઓર્ડર આવ્યા પછી ટોચના વેચનાર અહીં દેખાશે.",
+    "unitsSold": "વેચાયેલ યુનિટ્સ:",
+    "topCategories": "ટોચની શ્રેણીઓ",
+    "emptyCategories": "ઓર્ડર આવ્યા પછી શ્રેણીઓ દેખાશે."
+  },
+  "whyChooseUs": {
+    "title": "શા માટે અમને પસંદ કરો"
+  },
+  "features": {
+    "premium": "પ્રીમિયમ ગુણવત્તા",
+    "premiumDesc": "100% અસલ બંગડી",
+    "shipping": "વૈશ્વિક શિપિંગ",
+    "shippingDesc": "વિશ્વસનીય આંતરરાષ્ટ્રીય ભાગીદારો સાથે વિશ્વવ્યાપી ડિલિવરી",
+    "easy": "સરળ ઓર્ડર",
+    "easyDesc": "મિનિટોમાં સાઇન અપ કરીને તમારો ઓર્ડર મૂકો",
+    "since": "2004 થી",
+    "sinceDesc": "હજારો લોકો દ્વારા વિશ્વસનીય"
+  },
+  "productCard": {
+    "new": "નવું",
+    "noImage": "છબી નથી",
+    "bangle": "બંગડી"
+  },
+  "newsletter": {
+    "title": "અપડેટ રહો",
+    "subtitle": "વિશિષ્ટ ઓફર અને નવી આવકો મેળવો",
+    "placeholder": "ઇમેઇલ દાખલ કરો",
+    "subscribe": "સબ્સ્ક્રાઇબ કરો"
+  },
+  "footer": {
+    "tagline": "2004 થી પ્રીમિયમ ગ્લાસ બંગડી",
+    "quickLinks": "ઝડપી લિંક્સ",
+    "customerCare": "ગ્રાહક સેવા",
+    "contact": "સંપર્ક",
+    "aboutUs": "અમારા વિશે",
+    "ourStory": "અમારી વાર્તા",
+    "wholesale": "હોલસેલ",
+    "bulkOrders": "થોક ઓર્ડર",
+    "shippingPolicy": "શિપિંગ નીતિ",
+    "trackOrder": "ઓર્ડર ટ્રેક કરો",
+    "faq": "FAQ",
+    "rights": "બધા હકો અનામત."
+  },
+  "shop": {
+    "title": "અમારા સંગ્રહ ખરીદો",
+    "subtitle": "દરેક સ્ટાઇલ માટે અમારી પ્રીમિયમ બંગડી શોધો",
+    "searchPlaceholder": "બંગડી શોધો...",
+    "search": "શોધો",
+    "filters": {
+      "title": "ફિલ્ટર",
+      "clear": "સાફ કરો",
+      "clearAll": "ફિલ્ટર સાફ કરો",
+      "priceRange": "કિંમત શ્રેણી",
+      "categories": "શ્રેણીઓ",
+      "sizes": "સાઇઝ",
+      "colors": "રંગો",
+      "close": "ફિલ્ટર બંધ કરો"
+    },
+    "results": "{{count}} ઉત્પાદનો મળ્યા",
+    "sort": {
+      "label": "સોર્ટ કરો",
+      "latest": "નવી આવકો",
+      "priceLow": "કિંમત: નીચેથી ઊંચે",
+      "priceHigh": "કિંમત: ઊંચેથી નીચે",
+      "popular": "સૌથી લોકપ્રિય"
+    },
+    "noResults": "તમારા ફિલ્ટર સાથે મેળ ખાતા ઉત્પાદનો મળ્યા નથી."
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "સામાન્ય પ્રશ્નોના ઝડપી જવાબો. વધુ મદદ માટે સંપર્ક દ્વારા પહોંચો.",
+    "cardTitle": "વારંવાર પૂછાતા પ્રશ્નો",
+    "items": [
+      {
+        "q": "હું ઓર્ડર કેવી રીતે આપી શકું?",
+        "a": "દુકાન બ્રાઉઝ કરો, તમારી સાઇઝ અને રંગો પસંદ કરો, પછી કાર્ટમાં ઉમેરો અને ચેકઆઉટ પૂરો કરો."
+      },
+      {
+        "q": "શું તમે આંતરરાષ્ટ્રીય શિપ કરો છો?",
+        "a": "હા. અમે વિશ્વસનીય કુરિયર સાથે ભાગીદાર છીએ અને શિપ થયા પછી ટ્રેકિંગ શેર કરીએ છીએ."
+      },
+      {
+        "q": "શું હું મારા ઓર્ડરમાં ફેરફાર અથવા રદ કરી શકું?",
+        "a": "જો તમારો ઓર્ડર હજી શિપ થયો નથી, તો અપડેટ માટે તમારા ઓર્ડર આઈડી સાથે સપોર્ટનો સંપર્ક કરો."
+      },
+      {
+        "q": "કયા ચુકવણી વિકલ્પો સમર્થિત છે?",
+        "a": "કાર્ડ, UPI (જ્યાં ઉપલબ્ધ), અને પસંદગીના વિસ્તારોમાં COD. થોક/હોલસેલ માટે અમારો સંપર્ક કરો."
+      }
+    ]
+  },
+  "contact": {
+    "title": "અમારો સંપર્ક કરો",
+    "subtitle": "અમારી બંગડી વિશે પ્રશ્નો છે? અમને જાણીને આનંદ થશે. અમને સંદેશ મોકલો અને અમે શક્ય તેટલી વહેલી તકમાં જવાબ આપીશું.",
+    "form": {
+      "title": "અમને સંદેશ મોકલો",
+      "nameLabel": "નામ *",
+      "namePlaceholder": "તમારું નામ",
+      "emailLabel": "ઇમેઇલ *",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "સંદેશ *",
+      "messagePlaceholder": "અમે કેવી રીતે મદદ કરી શકીએ?",
+      "submit": "સંદેશ મોકલો"
+    },
+    "toastTitle": "સંદેશ મોકલાયો!",
+    "toastDescription": "સંપર્ક કરવા બદલ આભાર. અમે ટૂંક સમયમાં તમને જવાબ આપીશું.",
+    "visit": {
+      "copy": "Karnataka Bangle Store\n#29/1 Near Panduranga Swami Temple Santhushapet\nBangalore, Karnataka 560053"
+    },
+    "call": {
+      "copy": "+91 63617 15136"
+    },
+    "email": {
+      "copy": "info.karnatakabanglesstores@gmail.com"
+    },
+    "mapUrl": "https://www.google.com/maps?q=Karnataka+Bangle+Store+Chickpet+Bengaluru&output=embed",
+    "mapTitle": "દુકાનનું સ્થાન",
+    "errors": {
+      "name": "નામ ઓછામાં ઓછા 2 અક્ષરનું હોવું જોઈએ",
+      "email": "કૃપા કરીને માન્ય ઇમેઇલ સરનામું નાખો",
+      "message": "સંદેશ ઓછામાં ઓછા 10 અક્ષરનો હોવો જોઈએ"
+    }
+  },
+  "orders": {
+    "title": "તમારા ઓર્ડર",
+    "subtitle": "તાજેતરના ખરીદ ટ્રેક કરો અને મનપસંદને ફરી ઓર્ડર કરો.",
+    "refresh": "રિફ્રેશ",
+    "historyTitle": "ઓર્ડર ઇતિહાસ",
+    "loading": "ઓર્ડર લોડ થઈ રહ્યા છે...",
+    "empty": "હજુ સુધી કોઈ ઓર્ડર નથી. અહીં જોવા માટે ખરીદી શરૂ કરો.",
+    "delivery": "ડિલિવરી",
+    "currency": "રૂ",
+    "cancelling": "રદ કરી રહ્યા છીએ...",
+    "cancelOrder": "ઓર્ડર રદ કરો",
+    "repeatOrder": "ઓર્ડર ફરીથી કરો",
+    "hideDetails": "વિગતો છુપાવો",
+    "viewDetails": "વિગતો જુઓ",
+    "noItems": "આ ઓર્ડર માટે કોઈ વસ્તુ મળી નથી.",
+    "cancelItem": "વસ્તુ રદ કરો",
+    "status": {
+      "pending": "બાકી",
+      "ready": "શિપિંગ માટે તૈયાર"
+    },
+    "cancelReasonPrompt": "રદ કરવાનો કારણ (વૈકલ્પિક):",
+    "cancelReasonDefault": "મને મન ફેરવ્યું"
+  },
+  "wishlist": {
+    "title": "વિશલિસ્ટ",
+    "subtitle": "વસ્તુઓ સાચવો જેથી પછી જોઈ શકો.",
+    "loading": "વિશલિસ્ટ લોડ થઈ રહ્યું છે...",
+    "empty": "હજુ સુધી કોઈ વસ્તુ સેવ નથી.",
+    "browse": "દુકાન બ્રાઉઝ કરો",
+    "view": "જુઓ",
+    "remove": "દૂર કરો"
+  },
+  "profile": {
+    "title": "મારું પ્રોફાઇલ",
+    "incomplete": {
+      "title": "તમારું પ્રોફાઇલ પૂર્ણ કરો",
+      "desc": "ચેકઆઉટ માટે આગળ વધવા માટે કૃપા કરીને બધા જરૂરી ફીલ્ડ (નામ, ફોન, સરનામું) ભરો."
+    },
+    "tabs": {
+      "profile": "પ્રોફાઇલ",
+      "addresses": "ડિલિવરી"
+    },
+    "customerInfo": "ગ્રાહક માહિતી",
+    "photo": "પ્રોફાઇલ ફોટો",
+    "email": "ઇમેઇલ",
+    "name": "ગ્રાહક નામ",
+    "namePlaceholder": "તમારું પૂર્ણ નામ દાખલ કરો",
+    "shopName": "દુકાનનું નામ",
+    "shopPlaceholder": "તમારું દુકાનનું નામ દાખલ કરો",
+    "gst": "GST નં.",
+    "gstPlaceholder": "ઉદાહરણ: 29ABCDE1234F1Z5",
+    "phone": "ફોન નંબર",
+    "phonePlaceholder": "તમારો ફોન નંબર દાખલ કરો",
+    "transport": "ટ્રાન્સપોર્ટનું નામ",
+    "save": "ફેરફારો સાચવો",
+    "addressesTitle": "ડિલિવરી સરનામા",
+    "addAddress": "સરનામું ઉમેરો",
+    "addressSave": "સરનામું સાચવો",
+    "cancel": "રદ કરો",
+    "noAddresses": "હજુ સુધી કોઈ સરનામું સેવ નથી.",
+    "setDefault": "ડિફોલ્ટ સેટ કરો",
+    "deliveryAddress": "ડિલિવરી સરનામું",
+    "bangle": "બંગડી",
+    "size": "સાઇઝ",
+    "qty": "જથ્થો",
+    "toast": {
+      "loadErrorTitle": "પ્રોફાઇલ લોડ કરવા ભૂલ",
+      "loadErrorDesc": "તમારા પ્રોફાઇલ ડેટા લોડ કરી શક્યા નથી.",
+      "validationTitle": "ચકાસણી ભૂલ",
+      "validationDesc": "સાચવતા પહેલાં કૃપા કરીને ભૂલો સુધારો.",
+      "updateErrorTitle": "પ્રોફાઇલ અપડેટમાં ભૂલ",
+      "updateSuccessTitle": "પ્રોફાઇલ અપડેટ થયું",
+      "updateSuccessDesc": "તમારું પ્રોફાઇલ સફળતાપૂર્વક સાચવાયું છે.",
+      "tryAgain": "કૃપા કરીને ફરી પ્રયાસ કરો.",
+      "unexpected": "અનપેક્ષિત ભૂલ થઈ.",
+      "addressMissingTitle": "ફીલ્ડ ખૂટે છે",
+      "addressMissingDesc": "કૃપા કરીને બધા જરૂરી સરનામા ફીલ્ડ ભરો.",
+      "pincodeInvalidTitle": "અમાન્ય પિનકોડ",
+      "pincodeInvalidDesc": "પિનકોડ 6 અંકનો હોવો જરૂરી છે.",
+      "addAddressErrorTitle": "સરનામું ઉમેરવામાં ભૂલ",
+      "addAddressSuccessTitle": "સરનામું ઉમેરાયું",
+      "addAddressSuccessDesc": "તમારું ડિલિવરી સરનામું ઉમેરાયું છે.",
+      "addressDeleted": "સરનામું કાઢ્યું",
+      "defaultUpdated": "ડિફોલ્ટ સરનામું અપડેટ થયું",
+      "orderLoadError": "ઓર્ડર વસ્તુઓ લોડ કરી શક્યાં નથી",
+      "repeatSuccessTitle": "વસ્તુઓ કાર્ટમાં ઉમેરાઈ!",
+      "repeatSuccessDesc": "{{count}} વસ્તુ(ઓ) ઉમેરાઈ. ઓર્ડર પૂરો કરવા કાર્ટ પર જાઓ.",
+      "repeatEmptyTitle": "કોઈ વસ્તુ ઉપલબ્ધ નથી",
+      "repeatEmptyDesc": "કેટલાક ઉત્પાદનો હવે ઉપલબ્ધ ન હોઈ શકે."
+    },
+    "errors": {
+      "name": "ગ્રાહક નામ જરૂરી છે",
+      "phone": "ફોન નંબર જરૂરી છે",
+      "phoneInvalid": "કૃપા કરીને માન્ય 10 અંકનો ફોન નંબર દાખલ કરો",
+      "address": "સરનામું જરૂરી છે",
+      "gst": "અમાન્ય GST નંબર ફોર્મેટ",
+      "pincode": "પિનકોડ 6 અંકનો હોવો જોઈએ"
+    }
+  },
+  "cart": {
+    "title": "શોપિંગ કાર્ટ",
+    "toast": {
+      "loginTitle": "કૃપા કરીને લોગિન કરો",
+      "loginDesc": "ઓર્ડર મૂકવા માટે તમને લોગિન કરવું જરૂરી છે.",
+      "empty": "કાર્ટ ખાલી છે",
+      "completeProfileTitle": "તમારું પ્રોફાઇલ પૂર્ણ કરો",
+      "completeProfileDesc": "ઓર્ડર કરતાં પહેલાં કૃપા કરીને તમારું નામ, ફોન નંબર અને સરનામું ભરો.",
+      "selectAddressTitle": "ડિલિવરી સરનામું પસંદ કરો",
+      "selectAddressDesc": "કૃપા કરીને ડિલિવરી સરનામું પસંદ કરો અથવા ઉમેરો.",
+      "orderCreatedTitle": "ઓર્ડર બનાવ્યો",
+      "orderCreatedDesc": "ઓર્ડર #{{id}} બનાવ્યો. કૃપા કરીને ચુકવણી પૂરી કરો.",
+      "orderErrorTitle": "ઓર્ડર મૂકવામાં ભૂલ",
+      "tryAgain": "કૃપા કરીને ફરી પ્રયાસ કરો."
+    },
+    "profilePrompt": {
+      "title": "તમારું પ્રોફાઇલ પૂર્ણ કરો",
+      "desc": "ઓર્ડર કરતાં પહેલાં કૃપા કરીને તમારું પ્રોફાઇલ (નામ, ફોન, સરનામું) પૂર્ણ કરો.",
+      "cta": "પ્રોફાઇલ પૂર્ણ કરો"
+    },
+    "empty": {
+      "title": "તમારો કાર્ટ ખાલી છે",
+      "desc": "તમારા કાર્ટમાં કેટલીક સુંદર બંગડી ઉમેરો!",
+      "cta": "ઉત્પાદનો જુઓ"
+    },
+    "delivery": {
+      "pickupTitle": "સ્ટોર પિકઅપ (ફક્ત બેંગલોર)",
+      "pickupCharge": "ટેક અવે - રૂ 25",
+      "pickupDesc": "તમારો ઓર્ડર મૂકો, અને અમે તમારી બંગડી સુરક્ષિત રીતે પેક કરીશું. તમે અમારી દુકાનથી લઇ શકો છો અથવા તમારા પોતાના ડિલિવરી પાર્ટનર (જેમ કે Dunzo) મોકલી શકો છો.",
+      "pickupPill": {
+        "secure": "સુરક્ષિત પેકિંગ",
+        "quick": "ઝડપી પિકઅપ",
+        "nearby": "જો તમે નજીક હોવ તો ઉત્તમ"
+      },
+      "deliveryTitle": "સ્ટોર ડિલિવરી (બેંગલોરની બહાર)",
+      "deliveryCharge": "પેકેજિંગ - રૂ 200*",
+      "deliveryDesc": "અમે તમારી પાસે બંગડી શિપ કરીશું. તમારો ઓર્ડર 2-3 દિવસમાં સુરક્ષિત રીતે પહોંચશે. *તમારા સ્થાનના આધારે ડિલિવરી ચાર્જ બદલાય છે.",
+      "deliveryPill": {
+        "doorstep": "ઘરઆંગણે ડિલિવરી",
+        "safe": "સુરક્ષિત પેકેજિંગ",
+        "outstation": "આઉટ-સ્ટેશન ગ્રાહકો"
+      }
+    },
+    "address": {
+      "loginPrompt": "ડિલિવરી સરનામું પસંદ કરવા લોગિન કરો",
+      "none": "કોઈ સરનામું સેવ નથી",
+      "select": "સરનામું પસંદ કરો",
+      "manage": "સરનામાં મેનેજ કરો"
+    },
+    "summary": {
+      "items": "વસ્તુઓ ({{count}})",
+      "pickup": "પિકઅપ ચાર્જ",
+      "packaging": "પેકેજિંગ ચાર્જ",
+      "total": "કુલ",
+      "loginCta": "ઓર્ડર મૂકવા લોગિન કરો",
+      "profileCta": "પહેલાં પ્રોફાઇલ પૂર્ણ કરો",
+      "placeOrder": "ઓર્ડર કરો",
+      "profileNote": "ચેકઆઉટ સક્રિય કરવા માટે તમારું પ્રોફાઇલ પૂર્ણ કરો"
+    }
+  },
+  "inbox": {
+    "title": "ઇનબોક્સ",
+    "subtitle": "ચુકવણી મંજૂરીઓ અને ડિલિવરી અપડેટ્સ.",
+    "refresh": "રિફ્રેશ",
+    "notifications": "સૂચનાઓ",
+    "loading": "ઇનબોક્સ લોડ થઈ રહ્યું છે...",
+    "empty": "હજુ સૂચનાઓ નથી.",
+    "viewOrder": "ઓર્ડર જુઓ",
+    "markRead": "વાંચ્યું તરીકે માર્ક કરો",
+    "marking": "માર્ક કરી રહ્યા છીએ...",
+    "toast": {
+      "loadNotifications": "સૂચનાઓ લોડ કરવામાં નિષ્ફળ",
+      "loadBroadcasts": "બ્રોડકાસ્ટ લોડ કરવામાં નિષ્ફળ",
+      "updateFailed": "અપડેટ નિષ્ફળ થયું"
+    }
+  },
+  "productDetail": {
+    "inStock": "સ્ટોકમાં",
+    "outOfStock": "સ્ટોકમાં નથી",
+    "notFoundTitle": "ઉત્પાદન મળ્યું નથી",
+    "notFoundDesc": "તમે શોધી રહ્યા છો તે ઉત્પાદન અસ્તિત્વમાં નથી અથવા દૂર કરી દેવામાં આવ્યું છે.",
+    "backHome": "હોમ પર પાછા જાઓ",
+    "backToProducts": "ઉત્પાદનો પર પાછા જાઓ",
+    "hoverToZoom": "ઝૂમ કરવા હવર કરો",
+    "noImage": "છબી ઉપલબ્ધ નથી",
+    "reviewsLabel": "({{count}} સમીક્ષાઓ)",
+    "addWishlist": "વિશલિસ્ટમાં ઉમેરો",
+    "removeWishlist": "વિશલિસ્ટમાંથી દૂર કરો",
+    "viewWishlist": "વિશલિસ્ટ જુઓ",
+    "priceLabel": "દર (બોક્સ/ડઝન) મુજબ",
+    "availableColors": "ઉપલબ્ધ રંગો",
+    "selectionTitle": "સાઇઝ અને રંગની માત્રા પસંદ કરો",
+    "sizeHeading": "સાઇઝ (')",
+    "colorHeading": "રંગો (\")",
+    "noSizesColors": "આ ઉત્પાદન માટે સાઇઝ અથવા રંગો ઉપલબ્ધ નથી.",
+    "selectAll": "બધું પસંદ કરો:",
+    "clearAll": "બધું સાફ કરો",
+    "orderSummary": "ઓર્ડર સારાંશ",
+    "emptySelections": "હજુ સુધી કોઈ વસ્તુ પસંદ નથી.",
+    "subtotal": "ઉપકુલ:",
+    "total": "કુલ:",
+    "addToCart": "કાર્ટમાં ઉમેરો",
+    "related": "સંબંધિત ઉત્પાદનો",
+    "colorsCount": "{{count}} રંગો",
+    "deliveryInfo": "{{pincode}} પર 5-7 કાર્ય દિવસમાં ડિલિવરી",
+    "shareTitle": "આ બંગડી જુઓ",
+    "toast": {
+      "loadErrorTitle": "ઉત્પાદન લોડ કરવાની ભૂલ",
+      "loadErrorDesc": "ઉત્પાદન વિગતો લોડ કરી શક્યા નથી. કૃપા કરીને ફરી પ્રયાસ કરો.",
+      "unexpectedTitle": "ભૂલ",
+      "unexpectedDesc": "અનપેક્ષિત ભૂલ થઈ.",
+      "invalidPincodeTitle": "અમાન્ય પિનકોડ",
+      "invalidPincodeDesc": "કૃપા કરીને માન્ય 6 અંકનો પિનકોડ દાખલ કરો.",
+      "deliveryAvailableTitle": "ડિલિવરી ઉપલબ્ધ",
+      "deliveryAvailableDesc": "અમે {{pincode}} પિનકોડ પર 5-7 કાર્ય દિવસમાં ડિલિવરી કરીએ છીએ.",
+      "loginTitle": "કૃપા કરીને લોગિન કરો",
+      "loginDesc": "કાર્ટમાં વસ્તુ ઉમેરવા માટે લોગિન જરૂરી છે.",
+      "noItemsTitle": "કોઈ વસ્તુ પસંદ નથી",
+      "noItemsDesc": "કૃપા કરીને ઓછામાં ઓછું એક બંગડી પસંદ કરો.",
+      "addedTitle": "કાર્ટમાં ઉમેરાયું",
+      "addedDesc": "{{count}} વસ્તુ(ઓ) કાર્ટમાં ઉમેરાઈ.",
+      "linkCopiedTitle": "લિંક કૉપિ કરી!",
+      "linkCopiedDesc": "ઉત્પાદનની લિંક કૉપિ થઈ.",
+      "addedWishlist": "વિશલિસ્ટમાં ઉમેરાયું",
+      "removedWishlist": "વિશલિસ્ટમાંથી દૂર થયું"
+    }
+  },
+  "authPage": {
+    "titleLogin": "પાછા આવો",
+    "titleSignup": "એકાઉન્ટ બનાવો",
+    "subtitleLogin": "તમારા હોલસેલ ખાતામાં સાઇન ઇન કરો",
+    "subtitleSignup": "તમારું હોલસેલ એકાઉન્ટ બનાવો",
+    "fullNameLabel": "પૂર્ણ નામ",
+    "fullNamePlaceholder": "તમારું સંપૂર્ણ નામ",
+    "emailLabel": "ઇમેઇલ સરનામું",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "પાસવર્ડ",
+    "passwordPlaceholder": "********",
+    "confirmLabel": "પાસવર્ડ ખાતરી કરો",
+    "confirmPlaceholder": "પાસવર્ડ ફરી દાખલ કરો",
+    "forgot": "ભૂલ્યા?",
+    "toggleToSignup": "નવા છો? એકાઉન્ટ બનાવો",
+    "toggleToLogin": "પહેલેથી એકાઉન્ટ છે? સાઇન ઇન કરો",
+    "submitLogin": "સાઇન ઇન",
+    "submitSignup": "એકાઉન્ટ બનાવો",
+    "signingIn": "સાઇન ઇન કરી રહ્યા છીએ...",
+    "signingUp": "એકાઉન્ટ બનાવી રહ્યા છીએ...",
+    "or": "અથવા",
+    "google": "Google દ્વારા સાઇન ઇન કરો",
+    "guest": "મેહમાન તરીકે ચાલુ રાખો",
+    "noAccount": "ખાતું નથી?",
+    "haveAccount": "પહેલેથી એકાઉન્ટ છે?",
+    "toast": {
+      "loginFailed": "લોગિન નિષ્ફળ",
+      "invalidCreds": "અમાન્ય ઇમેઇલ અથવા પાસવર્ડ. કૃપા કરીને ફરી પ્રયત્ન કરો.",
+      "welcome": "પાછા આવો!",
+      "success": "તમે સફળતાપૂર્વક લોગિન થયા છો.",
+      "signupFailed": "સાઇન અપ નિષ્ફળ",
+      "emailExists": "આ ઇમેઇલ પહેલેથી નોંધાયેલ છે. કૃપા કરીને લોગિન કરો.",
+      "googleFailed": "Google સાઇન-ઇન નિષ્ફળ",
+      "unexpected": "અનપેક્ષિત ભૂલ થઈ. કૃપા કરીને ફરી પ્રયત્ન કરો."
+    },
+    "errors": {
+      "email": "કૃપા કરીને માન્ય ઇમેઇલ સરનામું નાખો",
+      "password": "પાસવર્ડ ઓછામાં ઓછા 6 અક્ષરનો હોવો જોઈએ",
+      "fullName": "નામ ઓછામાં ઓછું 2 અક્ષરનું હોવું જોઈએ",
+      "confirmPassword": "પાસવર્ડ મેળ ખાતા નથી"
+    },
+    "verification": {
+      "title": "તમારું ઇમેઇલ સરનામું ચકાસો",
+      "desc": "કૃપા કરીને તમારું ઇનબોક્સ તપાસો અને ચકાસણી લિંક પર ક્લિક કરો",
+      "note": "નોંધણી પૂર્ણ કરવા અને એકાઉન્ટ ઍક્સેસ કરવા માટે ઇમેઇલ ચકાસવું જરૂરી છે.",
+      "close": "ઓકે",
+      "resend": "ઇમેઇલ ફરી મોકલો",
+      "resendFailed": "ફરી મોકલવામાં નિષ્ફળ",
+      "resendSuccess": "ઇમેઇલ મોકલી",
+      "resendDesc": "ચકાસણી ઇમેઇલ ફરીથી તમારા ઇનબોક્સમાં મોકલી છે."
+    }
+  }
+}

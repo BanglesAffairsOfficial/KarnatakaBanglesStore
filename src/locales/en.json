@@ -1,0 +1,517 @@
+{
+  "header": {
+    "since": "Since 2004",
+    "tagline": "Premium Glass Bangles",
+    "nav": {
+      "home": "Home",
+      "shop": "Shop",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "orders": "Orders",
+      "wishlist": "Wishlist",
+      "profile": "My Profile",
+      "admin": "Admin",
+      "categories": "Categories",
+      "featured": "Featured",
+      "reviews": "Reviews",
+      "inbox": "Inbox"
+    },
+    "translate": "Translate",
+    "searchLanguage": "Search language",
+    "selectLanguage": "Select language",
+    "shopNow": "Shop Now"
+  },
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "profile": "My Profile",
+    "admin": "Admin",
+    "inbox": "Inbox"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "loginSignup": "Login / Sign Up"
+  },
+  "loginPage": {
+    "branding": "Premium Glass Bangles - Wholesale & Retail",
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your wholesale account",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "wholesale@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "????????",
+    "forgot": "Forgot?",
+    "remember": "Remember me",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "or": "OR",
+    "google": "Sign in with Google",
+    "phone": "Sign in with Phone",
+    "guest": "Continue as Guest",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create Account",
+    "b2bTitle": "Wholesale Account?",
+    "b2bHint": "Contact our B2B team at",
+    "toast": {
+      "loginFailed": "Login failed",
+      "invalidCreds": "Invalid email or password. Please try again.",
+      "welcome": "Welcome back!",
+      "success": "You have successfully logged in.",
+      "googleFailed": "Google Sign-in failed",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
+    "errors": {
+      "email": "Please enter a valid email address",
+      "password": "Password must be at least 6 characters"
+    },
+    "aria": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    }
+  },
+  "hero": {
+    "fallbackTitle": "Premium Glass Bangles",
+    "fallbackSubtitle": "Discover our exclusive collection",
+    "explore": "Explore Collection",
+    "contact": "Contact Us",
+    "whatsapp": "WhatsApp"
+  },
+  "categories": {
+    "badge": "Shop by Type",
+    "title": "Explore Categories",
+    "subtitle": "Find the perfect style for you",
+    "empty": "Categories will appear here once added in admin.",
+    "view": "View collection",
+    "fallback": "Category"
+  },
+  "stats": {
+    "colors": "Colors",
+    "products": "Products",
+    "customers": "Customers",
+    "years": "Years"
+  },
+  "featured": {
+    "badge": "Trending Now",
+    "title": "Featured Collection",
+    "searchPlaceholder": "Search bangles..."
+  },
+  "offers": {
+    "checkTitle": "Check Now!",
+    "checkSubtitle": "Find colors and sizes that you want",
+    "shopNow": "Shop Now",
+    "newArrivalsTitle": "New Arrivals",
+    "newArrivalsSubtitle": "See the latest designs",
+    "explore": "Explore"
+  },
+  "bestsellers": {
+    "badge": "Bestsellers",
+    "title": "Most Selling Bangles & Categories",
+    "subtitle": "See what shoppers are buying the most right now.",
+    "topBangles": "Top Bangles",
+    "emptyBangles": "Top sellers will appear once you have orders.",
+    "unitsSold": "Units sold:",
+    "topCategories": "Top Categories",
+    "emptyCategories": "Categories will surface once orders come in."
+  },
+  "whyChooseUs": {
+    "title": "Why Choose Us"
+  },
+  "features": {
+    "premium": "Premium Quality",
+    "premiumDesc": "100% authentic bangles",
+    "shipping": "Global Shipping",
+    "shippingDesc": "Delivered worldwide with reliable international shipping partners",
+    "easy": "Easy to order",
+    "easyDesc": "Sign up and place your order in minutes",
+    "since": "Since 2004",
+    "sinceDesc": "Trusted by thousands"
+  },
+  "productCard": {
+    "new": "New",
+    "noImage": "No image",
+    "bangle": "Bangle"
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "subtitle": "Get exclusive offers and new arrivals",
+    "placeholder": "Enter email",
+    "subscribe": "Subscribe"
+  },
+  "footer": {
+    "tagline": "Premium glass bangles since 2004",
+    "quickLinks": "Quick Links",
+    "customerCare": "Customer Care",
+    "contact": "Contact",
+    "aboutUs": "About Us",
+    "ourStory": "Our Story",
+    "wholesale": "Wholesale",
+    "bulkOrders": "Bulk Orders",
+    "shippingPolicy": "Shipping Policy",
+    "trackOrder": "Track Order",
+    "faq": "FAQ",
+    "rights": "All rights reserved."
+  },
+  "shop": {
+    "title": "Shop Our Collection",
+    "subtitle": "Discover our premium bangles for every style",
+    "searchPlaceholder": "Search for bangles...",
+    "search": "Search",
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "clearAll": "Clear Filters",
+      "priceRange": "Price Range",
+      "categories": "Categories",
+      "sizes": "Sizes",
+      "colors": "Colors",
+      "close": "Close Filters"
+    },
+    "results": "{{count}} products found",
+    "sort": {
+      "label": "Sort by",
+      "latest": "Latest Arrivals",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "popular": "Most Popular"
+    },
+    "noResults": "No products found matching your filters."
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "Quick answers to common questions. If you need more help, reach out via Contact.",
+    "cardTitle": "Frequently Asked Questions",
+    "items": [
+      {
+        "q": "How do I place an order?",
+        "a": "Browse the shop, choose your size and colors, then add to cart and complete checkout."
+      },
+      {
+        "q": "Do you ship internationally?",
+        "a": "Yes. We partner with reliable couriers and share tracking once dispatched."
+      },
+      {
+        "q": "Can I change or cancel my order?",
+        "a": "If your order hasn’t shipped yet, contact support with your order ID to update it."
+      },
+      {
+        "q": "What payment methods are supported?",
+        "a": "Cards, UPI (where available), and COD in select regions. Contact us for bulk/wholesale."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have questions about our bangles? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
+    "form": {
+      "title": "Send us a Message",
+      "nameLabel": "Name *",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email *",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "Message *",
+      "messagePlaceholder": "How can we help you?",
+      "submit": "Send Message"
+    },
+    "toastTitle": "Message sent!",
+    "toastDescription": "Thank you for contacting us. We'll get back to you soon.",
+    "visit": {
+      "copy": "Karnataka Bangle Store\n#29/1 Near Panduranga Swami Temple Santhushapet\nBangalore, Karnataka 560053"
+    },
+    "call": {
+      "copy": "+91 63617 15136"
+    },
+    "email": {
+      "copy": "info.karnatakabanglesstores@gmail.com"
+    },
+    "mapUrl": "https://www.google.com/maps?q=Karnataka+Bangle+Store+Chickpet+Bengaluru&output=embed",
+    "mapTitle": "Store Location",
+    "errors": {
+      "name": "Name must be at least 2 characters",
+      "email": "Please enter a valid email address",
+      "message": "Message must be at least 10 characters"
+    }
+  },
+  "orders": {
+    "title": "Your Orders",
+    "subtitle": "Track your recent purchases and reorder favorites.",
+    "refresh": "Refresh",
+    "historyTitle": "Order History",
+    "loading": "Loading orders...",
+    "empty": "No orders yet. Start shopping to see them here.",
+    "delivery": "Delivery",
+    "currency": "Rs",
+    "cancelling": "Cancelling...",
+    "cancelOrder": "Cancel order",
+    "repeatOrder": "Repeat order",
+    "hideDetails": "Hide details",
+    "viewDetails": "View details",
+    "noItems": "No items found for this order.",
+    "cancelItem": "Cancel item",
+    "status": {
+      "pending": "pending",
+      "ready": "Ready for Shipping"
+    },
+    "cancelReasonPrompt": "Reason for cancellation (optional):",
+    "cancelReasonDefault": "Changed my mind"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "subtitle": "Save items to revisit later.",
+    "loading": "Loading wishlist...",
+    "empty": "No items saved yet.",
+    "browse": "Browse shop",
+    "view": "View",
+    "remove": "Remove"
+  },
+  "profile": {
+    "title": "My Profile",
+    "incomplete": {
+      "title": "Complete Your Profile",
+      "desc": "Please fill in all required fields (Name, Phone, Address) to proceed with checkout."
+    },
+    "tabs": {
+      "profile": "Profile",
+      "addresses": "Delivery"
+    },
+    "customerInfo": "Customer Information",
+    "photo": "Profile Photo",
+    "email": "Email",
+    "name": "Customer Name",
+    "namePlaceholder": "Enter your full name",
+    "shopName": "Shop Name",
+    "shopPlaceholder": "Enter your shop name",
+    "gst": "GST No.",
+    "gstPlaceholder": "e.g., 29ABCDE1234F1Z5",
+    "phone": "Phone Number",
+    "phonePlaceholder": "Enter your phone number",
+    "transport": "Transport Name",
+    "save": "Save Changes",
+    "addressesTitle": "Delivery Addresses",
+    "addAddress": "Add Address",
+    "addressSave": "Save Address",
+    "cancel": "Cancel",
+    "noAddresses": "No addresses saved yet.",
+    "setDefault": "Set Default",
+    "deliveryAddress": "Delivery Address",
+    "bangle": "Bangle",
+    "size": "Size",
+    "qty": "Qty",
+    "toast": {
+      "loadErrorTitle": "Error loading profile",
+      "loadErrorDesc": "Could not load your profile data.",
+      "validationTitle": "Validation Error",
+      "validationDesc": "Please fix the errors before saving.",
+      "updateErrorTitle": "Error updating profile",
+      "updateSuccessTitle": "Profile updated",
+      "updateSuccessDesc": "Your profile has been saved successfully.",
+      "tryAgain": "Please try again.",
+      "unexpected": "An unexpected error occurred.",
+      "addressMissingTitle": "Missing fields",
+      "addressMissingDesc": "Please fill in all required address fields.",
+      "pincodeInvalidTitle": "Invalid pincode",
+      "pincodeInvalidDesc": "Pincode must be 6 digits.",
+      "addAddressErrorTitle": "Error adding address",
+      "addAddressSuccessTitle": "Address added",
+      "addAddressSuccessDesc": "Your delivery address has been added.",
+      "addressDeleted": "Address deleted",
+      "defaultUpdated": "Default address updated",
+      "orderLoadError": "Could not load order items",
+      "repeatSuccessTitle": "Items added to cart!",
+      "repeatSuccessDesc": "{{count}} item(s) added. Go to cart to complete your order.",
+      "repeatEmptyTitle": "No items available",
+      "repeatEmptyDesc": "Some products may no longer be available."
+    },
+    "errors": {
+      "name": "Customer name is required",
+      "phone": "Phone number is required",
+      "phoneInvalid": "Please enter a valid 10-digit phone number",
+      "address": "Address is required",
+      "gst": "Invalid GST number format",
+      "pincode": "Pincode must be 6 digits"
+    }
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "toast": {
+      "loginTitle": "Please login",
+      "loginDesc": "You need to be logged in to place an order.",
+      "empty": "Cart is empty",
+      "completeProfileTitle": "Complete your profile",
+      "completeProfileDesc": "Please fill in your Name, Phone Number, and Address before placing an order.",
+      "selectAddressTitle": "Select delivery address",
+      "selectAddressDesc": "Please select or add a delivery address.",
+      "orderCreatedTitle": "Order created",
+      "orderCreatedDesc": "Order #{{id}} created. Please complete payment.",
+      "orderErrorTitle": "Error placing order",
+      "tryAgain": "Please try again."
+    },
+    "profilePrompt": {
+      "title": "Complete Your Profile",
+      "desc": "Please complete your profile (Name, Phone, Address) before placing an order.",
+      "cta": "Complete Profile"
+    },
+    "empty": {
+      "title": "Your cart is empty",
+      "desc": "Add some beautiful bangles to your cart!",
+      "cta": "Browse Products"
+    },
+    "delivery": {
+      "pickupTitle": "Store Pickup (Bangalore Only)",
+      "pickupCharge": "Take Away - Rs 25",
+      "pickupDesc": "Place your order, and we'll pack your bangles securely. You can collect them from our store or send your own delivery partner (like Dunzo) for pickup.",
+      "pickupPill": {
+        "secure": "Secure packing",
+        "quick": "Quick pickup",
+        "nearby": "Ideal if you're nearby"
+      },
+      "deliveryTitle": "Store Delivery (Outside Bangalore)",
+      "deliveryCharge": "Packaging - Rs 200*",
+      "deliveryDesc": "We'll ship your bangles to you. Your order will reach you safely within 2-3 days. *Delivery charges vary based on your location.",
+      "deliveryPill": {
+        "doorstep": "Doorstep delivery",
+        "safe": "Safe packaging",
+        "outstation": "Out-station customers"
+      }
+    },
+    "address": {
+      "loginPrompt": "Login to select delivery address",
+      "none": "No addresses saved",
+      "select": "Select address",
+      "manage": "Manage Addresses"
+    },
+    "summary": {
+      "items": "Items ({{count}})",
+      "pickup": "Pickup Charge",
+      "packaging": "Packaging Charge",
+      "total": "Total",
+      "loginCta": "Login to Place Order",
+      "profileCta": "Complete Profile First",
+      "placeOrder": "Place Order",
+      "profileNote": "Complete your profile to enable checkout"
+    }
+  },
+  "inbox": {
+    "title": "Inbox",
+    "subtitle": "Payment approvals and delivery updates.",
+    "refresh": "Refresh",
+    "notifications": "Notifications",
+    "loading": "Loading inbox...",
+    "empty": "No notifications yet.",
+    "viewOrder": "View order",
+    "markRead": "Mark read",
+    "marking": "Marking...",
+    "toast": {
+      "loadNotifications": "Failed to load notifications",
+      "loadBroadcasts": "Failed to load broadcasts",
+      "updateFailed": "Failed to update"
+    }
+  },
+  "productDetail": {
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "notFoundTitle": "Product not found",
+    "notFoundDesc": "The product you're looking for doesn't exist or has been removed.",
+    "backHome": "Go back to home",
+    "backToProducts": "Back to Products",
+    "hoverToZoom": "Hover to zoom",
+    "noImage": "No image available",
+    "reviewsLabel": "({{count}} reviews)",
+    "addWishlist": "Add to Wishlist",
+    "removeWishlist": "Remove from Wishlist",
+    "viewWishlist": "View Wishlist",
+    "priceLabel": "Price per (Box/Dozen)",
+    "availableColors": "Available Colors",
+    "selectionTitle": "Select Size & Color Quantities",
+    "sizeHeading": "Size →",
+    "colorHeading": "Colors ↓",
+    "noSizesColors": "No sizes or colors available for this product.",
+    "selectAll": "Select All:",
+    "clearAll": "Clear All",
+    "orderSummary": "Order Summary",
+    "emptySelections": "No items selected yet.",
+    "subtotal": "Subtotal:",
+    "total": "Total:",
+    "addToCart": "Add to Cart",
+    "related": "Related Products",
+    "colorsCount": "{{count}} colors",
+    "deliveryInfo": "Delivery in 5-7 business days to {{pincode}}",
+    "shareTitle": "Check out this bangle",
+    "toast": {
+      "loadErrorTitle": "Error loading product",
+      "loadErrorDesc": "Could not load product details. Please try again.",
+      "unexpectedTitle": "Error",
+      "unexpectedDesc": "An unexpected error occurred.",
+      "invalidPincodeTitle": "Invalid pincode",
+      "invalidPincodeDesc": "Please enter a valid 6-digit pincode.",
+      "deliveryAvailableTitle": "Delivery available",
+      "deliveryAvailableDesc": "We deliver to pincode {{pincode}} in 5-7 business days.",
+      "loginTitle": "Please login",
+      "loginDesc": "You need to login to add items to cart.",
+      "noItemsTitle": "No items selected",
+      "noItemsDesc": "Please select at least one bangle to add to cart.",
+      "addedTitle": "Added to cart",
+      "addedDesc": "{{count}} item(s) added to your cart.",
+      "linkCopiedTitle": "Link copied!",
+      "linkCopiedDesc": "Product link copied to clipboard.",
+      "addedWishlist": "Added to wishlist",
+      "removedWishlist": "Removed from wishlist"
+    }
+  },
+  "authPage": {
+    "titleLogin": "Welcome Back",
+    "titleSignup": "Create Account",
+    "subtitleLogin": "Sign in to your wholesale account",
+    "subtitleSignup": "Set up your wholesale account",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "????????",
+    "confirmLabel": "Confirm Password",
+    "confirmPlaceholder": "Re-enter password",
+    "forgot": "Forgot?",
+    "toggleToSignup": "New here? Create an account",
+    "toggleToLogin": "Already have an account? Sign in",
+    "submitLogin": "Sign In",
+    "submitSignup": "Create Account",
+    "signingIn": "Signing in...",
+    "signingUp": "Creating account...",
+    "or": "OR",
+    "google": "Sign in with Google",
+    "guest": "Continue as Guest",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "toast": {
+      "loginFailed": "Login failed",
+      "invalidCreds": "Invalid email or password. Please try again.",
+      "welcome": "Welcome back!",
+      "success": "You have successfully logged in.",
+      "signupFailed": "Sign up failed",
+      "emailExists": "This email is already registered. Please login instead.",
+      "googleFailed": "Google sign-in failed",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
+    "errors": {
+      "email": "Please enter a valid email address",
+      "password": "Password must be at least 6 characters",
+      "fullName": "Name must be at least 2 characters",
+      "confirmPassword": "Passwords do not match"
+    },
+    "verification": {
+      "title": "Verify Your Email Address",
+      "desc": "Please check your inbox and click the verification link we just sent to",
+      "note": "You must verify your email to complete registration and access your account.",
+      "close": "OK",
+      "resend": "Resend Email",
+      "resendFailed": "Failed to resend",
+      "resendSuccess": "Email sent",
+      "resendDesc": "Verification email has been resent to your inbox."
+    }
+  }
+}

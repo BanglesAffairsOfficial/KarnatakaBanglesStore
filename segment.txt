@@ -1,0 +1,11 @@
+                              <Store className="w-5 h-5 text-accent" />
+                              <span className="font-semibold text-base"> Store Pickup (Bangalore Only)</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Take Away – ₹25
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              Place your order, and we’ll pack your bangles securely. You can collect them from our store or send your own delivery partner (like Dunzo) for pickup. Convenient and budget-friendly for Bangalore customers.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded">✔ Secure packing</span>

@@ -1,0 +1,985 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useFormCache } from "@/hooks/useFormCache";
+import { useUnsavedChangesWarning, useDetectChanges } from "@/hooks/useUnsavedChanges";
+import { Loader2, Plus, Pencil, Trash2, Package, Settings, Image as ImageIcon, Share2, Phone } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ColorPickerInput } from "@/components/ColorPickerInput";
+import { ImageUpload } from "@/components/ImageUpload";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
+
+interface ColorItem {
+  name: string;
+  hex: string;
+  swatchImage?: string;
+}
+
+interface Bangle {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  image_url: string | null;
+  secondary_image_url?: string | null;
+  available_sizes: string[];
+  available_colors: string[];
+  is_active: boolean;
+}
+
+const DEFAULT_SIZES = ["2.2", "2.4", "2.6", "2.8", "2.10"];
+const DEFAULT_COLORS: ColorItem[] = [
+  { name: "Red", hex: "#dc2626" },
+  { name: "Orange", hex: "#ea580c" },
+  { name: "Yellow", hex: "#eab308" },
+  { name: "Green", hex: "#16a34a" },
+  { name: "Lime", hex: "#65a30d" },
+  { name: "Blue", hex: "#2563eb" },
+  { name: "Pink", hex: "#db2777" },
+  { name: "Radium", hex: "#00c76a" },
+  { name: "Wine", hex: "#722f37" },
+  { name: "Jamuni", hex: "#5b2b6f" },
+  { name: "Lavender", hex: "#c8b7e8" },
+  { name: "Peacock", hex: "#0f4c5c" },
+  { name: "Pista", hex: "#b5d99c" },
+  { name: "Surf", hex: "#30aadd" },
+  { name: "Sentro", hex: "#3ba99c" },
+  { name: "Parrot", hex: "#80c904" },
+  { name: "Strawberry", hex: "#e83f6f" },
+  { name: "Mehendi", hex: "#7a9a01" },
+  { name: "Gold", hex: "#f59e0b" },
+  { name: "Carrot", hex: "#ed6a1f" },
+  { name: "Onion", hex: "#b56576" },
+  { name: "White", hex: "#f9fafb" },
+  { name: "Grey", hex: "#9ca3af" },
+  { name: "Rose Gold", hex: "#ff9500" },
+  { name: "Rani", hex: "#c71585" },
+  { name: "Navy Blue", hex: "#1d3557" },
+  { name: "Kishmashi", hex: "#c9b164" },
+  { name: "Dhaani", hex: "#b5ce5a" },
+  { name: "C Green", hex: "#2e8b57" },
+  { name: "Olive", hex: "#00ffbf" },
+  { name: "Black", hex: "#1f2937" },
+  { name: "Peach", hex: "#ffb07c" },
+  { name: "Ferozi", hex: "#0fc7c7" },
+  { name: "Purple", hex: "#9333ea" },
+  { name: "Dark multi color", hex: "#4b5563", swatchImage: "/DarkMulti.jpg" },
+  { name: "Light multi color", hex: "#e5e7eb", swatchImage: "/LightMulti.jpg" },
+];
+
+export default function Admin() {
+  const { user, isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [bangles, setBangles] = useState<Bangle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingBangle, setEditingBangle] = useState<Bangle | null>(null);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [pendingDialogClose, setPendingDialogClose] = useState(false);
+
+  const [socialLinks, setSocialLinks] = useState({
+    instagram: "",
+    facebook: "",
+    twitter: "",
+    email: "",
+  });
+
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [savingSocial, setSavingSocial] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    image_url: "",
+    secondary_image_url: "",
+    available_sizes: DEFAULT_SIZES,
+    available_colors: DEFAULT_COLORS,
+    is_active: true,
+  });
+  
+  const [categories, setCategories] = useState<Array<any>>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [initialForm, setInitialForm] = useState(form);
+  const [initialSocialLinks, setInitialSocialLinks] = useState(socialLinks);
+
+  // Category dialog state
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [categoryForm, setCategoryForm] = useState({
+    name: "",
+    image_url: "",
+    display_order: 0,
+    is_active: true
+  });
+
+  // Form caching
+  const { clearCache: clearFormCache } = useFormCache('admin_product_form', form, setForm, !editingBangle);
+  const { clearCache: clearSocialCache } = useFormCache('admin_social_links', socialLinks, setSocialLinks, true);
+
+  // Detect unsaved changes
+  const formHasChanges = useDetectChanges(initialForm, form);
+  const socialHasChanges = useDetectChanges(initialSocialLinks, socialLinks) || whatsappNumber !== (initialSocialLinks as any).whatsapp_number;
+  const hasUnsavedChanges = formHasChanges || socialHasChanges || selectedCategoryId !== null;
+
+  // Warn before leaving with unsaved changes
+  useUnsavedChangesWarning(hasUnsavedChanges && dialogOpen);
+
+  const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user) {
+        navigate("/auth");
+      } else if (!isAdmin) {
+        toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
+        navigate("/");
+      } else {
+        fetchBangles();
+        fetchCategories();
+        
+        if (!hasLoadedSettings) {
+          fetchSettings();
+          setHasLoadedSettings(true);
+        }
+      }
+    }
+  }, [user, isAdmin, authLoading, navigate, hasLoadedSettings]);
+
+  const fetchCategories = async () => {
+    const { data } = await (supabase as any).from("categories").select("*").order("display_order", { ascending: true });
+    if (data) setCategories(data);
+  };
+
+  const fetchBangles = async () => {
+    const { data } = await supabase.from("bangles").select("*").order("created_at", { ascending: false });
+    if (data) setBangles(data);
+    setLoading(false);
+  };
+
+  const fetchSettings = async () => {
+    const { data } = await (supabase as any).from("settings").select("*").single();
+    if (data) {
+      const loadedLinks = {
+        instagram: data.instagram_link || "",
+        facebook: data.facebook_link || "",
+        twitter: data.twitter_link || "",
+        email: data.email || "",
+      };
+      
+      setSocialLinks(loadedLinks);
+      setWhatsappNumber(data.whatsapp_number || "");
+      
+      setInitialSocialLinks({
+        ...loadedLinks,
+        whatsapp_number: data.whatsapp_number || ""
+      } as any);
+    }
+  };
+
+  const resetForm = () => {
+    setForm({ name: "", description: "", price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setInitialForm({ name: "", description: "", price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setEditingBangle(null);
+    setSelectedCategoryId(null);
+    clearFormCache();
+  };
+
+  const openEditDialog = (bangle: Bangle) => {
+    setEditingBangle(bangle);
+    let colors = DEFAULT_COLORS;
+    try {
+      if (bangle.available_colors && bangle.available_colors.length > 0) {
+        const firstColor = bangle.available_colors[0];
+        if (firstColor.includes("{")) {
+          colors = bangle.available_colors.map(c => JSON.parse(c));
+        } else {
+          colors = bangle.available_colors.map(name => {
+            const found = DEFAULT_COLORS.find(dc => dc.name === name);
+            return found || { name, hex: "#888888" };
+          });
+        }
+      }
+    } catch { /* use defaults */ }
+    
+    setForm({
+      name: bangle.name,
+      description: bangle.description || "",
+      price: bangle.price.toString(),
+      image_url: bangle.image_url || "",
+      secondary_image_url: (bangle as any).secondary_image_url || (bangle as any).image_url_2 || "",
+      available_sizes: bangle.available_sizes || DEFAULT_SIZES,
+      available_colors: colors,
+      is_active: bangle.is_active,
+    });
+    setSelectedCategoryId((bangle as any).category_id || null);
+    setDialogOpen(true);
+  };
+
+  const handleSave = async () => {
+    const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
+    
+    if (!currentUser) {
+      toast({ 
+        title: "Not authenticated", 
+        description: "Please log out and log back in.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    const { data: roleCheck, error: roleError } = await (supabase as any).rpc('has_role', { 
+      u: currentUser.id, 
+      r: 'admin' 
+    });
+    
+    if (!roleCheck) {
+      toast({ 
+        title: "Access denied", 
+        description: "You don't have admin privileges.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    if (!form.name || !form.price) {
+      toast({ title: "Missing fields", description: "Please fill in name and price.", variant: "destructive" });
+      return;
+    }
+    
+    if (!selectedCategoryId) {
+      toast({ title: "Missing category", description: "Please select a category for this product.", variant: "destructive" });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const colorData = form.available_colors.map(c => ({
+        name: typeof c === 'string' ? c : c.name,
+        hex: typeof c === 'object' ? c.hex : '#888888',
+      }));
+
+      const sizesArray = Array.isArray(form.available_sizes) 
+        ? form.available_sizes.filter(s => s && typeof s === 'string')
+        : [];
+
+      const bangleData = {
+        name: form.name.trim(),
+        description: form.description?.trim() || null,
+        price: Math.max(0, parseFloat(form.price) || 0),
+        image_url: form.image_url?.trim() || null,
+        secondary_image_url: form.secondary_image_url?.trim() || null,
+        available_sizes: sizesArray,
+        available_colors: colorData,
+        category_id: selectedCategoryId,
+        is_active: form.is_active,
+      };
+
+      if (editingBangle) {
+        const { error } = await (supabase as any).from("bangles").update(bangleData).eq("id", editingBangle.id);
+        if (error) throw error;
+      } else {
+        const res = await (supabase as any).from("bangles").insert(bangleData).select("id").single();
+        if (res.error) throw res.error;
+      }
+
+      toast({ title: `Bangle ${editingBangle ? "updated" : "added"} successfully` });
+      setInitialForm(form);
+      clearFormCache();
+      setDialogOpen(false);
+      resetForm();
+      fetchBangles();
+      fetchCategories();
+    } catch (err: any) {
+      console.error("[Bangle] Save error:", err);
+      toast({ 
+        title: "Failed to save bangle", 
+        description: err?.message || "An error occurred",
+        variant: "destructive" 
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this bangle?")) return;
+    const { error } = await supabase.from("bangles").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: "Failed to delete bangle.", variant: "destructive" });
+    } else {
+      toast({ title: "Bangle deleted" });
+      fetchBangles();
+    }
+  };
+
+  const toggleSize = (size: string) => {
+    setForm(prev => ({
+      ...prev,
+      available_sizes: prev.available_sizes.includes(size)
+        ? prev.available_sizes.filter(s => s !== size)
+        : [...prev.available_sizes, size],
+    }));
+  };
+
+  const handleSaveSocialLinks = async () => {
+    setSavingSocial(true);
+    const payload = {
+      id: 1,
+      instagram_link: socialLinks.instagram?.trim() || null,
+      facebook_link: socialLinks.facebook?.trim() || null,
+      twitter_link: socialLinks.twitter?.trim() || null,
+      email: socialLinks.email?.trim() || null,
+      whatsapp_number: whatsappNumber?.trim() || null,
+    };
+
+    try {
+      const res = await (supabase as any).from("settings").upsert(payload, { onConflict: "id" });
+      
+      if (res.error) {
+        toast({ 
+          title: "Error saving settings", 
+          description: res.error?.message || String(res.error),
+          variant: "destructive" 
+        });
+        return;
+      }
+      
+      setInitialSocialLinks({
+        ...socialLinks,
+        whatsapp_number: whatsappNumber
+      } as any);
+      clearSocialCache();
+      toast({ 
+        title: "Settings saved successfully",
+        description: "Your social links and WhatsApp number have been updated."
+      });
+    } catch (err: any) {
+      toast({ 
+        title: "Error", 
+        description: err?.message || "Failed to save settings.",
+        variant: "destructive" 
+      });
+    } finally {
+      setSavingSocial(false);
+    }
+  };
+
+  const handleSaveCategory = async () => {
+    if (!categoryForm.name.trim()) {
+      toast({ title: "Missing name", description: "Please enter a category name.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      const categoryData = {
+        name: categoryForm.name.trim(),
+        image_url: categoryForm.image_url?.trim() || null,
+        display_order: categoryForm.display_order || categories.length,
+        is_active: categoryForm.is_active
+      };
+
+      if (editingCategory) {
+        const { error } = await (supabase as any).from("categories").update(categoryData).eq("id", editingCategory.id);
+        if (error) throw error;
+        toast({ title: "Category updated successfully" });
+      } else {
+        const { error } = await (supabase as any).from("categories").insert(categoryData);
+        if (error) throw error;
+        toast({ title: "Category added successfully" });
+      }
+
+      setCategoryDialogOpen(false);
+      setCategoryForm({ name: "", image_url: "", display_order: 0, is_active: true });
+      setEditingCategory(null);
+      fetchCategories();
+    } catch (err: any) {
+      toast({ 
+        title: "Error saving category", 
+        description: err?.message || "An error occurred",
+        variant: "destructive" 
+      });
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    if (!confirm("Delete this category? Products in this category will need to be reassigned.")) return;
+    const { error } = await (supabase as any).from("categories").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message || String(error), variant: "destructive" });
+    } else {
+      toast({ title: "Category deleted" });
+      fetchCategories();
+    }
+  };
+
+  const openEditCategoryDialog = (category: any) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      name: category.name,
+      image_url: category.image_url || "",
+      display_order: category.display_order || 0,
+      is_active: category.is_active ?? true
+    });
+    setCategoryDialogOpen(true);
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col gap-4 mb-8">
+            <h1 className="text-3xl font-display font-bold text-foreground">Admin Panel</h1>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => navigate("/admin/dashboard")}>
+                Open Admin Dashboard
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/admin/orders")}>
+                Open Admin Orders
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/admin/broadcasts")}>
+                Admin Broadcasts
+              </Button>
+            </div>
+          </div>
+        
+        <Tabs defaultValue="products" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="products" className="gap-2">
+              <Package className="w-4 h-4" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger value="banner" className="gap-2">
+              <ImageIcon className="w-4 h-4" />
+              Banner
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Products Tab */}
+          <TabsContent value="products" className="space-y-4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Manage Products</h2>
+              <Dialog open={dialogOpen} onOpenChange={(open) => {
+                if (!open && formHasChanges) {
+                  setShowUnsavedDialog(true);
+                  setPendingDialogClose(true);
+                } else {
+                  setDialogOpen(open);
+                  if (!open) resetForm();
+                }
+              }}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2 gradient-gold text-foreground">
+                    <Plus className="w-4 h-4" />
+                    Add New Bangle
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="font-display text-xl">
+                      {editingBangle ? "Edit Bangle" : "Add New Bangle"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Name *</Label>
+                        <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Bangle name" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Price (₹) *</Label>
+                        <Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Product description" rows={3} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Product Image</Label>
+                      <ImageUpload
+                        bucket="bangle-images"
+                        folder="products"
+                        currentImageUrl={form.image_url || null}
+                        onUpload={(url) => setForm({ ...form, image_url: url })}
+                        onRemove={() => setForm({ ...form, image_url: "" })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Secondary Image (optional)</Label>
+                      <ImageUpload
+                        bucket="bangle-images"
+                        folder="products"
+                        currentImageUrl={form.secondary_image_url || null}
+                        onUpload={(url) => setForm({ ...form, secondary_image_url: url })}
+                        onRemove={() => setForm({ ...form, secondary_image_url: "" })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Category *</Label>
+                      <select
+                        value={selectedCategoryId || ""}
+                        onChange={(e) => setSelectedCategoryId(e.target.value || null)}
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                      >
+                        <option value="">-- Select category --</option>
+                        {categories.map(cat => (
+                          <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
+                      </select>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-2"
+                          onClick={() => {
+                            setEditingCategory(null);
+                            setCategoryForm({ name: "", image_url: "", display_order: categories.length, is_active: true });
+                            setCategoryDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Category
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="gap-2"
+                          onClick={() => setCategoryDialogOpen(true)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Manage Categories
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Available Sizes</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {DEFAULT_SIZES.map(size => (
+                          <button key={size} type="button" onClick={() => toggleSize(size)}
+                            className={`px-3 py-1 rounded-full border transition-colors ${form.available_sizes.includes(size) ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border"}`}>
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <ColorPickerInput colors={form.available_colors} onChange={(colors) => setForm({ ...form, available_colors: colors })} />
+                    <div className="flex items-center gap-2">
+                      <Switch checked={form.is_active} onCheckedChange={(checked) => setForm({ ...form, is_active: checked })} />
+                      <Label>In Stock (visible to customers)</Label>
+                    </div>
+                    <div className="flex gap-2 pt-4">
+                      <Button onClick={handleSave} disabled={saving} className="flex-1">
+                        {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                        {editingBangle ? "Update Bangle" : "Add Bangle"}
+                      </Button>
+                      <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  All Bangles ({bangles.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {bangles.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No bangles added yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {bangles.map((bangle) => (
+                      <div key={bangle.id} className={`p-4 rounded-lg border ${bangle.is_active ? "border-border" : "border-destructive/30 bg-destructive/5"}`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                              {bangle.image_url ? (
+                                <img src={bangle.image_url} alt={bangle.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <Package className="w-6 h-6 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-foreground">{bangle.name}</h3>
+                              <p className="text-accent font-bold">₹{Number(bangle.price)}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {(bangle.available_sizes || []).length} sizes • {(bangle.available_colors || []).length} colors
+                              </p>
+                              <div className="mt-1">
+                                {bangle.is_active ? (
+                                  <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">In Stock</span>
+                                ) : (
+                                  <span className="text-xs font-semibold text-destructive bg-destructive/10 px-2 py-1 rounded-full">Out of Stock</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => openEditDialog(bangle)}><Pencil className="w-4 h-4" /></Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDelete(bangle.id)} className="text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  Categories ({categories.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-sm text-muted-foreground">Manage categories used for products.</p>
+                  <Button
+                    size="sm"
+                    className="gap-2 gradient-gold text-foreground"
+                    onClick={() => {
+                      setEditingCategory(null);
+                      setCategoryForm({ name: "", image_url: "", display_order: categories.length, is_active: true });
+                      setCategoryDialogOpen(true);
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Category
+                  </Button>
+                </div>
+                {categories.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Package className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                    <p>No categories added yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {categories.map((cat) => (
+                      <div key={cat.id} className="p-4 rounded-lg border border-border">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                              {cat.image_url ? (
+                                <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <Package className="w-6 h-6 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-foreground">{cat.name}</h3>
+                              <p className="text-xs text-muted-foreground">
+                                Order: {cat.display_order} • {cat.is_active ? "Active" : "Inactive"}
+                              </p>
+                              {!cat.image_url && (
+                                <p className="text-xs text-muted-foreground">No image set — placeholder shown on home page</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => openEditCategoryDialog(cat)}>
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(cat.id)} className="text-destructive">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Dialog open={categoryDialogOpen} onOpenChange={(open) => {
+              setCategoryDialogOpen(open);
+              if (!open) setEditingCategory(null);
+            }}>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-xl">
+                    {editingCategory ? "Edit Category" : "Add New Category"}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Category Name *</Label>
+                    <Input 
+                      value={categoryForm.name} 
+                      onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} 
+                      placeholder="e.g., Wedding Bangles" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Category Image (optional)</Label>
+                    <p className="text-xs text-muted-foreground">If no image is set, a placeholder is shown on the home page.</p>
+                    <ImageUpload
+                      bucket="bangle-images"
+                      folder="categories"
+                      currentImageUrl={categoryForm.image_url || null}
+                      onUpload={(url) => setCategoryForm({ ...categoryForm, image_url: url })}
+                      onRemove={() => setCategoryForm({ ...categoryForm, image_url: "" })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Display Order</Label>
+                    <Input 
+                      type="number" 
+                      value={categoryForm.display_order} 
+                      onChange={(e) => setCategoryForm({ ...categoryForm, display_order: parseInt(e.target.value) || 0 })} 
+                      placeholder="0" 
+                    />
+                    <p className="text-xs text-muted-foreground">Lower numbers appear first</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={categoryForm.is_active}
+                      onCheckedChange={(checked) => setCategoryForm({ ...categoryForm, is_active: checked })}
+                    />
+                    <Label>Active (visible on home page)</Label>
+                  </div>
+                  <div className="flex gap-2 pt-4">
+                    <Button onClick={handleSaveCategory} className="flex-1">
+                      {editingCategory ? "Update Category" : "Add Category"}
+                    </Button>
+                    <Button variant="outline" onClick={() => setCategoryDialogOpen(false)}>Cancel</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </TabsContent>
+
+          {/* Banner Tab */}
+          <TabsContent value="banner" className="space-y-4">
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Hero Banner Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-blue-600" />
+                      Recommended Banner Size
+                    </h3>
+                    <div className="bg-white dark:bg-gray-900 p-4 rounded-md mb-4">
+                      <p className="text-3xl font-bold text-center text-blue-600 mb-2">
+                        1920 × 600 pixels
+                      </p>
+                      <p className="text-center text-sm text-muted-foreground">
+                        (Amazon-style responsive banner)
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button 
+                    variant="default" 
+                    onClick={() => navigate("/admin/home-page")} 
+                    className="gap-2 w-full gradient-gold text-foreground h-12 text-base"
+                  >
+                    <Pencil className="w-5 h-5" />
+                    Manage Hero Slides & Upload Banners
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+            {/* Removed separate categories tab; categories managed above */}
+            {/* Legacy categories tab UI retained for reference
+            <CardHeader>
+              <CardTitle className="font-display">All Categories ({categories.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {categories.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No categories added yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {categories.map((cat) => (
+                      <div key={cat.id} className="p-4 rounded-lg border border-border">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                              {cat.image_url ? (
+                                <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <Package className="w-6 h-6 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-foreground">{cat.name}</h3>
+                              <p className="text-xs text-muted-foreground">
+                                Order: {cat.display_order} • {cat.is_active ? "Active" : "Inactive"}
+                              </p>
+                              {!cat.image_url && (
+                                <p className="text-xs text-destructive">⚠ No image - won't appear on home page</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => openEditCategoryDialog(cat)}>
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDeleteCategory(cat.id)} className="text-destructive">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent> */}
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-4">
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Share2 className="w-5 h-5" />
+                  Social Media Links
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Instagram Link</Label>
+                  <Input 
+                    value={socialLinks.instagram} 
+                    onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })} 
+                    placeholder="https://instagram.com/your_account"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Facebook Link</Label>
+                  <Input 
+                    value={socialLinks.facebook} 
+                    onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })} 
+                    placeholder="https://facebook.com/your_account"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Twitter Link</Label>
+                  <Input 
+                    value={socialLinks.twitter} 
+                    onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })} 
+                    placeholder="https://twitter.com/your_account"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Email</Label>
+                  <Input 
+                    value={socialLinks.email} 
+                    onChange={(e) => setSocialLinks({ ...socialLinks, email: e.target.value })} 
+                    placeholder="contact@example.com"
+                    type="email"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Phone className="w-5 h-5" />
+                  WhatsApp Number
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>WhatsApp Number (with country code)</Label>
+                  <Input 
+                    value={whatsappNumber} 
+                    onChange={(e) => setWhatsappNumber(e.target.value)} 
+                    placeholder="919876543210"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Format: Country code (91 for India) + 10-digit number (e.g., 919876543210)
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button 
+              onClick={handleSaveSocialLinks} 
+              disabled={savingSocial} 
+              className="w-full gradient-gold text-foreground"
+            >
+              {savingSocial && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Save All Settings
+            </Button>
+          </TabsContent>
+        </Tabs>
+
+        <UnsavedChangesDialog
+          open={showUnsavedDialog}
+          onSave={async () => {
+            await handleSave();
+            setShowUnsavedDialog(false);
+            if (pendingDialogClose) {
+              setDialogOpen(false);
+              resetForm();
+            }
+          }}
+          onDiscard={() => {
+            setShowUnsavedDialog(false);
+            resetForm();
+            if (pendingDialogClose) {
+              setDialogOpen(false);
+            }
+          }}
+          onCancel={() => {
+            setShowUnsavedDialog(false);
+            setPendingDialogClose(false);
+          }}
+          title="Unsaved Changes"
+          description="You have unsaved changes to this product. Would you like to save them before closing?"
+        />
+      </div>
+    </div>
+  );
+}

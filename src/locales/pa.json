@@ -1,0 +1,517 @@
+﻿{
+  "header": {
+    "since": "2004 ਤੋਂ",
+    "tagline": "ਪ੍ਰੀਮਿਯਮ ਗਲਾਸ ਚੂੜੀਆਂ",
+    "nav": {
+      "home": "ਘਰ",
+      "shop": "ਦੁਕਾਨ",
+      "faq": "FAQ",
+      "contact": "ਸੰਪਰਕ",
+      "orders": "ਆਰਡਰ",
+      "wishlist": "ਵਿਸ਼ਲਿਸਟ",
+      "profile": "ਮੇਰਾ ਪ੍ਰੋਫ਼ਾਈਲ",
+      "admin": "ਐਡਮਿਨ",
+      "categories": "ਸ਼੍ਰੇਣੀਆਂ",
+      "featured": "ਫੀਚਰਡ",
+      "reviews": "ਸਮੀਖਿਆਵਾਂ",
+      "inbox": "ਇਨਬਾਕਸ"
+    },
+    "translate": "ਅਨੁਵਾਦ",
+    "searchLanguage": "ਭਾਸ਼ਾ ਖੋਜੋ",
+    "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ",
+    "shopNow": "ਹੁਣ ਖਰੀਦੋ"
+  },
+  "nav": {
+    "home": "ਘਰ",
+    "shop": "ਦੁਕਾਨ",
+    "faq": "FAQ",
+    "contact": "ਸੰਪਰਕ",
+    "orders": "ਆਰਡਰ",
+    "wishlist": "ਵਿਸ਼ਲਿਸਟ",
+    "profile": "ਮੇਰਾ ਪ੍ਰੋਫ਼ਾਈਲ",
+    "admin": "ਐਡਮਿਨ",
+    "inbox": "ਇਨਬਾਕਸ"
+  },
+  "auth": {
+    "login": "ਲਾਗਇਨ",
+    "logout": "ਲਾਗਆਉਟ",
+    "loginSignup": "ਲਾਗਇਨ / ਸਾਈਨ ਅੱਪ"
+  },
+  "loginPage": {
+    "branding": "ਪ੍ਰੀਮਿਯਮ ਗਲਾਸ ਚੂੜੀਆਂ - ਹੋਲਸੇਲ ਅਤੇ ਰੀਟੇਲ",
+    "title": "ਮੁੜ ਸੁਆਗਤ ਹੈ",
+    "subtitle": "ਆਪਣੇ ਹੋਲਸੇਲ ਖਾਤੇ ਵਿੱਚ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "emailLabel": "ਈਮੇਲ ਪਤਾ",
+    "emailPlaceholder": "wholesale@example.com",
+    "passwordLabel": "ਪਾਸਵਰਡ",
+    "passwordPlaceholder": "********",
+    "forgot": "ਭੁੱਲ ਗਏ?",
+    "remember": "ਮੇਰੀ ਯਾਦ ਰੱਖੋ",
+    "signIn": "ਸਾਈਨ ਇਨ",
+    "signingIn": "ਸਾਈਨ ਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "or": "ਜਾਂ",
+    "google": "Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "phone": "ਫੋਨ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "guest": "ਮਿਹਮਾਨ ਵਜੋਂ جاري ਰੱਖੋ",
+    "noAccount": "ਖਾਤਾ ਨਹੀਂ?",
+    "createAccount": "ਖਾਤਾ ਬਣਾਓ",
+    "b2bTitle": "ਹੋਲਸੇਲ ਖਾਤਾ?",
+    "b2bHint": "ਸਾਡੇ B2B ਟੀਮ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+    "toast": {
+      "loginFailed": "ਲਾਗਇਨ ਫੇਲ੍ਹ",
+      "invalidCreds": "ਗਲਤ ਈਮੇਲ ਜਾਂ ਪਾਸਵਰਡ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+      "welcome": "ਮੁੜ ਸੁਆਗਤ ਹੈ!",
+      "success": "ਤੁਸੀਂ ਕਾਮਯਾਬੀ ਨਾਲ ਲਾਗਇਨ ਕਰ ਲਿਆ ਹੈ.",
+      "googleFailed": "Google ਸਾਈਨ-ਇਨ ਫੇਲ੍ਹ",
+      "unexpected": "ਅਚਾਨਕ ਗਲਤੀ ਹੋ ਗਈ. ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ."
+    },
+    "errors": {
+      "email": "ਕਿਰਪਾ ਕਰਕੇ ਠੀਕ ਈਮੇਲ ਪਤਾ ਦਿਓ",
+      "password": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
+    },
+    "aria": {
+      "showPassword": "ਪਾਸਵਰਡ ਵੇਖਾਓ",
+      "hidePassword": "ਪਾਸਵਰਡ ਲੁਕਾਓ"
+    }
+  },
+  "hero": {
+    "fallbackTitle": "ਪ੍ਰੀਮਿਯਮ ਗਲਾਸ ਚੂੜੀਆਂ",
+    "fallbackSubtitle": "ਸਾਡਾ ਖਾਸ ਕਲੇਕਸ਼ਨ ਖੋਜੋ",
+    "explore": "ਕਲੇਕਸ਼ਨ ਵੇਖੋ",
+    "contact": "ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+    "whatsapp": "ਵਟਸਐਪ"
+  },
+  "categories": {
+    "badge": "ਕਿਸਮ ਮੁਤਾਬਕ ਖਰੀਦੋ",
+    "title": "ਸ਼੍ਰੇਣੀਆਂ ਵੇਖੋ",
+    "subtitle": "ਤੁਹਾਡੇ ਲਈ ਬਿਹਤਰ ਸਟਾਈਲ ਲੱਭੋ",
+    "empty": "ਅਡਮਿਨ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰਨ ਤੋਂ ਬਾਅਦ ਸ਼੍ਰੇਣੀਆਂ ਇਥੇ ਆਉਣਗੀਆਂ.",
+    "view": "ਕਲੇਕਸ਼ਨ ਵੇਖੋ",
+    "fallback": "ਸ਼੍ਰੇਣੀ"
+  },
+  "stats": {
+    "colors": "ਰੰਗ",
+    "products": "ਉਤਪਾਦ",
+    "customers": "ਗਾਹਕ",
+    "years": "ਸਾਲ"
+  },
+  "featured": {
+    "badge": "ਟ੍ਰੈਂਡਿੰਗ",
+    "title": "ਫੀਚਰਡ ਕਲੇਕਸ਼ਨ",
+    "searchPlaceholder": "ਚੂੜੀਆਂ ਖੋਜੋ..."
+  },
+  "offers": {
+    "checkTitle": "ਹੁਣੇ ਦੇਖੋ!",
+    "checkSubtitle": "ਤੁਹਾਨੂੰ ਚਾਹੀਦੇ ਰੰਗ ਅਤੇ ਸਾਈਜ਼ ਲੱਭੋ",
+    "shopNow": "ਹੁਣ ਖਰੀਦੋ",
+    "newArrivalsTitle": "ਨਵੀਂ ਆਮਦ",
+    "newArrivalsSubtitle": "ਨਵੀਆਂ ਡਿਜ਼ਾਈਨਾਂ ਵੇਖੋ",
+    "explore": "ਵੇਖੋ"
+  },
+  "bestsellers": {
+    "badge": "ਸਭ ਤੋਂ ਵੱਧ ਵਿਕਣ ਵਾਲੀਆਂ",
+    "title": "ਸਭ ਤੋਂ ਜ਼ਿਆਦਾ ਵਿਕਣ ਵਾਲੀਆਂ ਚੂੜੀਆਂ ਅਤੇ ਸ਼੍ਰੇਣੀਆਂ",
+    "subtitle": "ਹੁਣ ਗਾਹਕ ਸਭ ਤੋਂ ਵੱਧ ਕੀ ਖਰੀਦ ਰਹੇ ਹਨ ਵੇਖੋ.",
+    "topBangles": "ਟੌਪ ਚੂੜੀਆਂ",
+    "emptyBangles": "ਆਰਡਰ ਆਉਣ ਤੋਂ ਬਾਅਦ ਟੌਪ ਵਿਕਰੇਤਾ ਦਿਖਾਈ ਦੇਣਗੇ.",
+    "unitsSold": "ਵਿਕਰੀ ਕੀਤੀਆਂ ਇਕਾਈਆਂ:",
+    "topCategories": "ਟੌਪ ਸ਼੍ਰੇਣੀਆਂ",
+    "emptyCategories": "ਆਰਡਰ ਆਉਣ ਤੋਂ ਬਾਅਦ ਸ਼੍ਰੇਣੀਆਂ ਦਿਖਾਈ ਦੇਣਗੀਆਂ."
+  },
+  "whyChooseUs": {
+    "title": "ਸਾਨੂੰ ਕਿਉਂ ਚੁਣੋ"
+  },
+  "features": {
+    "premium": "ਪ੍ਰੀਮਿਯਮ ਗੁਣਵੱਤਾ",
+    "premiumDesc": "100% ਅਸਲੀ ਚੂੜੀਆਂ",
+    "shipping": "ਗਲੋਬਲ ਸ਼ਿਪਿੰਗ",
+    "shippingDesc": "ਭਰੋਸੇਮੰਦ ਅੰਤਰਰਾਸ਼ਟਰੀ ਭਾਈਵਾਲਾਂ ਨਾਲ ਵਿਸ਼ਵ ਪੱਧਰੀ ਡਿਲਿਵਰੀ",
+    "easy": "ਆਸਾਨ ਆਰਡਰ",
+    "easyDesc": "ਮਿੰਟਾਂ ਵਿੱਚ ਸਾਈਨ ਅੱਪ ਕਰਕੇ ਆਰਡਰ ਕਰੋ",
+    "since": "2004 ਤੋਂ",
+    "sinceDesc": "ਹਜ਼ਾਰਾਂ ਦਾ ਭਰੋਸਾ"
+  },
+  "productCard": {
+    "new": "ਨਵਾਂ",
+    "noImage": "ਕੋਈ ਚਿੱਤਰ ਨਹੀਂ",
+    "bangle": "ਚੂੜੀ"
+  },
+  "newsletter": {
+    "title": "ਅਪਡੇਟ ਰਹੋ",
+    "subtitle": "ਖਾਸ ਆਫਰ ਅਤੇ ਨਵੀਂ ਆਮਦ ਪ੍ਰਾਪਤ ਕਰੋ",
+    "placeholder": "ਈਮੇਲ ਦਾਖਲ ਕਰੋ",
+    "subscribe": "ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ"
+  },
+  "footer": {
+    "tagline": "2004 ਤੋਂ ਪ੍ਰੀਮਿਯਮ ਗਲਾਸ ਚੂੜੀਆਂ",
+    "quickLinks": "ਜਲਦੀ ਲਿੰਕ",
+    "customerCare": "ਗਾਹਕ ਸੇਵਾ",
+    "contact": "ਸੰਪਰਕ",
+    "aboutUs": "ਸਾਡੇ ਬਾਰੇ",
+    "ourStory": "ਸਾਡੀ ਕਹਾਣੀ",
+    "wholesale": "ਹੋਲਸੇਲ",
+    "bulkOrders": "ਥੋਕ ਆਰਡਰ",
+    "shippingPolicy": "ਸ਼ਿਪਿੰਗ ਨੀਤੀ",
+    "trackOrder": "ਆਰਡਰ ਟ੍ਰੈਕ ਕਰੋ",
+    "faq": "FAQ",
+    "rights": "ਸਾਰੇ ਅਧਿਕਾਰ ਰਾਖਵੇਂ ਹਨ."
+  },
+  "shop": {
+    "title": "ਸਾਡਾ ਕਲੇਕਸ਼ਨ ਖਰੀਦੋ",
+    "subtitle": "ਹਰ ਸਟਾਈਲ ਲਈ ਸਾਡੀਆਂ ਪ੍ਰੀਮਿਯਮ ਚੂੜੀਆਂ ਲੱਭੋ",
+    "searchPlaceholder": "ਚੂੜੀਆਂ ਖੋਜੋ...",
+    "search": "ਖੋਜੋ",
+    "filters": {
+      "title": "ਫਿਲਟਰ",
+      "clear": "ਕਲੀਅਰ",
+      "clearAll": "ਸਾਰੇ ਫਿਲਟਰ ਕਲੀਅਰ ਕਰੋ",
+      "priceRange": "ਕੀਮਤ ਰੇਂਜ",
+      "categories": "ਸ਼੍ਰੇਣੀਆਂ",
+      "sizes": "ਸਾਈਜ਼",
+      "colors": "ਰੰਗ",
+      "close": "ਫਿਲਟਰ ਬੰਦ ਕਰੋ"
+    },
+    "results": "{{count}} ਉਤਪਾਦ ਮਿਲੇ",
+    "sort": {
+      "label": "ਇਸ ਮੁਤਾਬਕ ਕ੍ਰਮਬੱਧ ਕਰੋ",
+      "latest": "ਨਵੀਂ ਆਮਦ",
+      "priceLow": "ਕੀਮਤ: ਘੱਟ ਤੋਂ ਵੱਧ",
+      "priceHigh": "ਕੀਮਤ: ਵੱਧ ਤੋਂ ਘੱਟ",
+      "popular": "ਸਭ ਤੋਂ ਲੋਕਪ੍ਰਿਯ"
+    },
+    "noResults": "ਤੁਹਾਡੇ ਫਿਲਟਰ ਨਾਲ ਮਿਲਦੇ ਉਤਪਾਦ ਨਹੀਂ ਮਿਲੇ।"
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "subtitle": "ਆਮ ਸਵਾਲਾਂ ਦੇ ਤੁਰੰਤ ਜਵਾਬ. ਹੋਰ ਮਦਦ ਲਈ ਸੰਪਰਕ ਕਰੋ.",
+    "cardTitle": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ",
+    "items": [
+      {
+        "q": "ਮੈਂ ਆਰਡਰ ਕਿਵੇਂ ਕਰਾਂ?",
+        "a": "ਦੁਕਾਨ ਬ੍ਰਾਊਜ਼ ਕਰੋ, ਸਾਈਜ਼ ਅਤੇ ਰੰਗ ਚੁਣੋ, ਫਿਰ ਕਾਰਟ ਵਿੱਚ ਜੋੜੋ ਅਤੇ ਚੈਕਆਉਟ ਕਰੋ।"
+      },
+      {
+        "q": "ਕੀ ਤੁਸੀਂ ਅੰਤਰਰਾਸ਼ਟਰੀ ਸ਼ਿਪ ਕਰਦੇ ਹੋ?",
+        "a": "ਹਾਂ. ਅਸੀਂ ਭਰੋਸੇਮੰਦ ਕੂਰੀਅਰ ਨਾਲ ਭਾਈਦਾਰੀ ਕਰਦੇ ਹਾਂ ਅਤੇ ਭੇਜਣ ਤੋਂ ਬਾਅਦ ਟ੍ਰੈਕਿੰਗ ਸਾਂਝੀ ਕਰਦੇ ਹਾਂ।"
+      },
+      {
+        "q": "ਕੀ ਮੈਂ ਆਪਣਾ ਆਰਡਰ ਬਦਲ ਜਾਂ ਰੱਦ ਕਰ ਸਕਦਾ ਹਾਂ?",
+        "a": "ਜੇ ਤੁਹਾਡਾ ਆਰਡਰ ਹਜੇ ਸ਼ਿਪ ਨਹੀਂ ਹੋਇਆ, ਤਾਂ ਆਪਣੀ ਆਰਡਰ ID ਦੇ ਨਾਲ ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
+      },
+      {
+        "q": "ਕਿਹੜੇ ਭੁਗਤਾਨ ਢੰਗ ਉਪਲਬਧ ਹਨ?",
+        "a": "ਕਾਰਡ, UPI (ਜਿੱਥੇ ਉਪਲਬਧ) ਅਤੇ ਕੁਝ ਖੇਤਰਾਂ ਵਿੱਚ COD. ਥੋਕ/ਹੋਲਸੇਲ ਲਈ ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
+      }
+    ]
+  },
+  "contact": {
+    "title": "ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+    "subtitle": "ਸਾਡੀਆਂ ਚੂੜੀਆਂ ਬਾਰੇ ਸਵਾਲ ਹਨ? ਅਸੀਂ ਤੁਹਾਡੀ ਸੁਣਨਾ ਚਾਹੁੰਦੇ ਹਾਂ. ਸਾਨੂੰ ਸੁਨੇਹਾ ਭੇਜੋ ਅਤੇ ਅਸੀਂ ਜਲਦੀ ਜਵਾਬ ਦੇਵਾਂਗੇ।",
+    "form": {
+      "title": "ਸਾਨੂੰ ਸੁਨੇਹਾ ਭੇਜੋ",
+      "nameLabel": "ਨਾਮ *",
+      "namePlaceholder": "ਤੁਹਾਡਾ ਨਾਮ",
+      "emailLabel": "ਈਮੇਲ *",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "ਸੁਨੇਹਾ *",
+      "messagePlaceholder": "ਅਸੀਂ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੇ ਹਾਂ?",
+      "submit": "ਸੁਨੇਹਾ ਭੇਜੋ"
+    },
+    "toastTitle": "ਸੁਨੇਹਾ ਭੇਜਿਆ ਗਿਆ!",
+    "toastDescription": "ਸੰਪਰਕ ਕਰਨ ਲਈ ਧੰਨਵਾਦ. ਅਸੀਂ ਜਲਦੀ ਵਾਪਸ ਜਵਾਬ ਦੇਵਾਂਗੇ।",
+    "visit": {
+      "copy": "Karnataka Bangle Store\n#29/1 Near Panduranga Swami Temple Santhushapet\nBangalore, Karnataka 560053"
+    },
+    "call": {
+      "copy": "+91 63617 15136"
+    },
+    "email": {
+      "copy": "info.karnatakabanglesstores@gmail.com"
+    },
+    "mapUrl": "https://www.google.com/maps?q=Karnataka+Bangle+Store+Chickpet+Bengaluru&output=embed",
+    "mapTitle": "ਸਟੋਰ ਸਥਾਨ",
+    "errors": {
+      "name": "ਨਾਮ ਘੱਟੋ-ਘੱਟ 2 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+      "email": "ਕਿਰਪਾ ਕਰਕੇ ਠੀਕ ਈਮੇਲ ਪਤਾ ਦਿਓ",
+      "message": "ਸੁਨੇਹਾ ਘੱਟੋ-ਘੱਟ 10 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
+    }
+  },
+  "orders": {
+    "title": "ਤੁਹਾਡੇ ਆਰਡਰ",
+    "subtitle": "ਤਾਜ਼ਾ ਖਰੀਦਾਂ ਟ੍ਰੈਕ ਕਰੋ ਅਤੇ ਮਨਪਸੰਦ ਦੁਬਾਰਾ ਆਰਡਰ ਕਰੋ.",
+    "refresh": "ਰਿਫ੍ਰੈਸ਼",
+    "historyTitle": "ਆਰਡਰ ਇਤਿਹਾਸ",
+    "loading": "ਆਰਡਰ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "empty": "ਹਾਲੇ ਕੋਈ ਆਰਡਰ ਨਹੀਂ. ਇੱਥੇ ਵੇਖਣ ਲਈ ਖਰੀਦਾਰੀ ਸ਼ੁਰੂ ਕਰੋ.",
+    "delivery": "ਡਿਲਿਵਰੀ",
+    "currency": "₹",
+    "cancelling": "ਰੱਦ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "cancelOrder": "ਆਰਡਰ ਰੱਦ ਕਰੋ",
+    "repeatOrder": "ਆਰਡਰ ਦੁਹਰਾਓ",
+    "hideDetails": "ਵੇਰਵੇ ਲੁਕਾਓ",
+    "viewDetails": "ਵੇਰਵੇ ਵੇਖੋ",
+    "noItems": "ਇਸ ਆਰਡਰ ਲਈ ਆਇਟਮ ਨਹੀਂ ਮਿਲੇ।",
+    "cancelItem": "ਆਇਟਮ ਰੱਦ ਕਰੋ",
+    "status": {
+      "pending": "ਬਕਾਇਆ",
+      "ready": "ਸ਼ਿਪਿੰਗ ਲਈ ਤਿਆਰ"
+    },
+    "cancelReasonPrompt": "ਰੱਦ ਕਰਨ ਦਾ ਕਾਰਨ (ਵਿਕਲਪਿਕ):",
+    "cancelReasonDefault": "ਮੈਨੂੰ ਮਨ ਬਦਲ ਗਿਆ"
+  },
+  "wishlist": {
+    "title": "ਵਿਸ਼ਲਿਸਟ",
+    "subtitle": "ਬਾਅਦ ਵਿੱਚ ਵੇਖਣ ਲਈ ਆਇਟਮ ਬਚਾਓ।",
+    "loading": "ਵਿਸ਼ਲਿਸਟ ਲੋਡ ਹੋ ਰਹੀ ਹੈ...",
+    "empty": "ਹਾਲੇ ਤਕ ਕੋਈ ਆਇਟਮ ਸੇਵ ਨਹੀਂ ਕੀਤੇ।",
+    "browse": "ਦੁਕਾਨ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
+    "view": "ਵੇਖੋ",
+    "remove": "ਹਟਾਓ"
+  },
+  "profile": {
+    "title": "ਮੇਰਾ ਪ੍ਰੋਫ਼ਾਈਲ",
+    "incomplete": {
+      "title": "ਆਪਣਾ ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ",
+      "desc": "ਚੈਕਆਉਟ ਲਈ ਅੱਗੇ ਜਾਣ ਤੋਂ ਪਹਿਲਾਂ ਸਾਰੇ ਲਾਜ਼ਮੀ ਫੀਲਡ (ਨਾਮ, ਫੋਨ, ਪਤਾ) ਭਰੋ।"
+    },
+    "tabs": {
+      "profile": "ਪ੍ਰੋਫ਼ਾਈਲ",
+      "addresses": "ਡਿਲਿਵਰੀ"
+    },
+    "customerInfo": "ਗਾਹਕ ਜਾਣਕਾਰੀ",
+    "photo": "ਪ੍ਰੋਫ਼ਾਈਲ ਫੋਟੋ",
+    "email": "ਈਮੇਲ",
+    "name": "ਗਾਹਕ ਨਾਮ",
+    "namePlaceholder": "ਆਪਣਾ ਪੂਰਾ ਨਾਮ ਦਰਜ ਕਰੋ",
+    "shopName": "ਦੁਕਾਨ ਦਾ ਨਾਮ",
+    "shopPlaceholder": "ਆਪਣੀ ਦੁਕਾਨ ਦਾ ਨਾਮ ਦਰਜ ਕਰੋ",
+    "gst": "GST ਨੰ.",
+    "gstPlaceholder": "ਜਿਵੇਂ, 29ABCDE1234F1Z5",
+    "phone": "ਫੋਨ ਨੰਬਰ",
+    "phonePlaceholder": "ਆਪਣਾ ਫੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ",
+    "transport": "ਟ੍ਰਾਂਸਪੋਰਟ ਨਾਮ",
+    "save": "ਬਦਲਾਅ ਸੇਵ ਕਰੋ",
+    "addressesTitle": "ਡਿਲਿਵਰੀ ਪਤੇ",
+    "addAddress": "ਪਤਾ ਸ਼ਾਮਲ ਕਰੋ",
+    "addressSave": "ਪਤਾ ਸੇਵ ਕਰੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "noAddresses": "ਹਾਲੇ ਕੋਈ ਪਤੇ ਸੇਵ ਨਹੀਂ ਕੀਤੇ।",
+    "setDefault": "ਡਿਫਾਲਟ ਸੈੱਟ ਕਰੋ",
+    "deliveryAddress": "ਡਿਲਿਵਰੀ ਪਤਾ",
+    "bangle": "ਚੂੜੀ",
+    "size": "ਸਾਈਜ਼",
+    "qty": "ਗਿਣਤੀ",
+    "toast": {
+      "loadErrorTitle": "ਪ੍ਰੋਫ਼ਾਈਲ ਲੋਡ ਗਲਤੀ",
+      "loadErrorDesc": "ਤੁਹਾਡਾ ਪ੍ਰੋਫ਼ਾਈਲ ਡਾਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ।",
+      "validationTitle": "ਵੈਰੀਫਿਕੇਸ਼ਨ ਗਲਤੀ",
+      "validationDesc": "ਸੇਵ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਗਲਤੀਆਂ ਠੀਕ ਕਰੋ।",
+      "updateErrorTitle": "ਪ੍ਰੋਫ਼ਾਈਲ ਅੱਪਡੇਟ ਗਲਤੀ",
+      "updateSuccessTitle": "ਪ੍ਰੋਫ਼ਾਈਲ ਅੱਪਡੇਟ ਹੋਇਆ",
+      "updateSuccessDesc": "ਤੁਹਾਡਾ ਪ੍ਰੋਫ਼ਾਈਲ ਸਫਲਤਾਪੂਰਵਕ ਸੇਵ ਕੀਤਾ ਗਿਆ ਹੈ।",
+      "tryAgain": "ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "unexpected": "ਅਚਾਨਕ ਗਲਤੀ ਹੋ ਗਈ।",
+      "addressMissingTitle": "ਫੀਲਡ ਲਾਪਤਾ",
+      "addressMissingDesc": "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਲਾਜ਼ਮੀ ਪਤੇ ਦੇ ਫੀਲਡ ਭਰੋ।",
+      "pincodeInvalidTitle": "ਗਲਤ ਪਿਨਕੋਡ",
+      "pincodeInvalidDesc": "ਪਿਨਕੋਡ 6 ਅੰਕਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
+      "addAddressErrorTitle": "ਪਤਾ ਸ਼ਾਮਲ ਕਰਨ ਵਿੱਚ ਗਲਤੀ",
+      "addAddressSuccessTitle": "ਪਤਾ ਸ਼ਾਮਲ ਕੀਤਾ",
+      "addAddressSuccessDesc": "ਤੁਹਾਡਾ ਡਿਲਿਵਰੀ ਪਤਾ ਸ਼ਾਮਲ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।",
+      "addressDeleted": "ਪਤਾ ਹਟਾਇਆ ਗਿਆ",
+      "defaultUpdated": "ਡਿਫਾਲਟ ਪਤਾ ਅੱਪਡੇਟ",
+      "orderLoadError": "ਆਰਡਰ ਆਇਟਮ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ",
+      "repeatSuccessTitle": "ਆਇਟਮ ਕਾਰਟ ਵਿੱਚ ਜੋੜੇ!",
+      "repeatSuccessDesc": "{{count}} ਆਇਟਮ ਜੋੜੇ ਗਏ. ਆਰਡਰ ਪੂਰਾ ਕਰਨ ਲਈ ਕਾਰਟ ਤੇ ਜਾਓ।",
+      "repeatEmptyTitle": "ਕੋਈ ਆਇਟਮ ਉਪਲਬਧ ਨਹੀਂ",
+      "repeatEmptyDesc": "ਕੁਝ ਉਤਪਾਦ ਹੁਣ ਉਪਲਬਧ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+    },
+    "errors": {
+      "name": "ਗਾਹਕ ਨਾਮ ਲਾਜ਼ਮੀ ਹੈ",
+      "phone": "ਫੋਨ ਨੰਬਰ ਲਾਜ਼ਮੀ ਹੈ",
+      "phoneInvalid": "ਕਿਰਪਾ ਕਰਕੇ 10 ਅੰਕਾਂ ਦਾ ਠੀਕ ਫੋਨ ਨੰਬਰ ਦਿਓ",
+      "address": "ਪਤਾ ਲਾਜ਼ਮੀ ਹੈ",
+      "gst": "ਗਲਤ GST ਨੰਬਰ ਫਾਰਮੈਟ",
+      "pincode": "ਪਿਨਕੋਡ 6 ਅੰਕਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
+    }
+  },
+  "cart": {
+    "title": "ਸ਼ਾਪਿੰਗ ਕਾਰਟ",
+    "toast": {
+      "loginTitle": "ਕਿਰਪਾ ਕਰਕੇ ਲਾਗਇਨ ਕਰੋ",
+      "loginDesc": "ਆਰਡਰ ਕਰਨ ਲਈ ਲਾਗਇਨ ਲਾਜ਼ਮੀ ਹੈ.",
+      "empty": "ਕਾਰਟ ਖਾਲੀ ਹੈ",
+      "completeProfileTitle": "ਆਪਣਾ ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ",
+      "completeProfileDesc": "ਆਰਡਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਾਮ, ਫੋਨ ਅਤੇ ਪਤਾ ਭਰੋ.",
+      "selectAddressTitle": "ਡਿਲਿਵਰੀ ਪਤਾ ਚੁਣੋ",
+      "selectAddressDesc": "ਕਿਰਪਾ ਕਰਕੇ ਡਿਲਿਵਰੀ ਪਤਾ ਚੁਣੋ ਜਾਂ ਸ਼ਾਮਲ ਕਰੋ.",
+      "orderCreatedTitle": "ਆਰਡਰ ਬਣਾਇਆ",
+      "orderCreatedDesc": "ਆਰਡਰ #{{id}} ਬਣਾਇਆ ਗਿਆ. ਕਿਰਪਾ ਕਰਕੇ ਭੁਗਤਾਨ ਪੂਰਾ ਕਰੋ.",
+      "orderErrorTitle": "ਆਰਡਰ ਕਰਨ ਵਿੱਚ ਗਲਤੀ",
+      "tryAgain": "ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ."
+    },
+    "profilePrompt": {
+      "title": "ਆਪਣਾ ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ",
+      "desc": "ਆਰਡਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਪ੍ਰੋਫ਼ਾਈਲ (ਨਾਮ, ਫੋਨ, ਪਤਾ) ਪੂਰਾ ਕਰੋ.",
+      "cta": "ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ"
+    },
+    "empty": {
+      "title": "ਤੁਹਾਡਾ ਕਾਰਟ ਖਾਲੀ ਹੈ",
+      "desc": "ਆਪਣੇ ਕਾਰਟ ਵਿੱਚ ਕੁਝ ਸੁੰਦਰ ਚੂੜੀਆਂ ਸ਼ਾਮਲ ਕਰੋ!",
+      "cta": "ਉਤਪਾਦ ਵੇਖੋ"
+    },
+    "delivery": {
+      "pickupTitle": "ਸਟੋਰ ਪਿਕਅਪ (ਸਿਰਫ ਬੈਂਗਲੋਰ)",
+      "pickupCharge": "ਟੇਕ ਅਵੇ - ₹25",
+      "pickupDesc": "ਆਪਣਾ ਆਰਡਰ ਦਿਓ, ਅਸੀਂ ਚੂੜੀਆਂ ਸੁਰੱਖਿਅਤ ਪੈਕ ਕਰਾਂਗੇ। ਤੁਸੀਂ ਸਟੋਰ ਤੋਂ ਲੈ ਸਕਦੇ ਹੋ ਜਾਂ ਆਪਣਾ ਡਿਲਿਵਰੀ ਭਾਈਦਾਰ (ਜਿਵੇਂ Dunzo) ਭੇਜ ਸਕਦੇ ਹੋ।",
+      "pickupPill": {
+        "secure": "ਸੁਰੱਖਿਅਤ ਪੈਕਿੰਗ",
+        "quick": "ਤੇਜ਼ ਪਿਕਅਪ",
+        "nearby": "ਜੇ ਤੁਸੀਂ ਨੇੜੇ ਹੋ ਤਾਂ ਵਧੀਆ"
+      },
+      "deliveryTitle": "ਸਟੋਰ ਡਿਲਿਵਰੀ (ਬੈਂਗਲੋਰ ਤੋਂ ਬਾਹਰ)",
+      "deliveryCharge": "ਪੈਕੇਜਿੰਗ - ₹200*",
+      "deliveryDesc": "ਅਸੀਂ ਚੂੜੀਆਂ ਤੁਹਾਨੂੰ ਭੇਜਾਂਗੇ. ਤੁਹਾਡਾ ਆਰਡਰ 2-3 ਦਿਨਾਂ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਪਹੁੰਚੇਗਾ. *ਤੁਹਾਡੇ ਸਥਾਨ ਅਨੁਸਾਰ ਡਿਲਿਵਰੀ ਚਾਰਜ ਵੱਧ ਘੱਟ ਹੋ ਸਕਦਾ ਹੈ.",
+      "deliveryPill": {
+        "doorstep": "ਦਰਵਾਜ਼ੇ 'ਤੇ ਡਿਲਿਵਰੀ",
+        "safe": "ਸੁਰੱਖਿਅਤ ਪੈਕੇਜਿੰਗ",
+        "outstation": "ਬਾਹਰਲੇ ਗਾਹਕ"
+      }
+    },
+    "address": {
+      "loginPrompt": "ਡਿਲਿਵਰੀ ਪਤਾ ਚੁਣਨ ਲਈ ਲਾਗਇਨ ਕਰੋ",
+      "none": "ਕੋਈ ਪਤੇ ਸੇਵ ਨਹੀਂ",
+      "select": "ਪਤਾ ਚੁਣੋ",
+      "manage": "ਪਤੇ ਪ੍ਰਬੰਧਿਤ ਕਰੋ"
+    },
+    "summary": {
+      "items": "ਆਇਟਮ ({{count}})",
+      "pickup": "ਪਿਕਅਪ ਚਾਰਜ",
+      "packaging": "ਪੈਕੇਜਿੰਗ ਚਾਰਜ",
+      "total": "ਕੁੱਲ",
+      "loginCta": "ਆਰਡਰ ਕਰਨ ਲਈ ਲਾਗਇਨ ਕਰੋ",
+      "profileCta": "ਪਹਿਲਾਂ ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ",
+      "placeOrder": "ਆਰਡਰ ਕਰੋ",
+      "profileNote": "ਚੈਕਆਉਟ ਲਈ ਪ੍ਰੋਫ਼ਾਈਲ ਪੂਰਾ ਕਰੋ"
+    }
+  },
+  "inbox": {
+    "title": "ਇਨਬਾਕਸ",
+    "subtitle": "ਭੁਗਤਾਨ ਮਨਜ਼ੂਰੀਆਂ ਅਤੇ ਡਿਲਿਵਰੀ ਅੱਪਡੇਟ।",
+    "refresh": "ਰਿਫ੍ਰੈਸ਼",
+    "notifications": "ਨੋਟੀਫਿਕੇਸ਼ਨ",
+    "loading": "ਇਨਬਾਕਸ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+    "empty": "ਹਾਲੇ ਕੋਈ ਨੋਟੀਫਿਕੇਸ਼ਨ ਨਹੀਂ।",
+    "viewOrder": "ਆਰਡਰ ਵੇਖੋ",
+    "markRead": "ਪੜ੍ਹਿਆ ਮਾਰਕ ਕਰੋ",
+    "marking": "ਮਾਰਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "toast": {
+      "loadNotifications": "ਨੋਟੀਫਿਕੇਸ਼ਨ ਲੋਡ ਫੇਲ੍ਹ",
+      "loadBroadcasts": "ਬ੍ਰਾਡਕਾਸਟ ਲੋਡ ਫੇਲ੍ਹ",
+      "updateFailed": "ਅਪਡੇਟ ਫੇਲ੍ਹ"
+    }
+  },
+  "productDetail": {
+    "inStock": "ਸਟਾਕ ਵਿਚ",
+    "outOfStock": "ਸਟਾਕ ਖਤਮ",
+    "notFoundTitle": "ਉਤਪਾਦ ਨਹੀਂ ਮਿਲਿਆ",
+    "notFoundDesc": "ਜਿਸ ਉਤਪਾਦ ਦੀ ਤੁਸੀਂ ਤਲਾਸ਼ ਕਰ ਰਹੇ ਹੋ ਉਹ ਮੌਜੂਦ ਨਹੀਂ ਜਾਂ ਹਟਾਇਆ ਗਿਆ ਹੈ।",
+    "backHome": "ਘਰ ਵਾਪਸ ਜਾਓ",
+    "backToProducts": "ਉਤਪਾਦਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+    "hoverToZoom": "ਜ਼ੂਮ ਕਰਨ ਲਈ ਹੌਵਰ ਕਰੋ",
+    "noImage": "ਚਿੱਤਰ ਉਪਲਬਧ ਨਹੀਂ",
+    "reviewsLabel": "({{count}} ਸਮੀਖਿਆਵਾਂ)",
+    "addWishlist": "ਵਿਸ਼ਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ",
+    "removeWishlist": "ਵਿਸ਼ਲਿਸਟ ਤੋਂ ਹਟਾਓ",
+    "viewWishlist": "ਵਿਸ਼ਲਿਸਟ ਵੇਖੋ",
+    "priceLabel": "ਪ੍ਰਤੀ (ਬਾਕਸ/ਡਜ਼ਨ) ਕੀਮਤ",
+    "availableColors": "ਉਪਲਬਧ ਰੰਗ",
+    "selectionTitle": "ਸਾਈਜ਼ ਅਤੇ ਰੰਗ ਦੀ ਮਾਤਰਾ ਚੁਣੋ",
+    "sizeHeading": "ਸਾਈਜ਼ (')",
+    "colorHeading": "ਰੰਗ (\")",
+    "noSizesColors": "ਇਸ ਉਤਪਾਦ ਲਈ ਸਾਈਜ਼ ਜਾਂ ਰੰਗ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
+    "selectAll": "ਸਭ ਚੁਣੋ:",
+    "clearAll": "ਸਭ ਕਲੀਅਰ ਕਰੋ",
+    "orderSummary": "ਆਰਡਰ ਸਾਰਾਂਸ਼",
+    "emptySelections": "ਹਾਲੇ ਕੋਈ ਆਇਟਮ ਨਹੀਂ ਚੁਣਿਆ.",
+    "subtotal": "ਉਪ-ਕੁੱਲ:",
+    "total": "ਕੁੱਲ:",
+    "addToCart": "ਕਾਰਟ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ",
+    "related": "ਸੰਬੰਧਿਤ ਉਤਪਾਦ",
+    "colorsCount": "{{count}} ਰੰਗ",
+    "deliveryInfo": "{{pincode}} 'ਤੇ 5-7 ਕਾਰੋਬਾਰੀ ਦਿਨਾਂ ਵਿੱਚ ਡਿਲਿਵਰੀ",
+    "shareTitle": "ਇਹ ਚੂੜੀ ਵੇਖੋ",
+    "toast": {
+      "loadErrorTitle": "ਉਤਪਾਦ ਲੋਡ ਗਲਤੀ",
+      "loadErrorDesc": "ਉਤਪਾਦ ਵੇਰਵਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+      "unexpectedTitle": "ਗਲਤੀ",
+      "unexpectedDesc": "ਅਚਾਨਕ ਗਲਤੀ ਹੋ ਗਈ.",
+      "invalidPincodeTitle": "ਗਲਤ ਪਿਨਕੋਡ",
+      "invalidPincodeDesc": "ਕਿਰਪਾ ਕਰਕੇ 6 ਅੰਕਾਂ ਦਾ ਠੀਕ ਪਿਨਕੋਡ ਦਿਓ.",
+      "deliveryAvailableTitle": "ਡਿਲਿਵਰੀ ਉਪਲਬਧ",
+      "deliveryAvailableDesc": "ਅਸੀਂ {{pincode}} 'ਤੇ 5-7 ਕਾਰੋਬਾਰੀ ਦਿਨਾਂ ਵਿੱਚ ਡਿਲਿਵਰੀ ਕਰਦੇ ਹਾਂ।",
+      "loginTitle": "ਕਿਰਪਾ ਕਰਕੇ ਲਾਗਇਨ ਕਰੋ",
+      "loginDesc": "ਕਾਰਟ ਵਿੱਚ ਜੋੜਨ ਲਈ ਲਾਗਇਨ ਲਾਜ਼ਮੀ ਹੈ.",
+      "noItemsTitle": "ਕੋਈ ਆਇਟਮ ਨਹੀਂ ਚੁਣਿਆ",
+      "noItemsDesc": "ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਚੂੜੀ ਚੁਣੋ.",
+      "addedTitle": "ਕਾਰਟ ਵਿੱਚ ਜੋੜਿਆ",
+      "addedDesc": "{{count}} ਆਇਟਮ ਕਾਰਟ ਵਿੱਚ ਜੋੜੇ ਗਏ.",
+      "linkCopiedTitle": "ਲਿੰਕ ਕਾਪੀ ਹੋ ਗਿਆ!",
+      "linkCopiedDesc": "ਉਤਪਾਦ ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ.",
+      "addedWishlist": "ਵਿਸ਼ਲਿਸਟ ਵਿੱਚ ਜੋੜਿਆ",
+      "removedWishlist": "ਵਿਸ਼ਲਿਸਟ ਤੋਂ ਹਟਾਇਆ"
+    }
+  },
+  "authPage": {
+    "titleLogin": "ਮੁੜ ਸੁਆਗਤ ਹੈ",
+    "titleSignup": "ਖਾਤਾ ਬਣਾਓ",
+    "subtitleLogin": "ਆਪਣੇ ਹੋਲਸੇਲ ਖਾਤੇ ਵਿੱਚ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "subtitleSignup": "ਆਪਣਾ ਹੋਲਸੇਲ ਖਾਤਾ ਸੈੱਟ ਕਰੋ",
+    "fullNameLabel": "ਪੂਰਾ ਨਾਮ",
+    "fullNamePlaceholder": "ਤੁਹਾਡਾ ਪੂਰਾ ਨਾਮ",
+    "emailLabel": "ਈਮੇਲ ਪਤਾ",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "ਪਾਸਵਰਡ",
+    "passwordPlaceholder": "********",
+    "confirmLabel": "ਪਾਸਵਰਡ ਪੁਸ਼ਟੀ ਕਰੋ",
+    "confirmPlaceholder": "ਪਾਸਵਰਡ ਦੁਬਾਰਾ ਦਰਜ ਕਰੋ",
+    "forgot": "ਭੁੱਲ ਗਏ?",
+    "toggleToSignup": "ਨਵਾਂ ਉਪਭੋਗਤਾ? ਖਾਤਾ ਬਣਾਓ",
+    "toggleToLogin": "ਖਾਤਾ ਹੈ? ਸਾਈਨ ਇਨ ਕਰੋ",
+    "submitLogin": "ਸਾਈਨ ਇਨ",
+    "submitSignup": "ਖਾਤਾ ਬਣਾਓ",
+    "signingIn": "ਸਾਈਨ ਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "signingUp": "ਖਾਤਾ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "or": "ਜਾਂ",
+    "google": "Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "guest": "ਮਿਹਮਾਨ ਵਜੋਂ جاري ਰੱਖੋ",
+    "noAccount": "ਖਾਤਾ ਨਹੀਂ?",
+    "haveAccount": "ਖਾਤਾ ਹੈ?",
+    "toast": {
+      "loginFailed": "ਲਾਗਇਨ ਫੇਲ੍ਹ",
+      "invalidCreds": "ਗਲਤ ਈਮੇਲ ਜਾਂ ਪਾਸਵਰਡ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+      "welcome": "ਮੁੜ ਸੁਆਗਤ ਹੈ!",
+      "success": "ਤੁਸੀਂ ਕਾਮਯਾਬੀ ਨਾਲ ਲਾਗਇਨ ਕਰ ਲਿਆ ਹੈ.",
+      "signupFailed": "ਸਾਈਨ ਅੱਪ ਫੇਲ੍ਹ",
+      "emailExists": "ਇਹ ਈਮੇਲ ਪਹਿਲਾਂ ਤੋਂ ਰਜਿਸਟਰ ਹੈ. ਕਿਰਪਾ ਕਰਕੇ ਲਾਗਇਨ ਕਰੋ.",
+      "googleFailed": "Google ਸਾਈਨ-ਇਨ ਫੇਲ੍ਹ",
+      "unexpected": "ਅਚਾਨਕ ਗਲਤੀ ਹੋ ਗਈ. ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ."
+    },
+    "errors": {
+      "email": "ਕਿਰਪਾ ਕਰਕੇ ਠੀਕ ਈਮੇਲ ਪਤਾ ਦਿਓ",
+      "password": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+      "fullName": "ਨਾਮ ਘੱਟੋ-ਘੱਟ 2 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+      "confirmPassword": "ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ"
+    },
+    "verification": {
+      "title": "ਆਪਣਾ ਈਮੇਲ ਪਤਾ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "desc": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇਨਬਾਕਸ ਚੈਕ ਕਰੋ ਅਤੇ ਅਸੀਂ ਭੇਜੀ ਲਿੰਕ 'ਤੇ ਕਲਿਕ ਕਰੋ",
+      "note": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਪੂਰਾ ਕਰਨ ਅਤੇ ਖਾਤੇ ਤੱਕ ਪਹੁੰਚ ਲਈ ਈਮੇਲ ਪੁਸ਼ਟੀ ਜ਼ਰੂਰੀ ਹੈ.",
+      "close": "ਠੀਕ ਹੈ",
+      "resend": "ਈਮੇਲ ਦੁਬਾਰਾ ਭੇਜੋ",
+      "resendFailed": "ਦੁਬਾਰਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ",
+      "resendSuccess": "ਈਮੇਲ ਭੇਜੀ",
+      "resendDesc": "ਪੁਸ਼ਟੀਕਰਨ ਈਮੇਲ ਤੁਹਾਡੇ ਇਨਬਾਕਸ ਵਿੱਚ ਦੁਬਾਰਾ ਭੇਜੀ ਗਈ ਹੈ."
+    }
+  }
+}

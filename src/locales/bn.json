@@ -1,0 +1,516 @@
+{
+  "header": {
+    "since": "২০০৪ থেকে",
+    "tagline": "প্রিমিয়াম গ্লাস চুড়ি",
+    "nav": {
+      "home": "হোম",
+      "shop": "দোকান",
+      "faq": "প্রশ্নোত্তর",
+      "contact": "যোগাযোগ",
+      "orders": "অর্ডার",
+      "wishlist": "উইশলিস্ট",
+      "profile": "আমার প্রোফাইল",
+      "admin": "অ্যাডমিন",
+      "categories": "বিভাগ",
+      "featured": "ফিচার্ড",
+      "reviews": "রিভিউ",
+      "inbox": "ইনবক্স"
+    },
+    "translate": "ভাষা পরিবর্তন",
+    "searchLanguage": "ভাষা খুঁজুন",
+    "selectLanguage": "ভাষা নির্বাচন করুন",
+    "shopNow": "এখনই কেনাকাটা করুন"
+  },
+  "nav": {
+    "home": "হোম",
+    "shop": "দোকান",
+    "faq": "প্রশ্নোত্তর",
+    "contact": "যোগাযোগ",
+    "orders": "অর্ডার",
+    "wishlist": "উইশলিস্ট",
+    "profile": "আমার প্রোফাইল",
+    "admin": "অ্যাডমিন",
+    "inbox": "ইনবক্স"
+  },
+  "auth": {
+    "login": "লগইন",
+    "logout": "লগআউট",
+    "loginSignup": "লগইন / সাইন আপ"
+  },
+  "hero": {
+    "fallbackTitle": "প্রিমিয়াম গ্লাস চুড়ি",
+    "fallbackSubtitle": "আমাদের এক্সক্লুসিভ সংগ্রহ দেখুন",
+    "explore": "সংগ্রহ দেখুন",
+    "contact": "যোগাযোগ করুন",
+    "whatsapp": "হোয়াটসঅ্যাপ"
+  },
+  "categories": {
+    "badge": "ধরন অনুসারে কিনুন",
+    "title": "বিভাগগুলি দেখুন",
+    "subtitle": "আপনার উপযুক্ত স্টাইল খুঁজুন",
+    "empty": "অ্যাডমিনে যোগ করলে বিভাগগুলো এখানে দেখাবে।",
+    "view": "সংগ্রহ দেখুন",
+    "fallback": "বিভাগ"
+  },
+  "stats": {
+    "colors": "রং",
+    "products": "পণ্য",
+    "customers": "গ্রাহক",
+    "years": "বছর"
+  },
+  "featured": {
+    "badge": "ট্রেন্ডিং",
+    "title": "ফিচার্ড সংগ্রহ",
+    "searchPlaceholder": "চুড়ি খুঁজুন..."
+  },
+  "offers": {
+    "checkTitle": "এখনই দেখুন!",
+    "checkSubtitle": "আপনার পছন্দের রং ও সাইজ",
+    "shopNow": "এখনই কেনাকাটা করুন",
+    "newArrivalsTitle": "নতুন আগমন",
+    "newArrivalsSubtitle": "সর্বশেষ ডিজাইন দেখুন",
+    "explore": "এক্সপ্লোর করুন"
+  },
+  "bestsellers": {
+    "badge": "সেরা বিক্রি",
+    "title": "সবচেয়ে বেশি বিক্রিত চুড়ি ও বিভাগ",
+    "subtitle": "এখন গ্রাহকরা কী কিনছেন দেখুন।",
+    "topBangles": "শীর্ষ চুড়ি",
+    "emptyBangles": "অর্ডার এলে টপ সেলার দেখাবে।",
+    "unitsSold": "বিক্রি:",
+    "topCategories": "শীর্ষ বিভাগ",
+    "emptyCategories": "অর্ডার এলে বিভাগগুলো দেখাবে।"
+  },
+  "whyChooseUs": {
+    "title": "আমাদের কেন বেছে নেবেন"
+  },
+  "features": {
+    "premium": "প্রিমিয়াম মান",
+    "premiumDesc": "১০০% আসল চুড়ি",
+    "shipping": "গ্লোবাল শিপিং",
+    "shippingDesc": "বিশ্বস্ত আন্তর্জাতিক পার্টনার",
+    "easy": "অর্ডার করা সহজ",
+    "easyDesc": "কয়েক মিনিটে সাইন আপ ও অর্ডার করুন",
+    "since": "২০০৪ থেকে",
+    "sinceDesc": "হাজারো মানুষের বিশ্বাস"
+  },
+  "productCard": {
+    "new": "নতুন",
+    "noImage": "ছবি নেই",
+    "bangle": "চুড়ি"
+  },
+  "newsletter": {
+    "title": "আপডেট থাকুন",
+    "subtitle": "বিশেষ অফার ও নতুন আগমন",
+    "placeholder": "ইমেল লিখুন",
+    "subscribe": "সাবস্ক্রাইব"
+  },
+  "footer": {
+    "tagline": "২০০৪ থেকে প্রিমিয়াম গ্লাস চুড়ি",
+    "quickLinks": "দ্রুত লিঙ্ক",
+    "customerCare": "কাস্টমার কেয়ার",
+    "contact": "যোগাযোগ",
+    "aboutUs": "আমাদের সম্পর্কে",
+    "ourStory": "আমাদের গল্প",
+    "wholesale": "হোলসেল",
+    "bulkOrders": "বাল্ক অর্ডার",
+    "shippingPolicy": "শিপিং নীতি",
+    "trackOrder": "অর্ডার ট্র্যাক করুন",
+    "faq": "FAQ",
+    "rights": "সর্বস্বত্ব সংরক্ষিত।"
+  },
+  "shop": {
+    "title": "আমাদের সংগ্রহ কিনুন",
+    "subtitle": "প্রতিটি স্টাইলের জন্য প্রিমিয়াম চুড়ি",
+    "searchPlaceholder": "চুড়ি খুঁজুন...",
+    "search": "খুঁজুন",
+    "filters": {
+      "title": "ফিল্টার",
+      "clear": "মুছে ফেলুন",
+      "clearAll": "ফিল্টার মুছে ফেলুন",
+      "priceRange": "দাম সীমা",
+      "categories": "বিভাগ",
+      "sizes": "আকার",
+      "colors": "রং",
+      "close": "ফিল্টার বন্ধ করুন"
+    },
+    "results": "{{count}} পণ্য পাওয়া গেছে",
+    "sort": {
+      "label": "সাজান",
+      "latest": "নতুন আগমন",
+      "priceLow": "দাম: কম থেকে বেশি",
+      "priceHigh": "দাম: বেশি থেকে কম",
+      "popular": "সবচেয়ে জনপ্রিয়"
+    },
+    "noResults": "আপনার ফিল্টার অনুযায়ী কোনো পণ্য পাওয়া যায়নি।"
+  },
+  "faqPage": {
+    "title": "সাধারণ প্রশ্ন",
+    "subtitle": "সাধারণ প্রশ্নের দ্রুত উত্তর। আরও সাহায্যের জন্য যোগাযোগ করুন।",
+    "cardTitle": "প্রশ্নোত্তর",
+    "items": [
+      {
+        "q": "আমি কীভাবে অর্ডার করব?",
+        "a": "দোকান ব্রাউজ করুন, আপনার সাইজ ও রং বেছে নিন, কার্টে যোগ করে চেকআউট সম্পন্ন করুন।"
+      },
+      {
+        "q": "আপনারা কি আন্তর্জাতিকভাবে শিপ করেন?",
+        "a": "হ্যাঁ। আমরা নির্ভরযোগ্য কুরিয়ারের সঙ্গে কাজ করি এবং পাঠানোর পর ট্র্যাকিং শেয়ার করি।"
+      },
+      {
+        "q": "আমি কি অর্ডার পরিবর্তন বা বাতিল করতে পারি?",
+        "a": "যদি অর্ডার শিপ না হয়ে থাকে, অর্ডার আইডি দিয়ে সাপোর্টে যোগাযোগ করে আপডেট করুন।"
+      },
+      {
+        "q": "কোন কোন পেমেন্ট অপশন আছে?",
+        "a": "কার্ড, UPI (যেখানে পাওয়া যায়), এবং কিছু অঞ্চলে COD। বাল্ক/হোলসেলের জন্য আমাদের সাথে যোগাযোগ করুন।"
+      }
+    ]
+  },
+  "contact": {
+    "title": "যোগাযোগ করুন",
+    "subtitle": "আমাদের চুড়ি নিয়ে প্রশ্ন? আমাদের লিখুন, আমরা দ্রুত উত্তর দেব।",
+    "form": {
+      "title": "আমাদের বার্তা পাঠান",
+      "nameLabel": "নাম *",
+      "namePlaceholder": "আপনার নাম",
+      "emailLabel": "ইমেল *",
+      "emailPlaceholder": "your@email.com",
+      "messageLabel": "বার্তা *",
+      "messagePlaceholder": "কীভাবে সাহায্য করতে পারি?",
+      "submit": "বার্তা পাঠান"
+    },
+    "toastTitle": "বার্তা পাঠানো হয়েছে!",
+    "toastDescription": "যোগাযোগ করার জন্য ধন্যবাদ। আমরা দ্রুত উত্তর দেব।",
+    "visit": {
+      "copy": "Karnataka Bangle Store\n#29/1 Near Panduranga Swami Temple Santhushapet\nBangalore, Karnataka 560053"
+    },
+    "call": {
+      "copy": "+91 63617 15136"
+    },
+    "email": {
+      "copy": "info.karnatakabanglesstores@gmail.com"
+    },
+    "mapUrl": "https://www.google.com/maps?q=Karnataka+Bangle+Store+Chickpet+Bengaluru&output=embed",
+    "mapTitle": "স্টোর লোকেশন",
+    "errors": {
+      "name": "নাম কমপক্ষে ২ অক্ষরের হতে হবে",
+      "email": "একটি বৈধ ইমেল লিখুন",
+      "message": "বার্তা কমপক্ষে ১০ অক্ষরের হতে হবে"
+    }
+  },
+  "orders": {
+    "title": "আপনার অর্ডার",
+    "subtitle": "সাম্প্রতিক কেনাকাটা ট্র্যাক করুন এবং পছন্দেরগুলো আবার অর্ডার করুন.",
+    "refresh": "রিফ্রেশ",
+    "historyTitle": "অর্ডার ইতিহাস",
+    "loading": "অর্ডার লোড হচ্ছে...",
+    "empty": "এখনও কোনো অর্ডার নেই। কেনাকাটা শুরু করুন।",
+    "delivery": "ডেলিভারি",
+    "currency": "₹",
+    "cancelling": "বাতিল করা হচ্ছে...",
+    "cancelOrder": "অর্ডার বাতিল করুন",
+    "repeatOrder": "পুনরায় অর্ডার",
+    "hideDetails": "বিস্তারিত লুকান",
+    "viewDetails": "বিস্তারিত দেখুন",
+    "noItems": "এই অর্ডারে কোনো আইটেম নেই।",
+    "cancelItem": "আইটেম বাতিল করুন",
+    "status": {
+      "pending": "pending",
+      "ready": "Ready for Shipping"
+    },
+    "cancelReasonPrompt": "বাতিলের কারণ (ঐচ্ছিক):",
+    "cancelReasonDefault": "মত বদলেছে"
+  },
+  "wishlist": {
+    "title": "উইশলিস্ট",
+    "subtitle": "পরে দেখার জন্য আইটেম সেভ করুন।",
+    "loading": "উইশলিস্ট লোড হচ্ছে...",
+    "empty": "এখনও কোনো আইটেম সেভ করা নেই।",
+    "browse": "দোকান দেখুন",
+    "view": "দেখুন",
+    "remove": "সরান"
+  },
+  "profile": {
+    "title": "আমার প্রোফাইল",
+    "incomplete": {
+      "title": "আপনার প্রোফাইল সম্পূর্ণ করুন",
+      "desc": "চেকআউটের জন্য প্রয়োজনীয় ক্ষেত্র (নাম, ফোন, ঠিকানা) পূরণ করুন।"
+    },
+    "tabs": {
+      "profile": "প্রোফাইল",
+      "addresses": "ডেলিভারি"
+    },
+    "customerInfo": "গ্রাহক তথ্য",
+    "photo": "প্রোফাইল ছবি",
+    "email": "ইমেল",
+    "name": "গ্রাহকের নাম",
+    "namePlaceholder": "পূর্ণ নাম লিখুন",
+    "shopName": "দোকানের নাম",
+    "shopPlaceholder": "দোকানের নাম লিখুন",
+    "gst": "GST নম্বর",
+    "gstPlaceholder": "যেমন, 29ABCDE1234F1Z5",
+    "phone": "ফোন নম্বর",
+    "phonePlaceholder": "আপনার ফোন নম্বর লিখুন",
+    "transport": "পরিবহন নাম",
+    "save": "পরিবর্তন সংরক্ষণ করুন",
+    "addressesTitle": "ডেলিভারি ঠিকানা",
+    "addAddress": "ঠিকানা যোগ করুন",
+    "addressSave": "ঠিকানা সংরক্ষণ করুন",
+    "cancel": "বাতিল",
+    "noAddresses": "এখনও কোনো ঠিকানা সেভ করা নেই।",
+    "setDefault": "ডিফল্ট করুন",
+    "deliveryAddress": "ডেলিভারি ঠিকানা",
+    "bangle": "চুড়ি",
+    "size": "আকার",
+    "qty": "পরিমাণ",
+    "toast": {
+      "loadErrorTitle": "প্রোফাইল লোড ত্রুটি",
+      "loadErrorDesc": "আপনার প্রোফাইল ডেটা লোড করা যায়নি।",
+      "validationTitle": "যাচাইকরণ ত্রুটি",
+      "validationDesc": "সংরক্ষণের আগে ভুলগুলো ঠিক করুন।",
+      "updateErrorTitle": "প্রোফাইল আপডেট ত্রুটি",
+      "updateSuccessTitle": "প্রোফাইল আপডেট হয়েছে",
+      "updateSuccessDesc": "আপনার প্রোফাইল সফলভাবে সংরক্ষণ হয়েছে।",
+      "tryAgain": "অনুগ্রহ করে আবার চেষ্টা করুন।",
+      "unexpected": "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
+      "addressMissingTitle": "কিছু ফিল্ড খালি",
+      "addressMissingDesc": "অনুগ্রহ করে সব প্রয়োজনীয় ঠিকানা ক্ষেত্র পূরণ করুন।",
+      "pincodeInvalidTitle": "অবৈধ পিনকোড",
+      "pincodeInvalidDesc": "পিনকোড ৬ অঙ্কের হতে হবে।",
+      "addAddressErrorTitle": "ঠিকানা যোগ করার ত্রুটি",
+      "addAddressSuccessTitle": "ঠিকানা যোগ হয়েছে",
+      "addAddressSuccessDesc": "আপনার ডেলিভারি ঠিকানা যোগ করা হয়েছে।",
+      "addressDeleted": "ঠিকানা মুছে ফেলা হয়েছে",
+      "defaultUpdated": "ডিফল্ট ঠিকানা আপডেট হয়েছে",
+      "orderLoadError": "অর্ডার আইটেম লোড করা যায়নি",
+      "repeatSuccessTitle": "আইটেম কার্টে যোগ করা হয়েছে!",
+      "repeatSuccessDesc": "{{count}} আইটেম যোগ করা হয়েছে। অর্ডার সম্পূর্ণ করতে কার্টে যান।",
+      "repeatEmptyTitle": "কোনো আইটেম পাওয়া যায়নি",
+      "repeatEmptyDesc": "কিছু পণ্য আর উপলব্ধ নাও থাকতে পারে।"
+    },
+    "errors": {
+      "name": "গ্রাহকের নাম প্রয়োজন",
+      "phone": "ফোন নম্বর প্রয়োজন",
+      "phoneInvalid": "অনুগ্রহ করে বৈধ ১০ অঙ্কের ফোন নম্বর লিখুন",
+      "address": "ঠিকানা প্রয়োজন",
+      "gst": "অবৈধ GST ফরম্যাট",
+      "pincode": "পিনকোড ৬ অঙ্কের হতে হবে"
+    }
+  },
+  "cart": {
+    "title": "শপিং কার্ট",
+    "toast": {
+      "loginTitle": "অনুগ্রহ করে লগইন করুন",
+      "loginDesc": "অর্ডার করতে লগইন করতে হবে।",
+      "empty": "কার্ট খালি",
+      "completeProfileTitle": "প্রোফাইল সম্পূর্ণ করুন",
+      "completeProfileDesc": "অর্ডার করার আগে নাম, ফোন, ঠিকানা পূরণ করুন।",
+      "selectAddressTitle": "ডেলিভারি ঠিকানা নির্বাচন করুন",
+      "selectAddressDesc": "অনুগ্রহ করে ডেলিভারি ঠিকানা নির্বাচন বা যোগ করুন।",
+      "orderCreatedTitle": "অর্ডার তৈরি হয়েছে",
+      "orderCreatedDesc": "অর্ডার #{{id}} তৈরি হয়েছে। অনুগ্রহ করে পেমেন্ট সম্পূর্ণ করুন।",
+      "orderErrorTitle": "অর্ডার করার সময় ত্রুটি",
+      "tryAgain": "অনুগ্রহ করে আবার চেষ্টা করুন।"
+    },
+    "profilePrompt": {
+      "title": "আপনার প্রোফাইল সম্পূর্ণ করুন",
+      "desc": "অর্ডার আগে নাম, ফোন, ঠিকানা পূরণ করুন।",
+      "cta": "প্রোফাইল সম্পূর্ণ করুন"
+    },
+    "empty": {
+      "title": "আপনার কার্ট খালি",
+      "desc": "কার্টে সুন্দর চুড়ি যোগ করুন!",
+      "cta": "পণ্য দেখুন"
+    },
+    "delivery": {
+      "pickupTitle": "স্টোর পিকআপ (শুধু বেঙ্গালুরু)",
+      "pickupCharge": "টেক অ্যাওয়ে - ₹25",
+      "pickupDesc": "অর্ডার করুন, আমরা নিরাপদে প্যাক করব। স্টোর থেকে নিন বা নিজের ডেলিভারি পার্টনার পাঠান।",
+      "pickupPill": {
+        "secure": "নিরাপদ প্যাকিং",
+        "quick": "দ্রুত পিকআপ",
+        "nearby": "আপনি কাছে থাকলে উপযুক্ত"
+      },
+      "deliveryTitle": "স্টোর ডেলিভারি (বেঙ্গালুরুর বাইরে)",
+      "deliveryCharge": "প্যাকেজিং - ₹২০০*",
+      "deliveryDesc": "আমরা আপনার চুড়ি পাঠাব। ২-৩ দিনে নিরাপদে পৌঁছাবে। *চার্জ অবস্থানভেদে।",
+      "deliveryPill": {
+        "doorstep": "বাড়ির দরজায় ডেলিভারি",
+        "safe": "নিরাপদ প্যাকেজিং",
+        "outstation": "বাইরের শহরের গ্রাহক"
+      }
+    },
+    "address": {
+      "loginPrompt": "ডেলিভারি ঠিকানা নির্বাচন করতে লগইন করুন",
+      "none": "কোনো ঠিকানা সংরক্ষিত নেই",
+      "select": "ঠিকানা নির্বাচন করুন",
+      "manage": "ঠিকানা পরিচালনা করুন"
+    },
+    "summary": {
+      "items": "আইটেম ({{count}})",
+      "pickup": "পিকআপ চার্জ",
+      "packaging": "প্যাকেজিং চার্জ",
+      "total": "মোট",
+      "loginCta": "অর্ডার করতে লগইন করুন",
+      "profileCta": "প্রথমে প্রোফাইল সম্পূর্ণ করুন",
+      "placeOrder": "অর্ডার করুন",
+      "profileNote": "চেকআউট সক্রিয় করতে প্রোফাইল সম্পূর্ণ করুন"
+    }
+  },
+  "inbox": {
+    "title": "ইনবক্স",
+    "subtitle": "পেমেন্ট অনুমোদন এবং ডেলিভারি আপডেট।",
+    "refresh": "রিফ্রেশ",
+    "notifications": "বিজ্ঞপ্তি",
+    "loading": "ইনবক্স লোড হচ্ছে...",
+    "empty": "এখনও কোনো বিজ্ঞপ্তি নেই।",
+    "viewOrder": "অর্ডার দেখুন",
+    "markRead": "পড়া হিসেবে চিহ্নিত করুন",
+    "marking": "চিহ্নিত করা হচ্ছে...",
+    "toast": {
+      "loadNotifications": "বিজ্ঞপ্তি লোড করতে ব্যর্থ",
+      "loadBroadcasts": "ব্রডকাস্ট লোড করতে ব্যর্থ",
+      "updateFailed": "আপডেট ব্যর্থ হয়েছে"
+    }
+  },
+  "productDetail": {
+    "inStock": "স্টকে আছে",
+    "notFoundTitle": "পণ্য পাওয়া যায়নি",
+    "notFoundDesc": "আপনি যে পণ্যটি খুঁজছেন তা নেই বা সরানো হয়েছে।",
+    "backHome": "হোমে ফিরে যান",
+    "backToProducts": "পণ্যে ফিরে যান",
+    "hoverToZoom": "জুম করতে হোভার করুন",
+    "noImage": "কোনো ছবি নেই",
+    "reviewsLabel": "({{count}} রিভিউ)",
+    "addWishlist": "উইশলিস্টে যোগ করুন",
+    "removeWishlist": "উইশলিস্ট থেকে সরান",
+    "viewWishlist": "উইশলিস্ট দেখুন",
+    "priceLabel": "মূল্য (বক্স/ডজন)",
+    "availableColors": "উপলব্ধ রঙ",
+    "selectionTitle": "সাইজ ও রঙের পরিমাণ নির্বাচন করুন",
+    "sizeHeading": "সাইজ →",
+    "colorHeading": "রঙ ↓",
+    "noSizesColors": "এই পণ্যের জন্য সাইজ বা রঙ নেই।",
+    "selectAll": "সব নির্বাচন করুন:",
+    "clearAll": "সব মুছুন",
+    "orderSummary": "অর্ডার সারাংশ",
+    "emptySelections": "এখনও কিছু নির্বাচন করা হয়নি।",
+    "subtotal": "সাবটোটাল:",
+    "total": "মোট:",
+    "addToCart": "কার্টে যোগ করুন",
+    "related": "সম্পর্কিত পণ্য",
+    "colorsCount": "{{count}} রঙ",
+    "deliveryInfo": "{{pincode}} এ ৫-৭ কর্মদিবসে ডেলিভারি",
+    "shareTitle": "এই চুড়ি দেখুন",
+    "toast": {
+      "loadErrorTitle": "পণ্য লোড করতে সমস্যা",
+      "loadErrorDesc": "পণ্যের বিবরণ লোড হয়নি, আবার চেষ্টা করুন।",
+      "unexpectedTitle": "ত্রুটি",
+      "unexpectedDesc": "অপ্রত্যাশিত ত্রুটি হয়েছে।",
+      "invalidPincodeTitle": "অবৈধ পিনকোড",
+      "invalidPincodeDesc": "সঠিক ৬ অঙ্কের পিনকোড দিন।",
+      "deliveryAvailableTitle": "ডেলিভারি পাওয়া যায়",
+      "deliveryAvailableDesc": "আমরা {{pincode}} এ ৫-৭ কর্মদিবসে ডেলিভার করি।",
+      "loginTitle": "লগইন করুন",
+      "loginDesc": "কার্টে যোগ করতে লগইন প্রয়োজন।",
+      "noItemsTitle": "কোনো আইটেম নির্বাচন করা হয়নি",
+      "noItemsDesc": "কমপক্ষে একটি চুড়ি নির্বাচন করুন।",
+      "addedTitle": "কার্টে যোগ হয়েছে",
+      "addedDesc": "{{count}} আইটেম কার্টে যোগ হয়েছে।",
+      "linkCopiedTitle": "লিংক কপি হয়েছে!",
+      "linkCopiedDesc": "উত্পাদ লিংক কপি হয়েছে।",
+      "addedWishlist": "উইশলিস্টে যোগ হয়েছে",
+      "removedWishlist": "উইশলিস্ট থেকে সরানো হয়েছে"
+    }
+  },
+  "loginPage": {
+    "branding": "?????????? ????? ????? - ?????? ? ?????",
+    "title": "???? ???? ???? ???????",
+    "subtitle": "????? ?????? ??????????? ???? ?? ????",
+    "emailLabel": "????? ??????",
+    "emailPlaceholder": "wholesale@example.com",
+    "passwordLabel": "??????????",
+    "passwordPlaceholder": "????????",
+    "forgot": "???? ??????",
+    "remember": "????? ??? ?????",
+    "signIn": "???? ??",
+    "signingIn": "???? ?? ?????...",
+    "or": "????",
+    "google": "Google ????? ???? ?? ????",
+    "phone": "??? ????? ???? ?? ????",
+    "guest": "????? ?????? ??????? ???",
+    "noAccount": "?????????? ????",
+    "createAccount": "?????????? ???? ????",
+    "b2bTitle": "?????? ???????????",
+    "b2bHint": "?????? B2B ????? ???? ??????? ????",
+    "toast": {
+      "loginFailed": "???? ??????",
+      "invalidCreds": "??? ????? ?? ??????????? ???? ??? ???? ?????? ?????",
+      "welcome": "???? ???? ???? ???????!",
+      "success": "???? ??????? ???? ???????",
+      "googleFailed": "Google ????-?? ??????",
+      "unexpected": "??????????? ??????? ???? ?????? ?????"
+    },
+    "errors": {
+      "email": "???? ????? ?????",
+      "password": "?????????? ??????? 6 ??????? ??? ???"
+    },
+    "aria": {
+      "showPassword": "?????????? ?????",
+      "hidePassword": "?????????? ?????"
+    }
+  },
+  "authPage": {
+    "titleLogin": "???? ???? ???? ???????",
+    "titleSignup": "?????????? ???? ????",
+    "subtitleLogin": "????? ?????? ??????????? ???? ?? ????",
+    "subtitleSignup": "????? ?????? ?????????? ??? ????",
+    "fullNameLabel": "????? ???",
+    "fullNamePlaceholder": "????? ????? ???",
+    "emailLabel": "????? ??????",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "??????????",
+    "passwordPlaceholder": "????????",
+    "confirmLabel": "?????????? ??????? ????",
+    "confirmPlaceholder": "?????????? ???? ?????",
+    "forgot": "???? ??????",
+    "toggleToSignup": "????? ???? ?????????? ???? ????",
+    "toggleToLogin": "?????????? ???? ???? ?? ????",
+    "submitLogin": "???? ??",
+    "submitSignup": "?????????? ???? ????",
+    "signingIn": "???? ?? ?????...",
+    "signingUp": "?????????? ???? ?????...",
+    "or": "????",
+    "google": "Google ????? ???? ?? ????",
+    "guest": "????? ?????? ??????? ???",
+    "noAccount": "?????????? ????",
+    "haveAccount": "?????????? ????",
+    "toast": {
+      "loginFailed": "???? ??????",
+      "invalidCreds": "??? ????? ?? ??????????? ???? ??? ???? ?????? ?????",
+      "welcome": "???? ???? ???? ???????!",
+      "success": "???? ??????? ???? ???????",
+      "signupFailed": "???? ?? ??????",
+      "emailExists": "?? ????? ???????? ????????? ???? ??? ???? ?????",
+      "googleFailed": "Google ????-?? ??????",
+      "unexpected": "??????????? ??????? ???? ?????? ?????"
+    },
+    "errors": {
+      "email": "???? ????? ?????",
+      "password": "?????????? ??????? 6 ??????? ??? ???",
+      "fullName": "??? ??????? 2 ??????? ??? ???",
+      "confirmPassword": "?????????? ????? ??"
+    },
+    "verification": {
+      "title": "????? ????? ????? ????",
+      "desc": "???? ?????? ??????? ??????? ????? ????",
+      "note": "???????????? ???????? ???? ????? ????? ?????????",
+      "close": "??? ???",
+      "resend": "????? ??????? ?????",
+      "resendFailed": "??????? ?????? ??????",
+      "resendSuccess": "????? ?????? ??????",
+      "resendDesc": "???????? ????? ??????? ?????? ???????"
+    }
+  }
+}
