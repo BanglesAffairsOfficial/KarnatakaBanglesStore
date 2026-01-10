@@ -102,13 +102,22 @@ const imageRef = useRef<HTMLDivElement>(null);
   const [activeMobileColor, setActiveMobileColor] = useState<string | null>(null);
   const parsedColors = useMemo<ParsedColor[]>(() => {
     const parsed = parseColors(bangle?.available_colors);
-    if (!parsed.length) return DEFAULT_COLORS;
+    const base = parsed.length ? parsed : DEFAULT_COLORS;
+
+    // Merge with defaults to ensure full palette, then sort by default order
     const merged = new Map<string, ParsedColor>();
-    parsed.forEach((c) => merged.set(c.name.toLowerCase(), c));
+    base.forEach((c) => merged.set(c.name.toLowerCase(), c));
     DEFAULT_COLORS.forEach((c) => {
       if (!merged.has(c.name.toLowerCase())) merged.set(c.name.toLowerCase(), c);
     });
-    return Array.from(merged.values());
+
+    const defaultOrder = new Map(DEFAULT_COLORS.map((c, i) => [c.name.toLowerCase(), i]));
+    return Array.from(merged.values()).sort((a, b) => {
+      const ai = defaultOrder.get(a.name.toLowerCase()) ?? Number.MAX_SAFE_INTEGER;
+      const bi = defaultOrder.get(b.name.toLowerCase()) ?? Number.MAX_SAFE_INTEGER;
+      if (ai !== bi) return ai - bi;
+      return a.name.localeCompare(b.name);
+    });
   }, [bangle?.available_colors]);
 
   const getColorHex = (colorName: string): string => {
@@ -598,7 +607,36 @@ const handleSelectAll = (quantity: number) => {
 
             {bangle.available_sizes.length > 0 && parsedColors.length > 0 ? (
               isMobile ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
+                  <div className="bg-secondary/60 border border-border rounded-lg p-3">
+                    <div className="text-sm font-semibold text-foreground mb-2">{t("productDetail.sizeHeading")}</div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {bangle.available_sizes.map((size) => (
+                        <div key={size} className="flex items-center justify-between rounded-md bg-card px-3 py-2 border border-border">
+                          <span className="text-sm font-medium">{size}</span>
+                          <NumericStepper
+                            value={columnQuantities[size] || 0}
+                            onChange={(val) => {
+                              setColumnQuantities((prev) => ({
+                                ...prev,
+                                [size]: val,
+                              }));
+                              const newQuantities = { ...quantities };
+                              parsedColors.forEach((color) => {
+                                const key = `${color.name}-${size}`;
+                                newQuantities[key] = val;
+                              });
+                              setQuantities(newQuantities);
+                            }}
+                            min={0}
+                            max={999}
+                            className="justify-center"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="flex flex-wrap gap-2">
                     {parsedColors.map((color, index) => {
                       const selectedCount = getColorTotal(color.name);
