@@ -12,7 +12,7 @@ export default function About() {
           <Badge variant="secondary" className="text-sm">Since 2004 • Bengaluru</Badge>
           <h1 className="text-3xl sm:text-4xl font-display font-bold">Our Story</h1>
           <p className="text-muted-foreground text-base">
-            Karnataka Bangle Store brings premium glass bangles and Indian jewelry heritage to shoppers across the country.
+            Online Bangles Site brings premium glass bangles and Indian jewelry heritage to shoppers across the country.
             We blend traditional craftsmanship with modern, trustworthy e-commerce.
           </p>
         </div>

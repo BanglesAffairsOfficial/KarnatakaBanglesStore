@@ -9,7 +9,7 @@ ALTER TABLE public.settings
 
 -- Ensure there is a single settings row (single-row store)
 INSERT INTO public.settings (site_name, whatsapp_number, social_links, email, logo_url)
-SELECT 'Karnataka Bangle Store', '', '{}'::jsonb, '', ''
+SELECT 'Online Bangles Site', '', '{}'::jsonb, '', ''
 WHERE NOT EXISTS (SELECT 1 FROM public.settings);
 
 -- Create storage buckets if missing

@@ -267,9 +267,9 @@ import { Card, CardContent } from "@/components/ui/card";
         <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b shadow-sm">
           <div className="container mx-auto px-4 flex items-center justify-between py-3 sm:py-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Karnataka Bangle Store" className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover shadow-gold" />
+              <img src="/logo.png" alt="Online Bangles Site" className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover shadow-gold" />
               <div>
-                <h1 className="text-sm sm:text-lg font-display font-bold text-primary leading-tight">Karnataka Bangle Store</h1>
+                <h1 className="text-sm sm:text-lg font-display font-bold text-primary leading-tight">Online Bangles Site</h1>
                 <p className="text-[9px] sm:text-xs text-muted-foreground -mt-0.5">{t("header.since")}</p>
               </div>
             </div>
@@ -612,8 +612,8 @@ import { Card, CardContent } from "@/components/ui/card";
             <div className="grid md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <img src="/logo.png" alt="Karnataka Bangle Store" className="w-10 h-10 rounded-lg object-cover shadow-gold" />
-                  <span className="font-display font-bold text-lg text-primary">Karnataka Bangle Store</span>
+                  <img src="/logo.png" alt="Online Bangles Site" className="w-10 h-10 rounded-lg object-cover shadow-gold" />
+                  <span className="font-display font-bold text-lg text-primary">Online Bangles Site</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">{t("footer.tagline")}</p>
                 <div className="flex gap-3">
@@ -701,7 +701,7 @@ import { Card, CardContent } from "@/components/ui/card";
               </div>
             </div>
             <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-              <p>© 2026 Karnataka Bangle Store. {t("footer.rights")}</p>
+              <p>© 2026 Online Bangles Site. {t("footer.rights")}</p>
             </div>
           </div>
         </footer>

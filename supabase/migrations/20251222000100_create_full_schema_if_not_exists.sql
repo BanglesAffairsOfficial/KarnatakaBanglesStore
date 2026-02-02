@@ -241,7 +241,7 @@ END$$;
 
 -- Seed a default settings row if none exists
 INSERT INTO public.settings (site_name, whatsapp_number, social_links)
-SELECT 'Karnataka Bangle Store', '', '{}'::jsonb
+SELECT 'Online Bangles Site', '', '{}'::jsonb
 WHERE NOT EXISTS (SELECT 1 FROM public.settings);
 
 -- Done. You can now run this file in Supabase SQL editor or include it in your migration pipeline.

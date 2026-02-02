@@ -134,7 +134,7 @@ export function BanglesSelectionBoard({
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-primary mb-2">
-            Karnataka Bangle Store
+            Online Bangles Site
           </h1>
           <div className="w-32 h-1 gradient-gold mx-auto rounded-full mb-4" />
           <p className="text-muted-foreground text-lg">Premium Quality Glass Bangles</p>
@@ -294,7 +294,7 @@ export function BanglesSelectionBoard({
 
         {/* Footer */}
         <div className="text-center mt-8 text-muted-foreground text-sm">
-          <p>Karnataka Bangle Store • Premium Glass Bangles Since 2004</p>
+          <p>Online Bangles Site • Premium Glass Bangles Since 2004</p>
           <p className="mt-1">Contact: +91 98765 43210 • karnatakabanglesstores.in</p>
         </div>
       </div>

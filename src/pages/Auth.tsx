@@ -223,13 +223,13 @@ export default function Auth() {
           <div className="w-20 h-20 mx-auto mb-4 rounded-lg shadow-gold overflow-hidden bg-card flex items-center justify-center">
             <img
               src="/logo.png"
-              alt="Karnataka Bangle Store logo"
+              alt="Online Bangles Site logo"
               className="w-full h-full object-contain"
               loading="lazy"
             />
           </div>
           <h1 className="text-3xl font-display font-bold text-primary mb-2">
-            Karnataka Bangle Store
+            Online Bangles Site
           </h1>
           <p className="text-muted-foreground">{t("loginPage.branding")}</p>
         </div>

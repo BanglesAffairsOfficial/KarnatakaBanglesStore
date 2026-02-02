@@ -53,9 +53,9 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo - Changed to square */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Karnataka Bangle Store" className="w-9 h-9 sm:w-10 sm:h-10 object-cover shadow-sm" />
+            <img src="/logo.png" alt="Online Bangles Site" className="w-9 h-9 sm:w-10 sm:h-10 object-cover shadow-sm" />
             <div className="block">
-              <h1 className="text-sm sm:text-lg font-display font-bold text-primary leading-tight">Karnataka Bangle Store</h1>
+              <h1 className="text-sm sm:text-lg font-display font-bold text-primary leading-tight">Online Bangles Site</h1>
               <p className="text-[9px] sm:text-xs text-muted-foreground -mt-0.5">{t("header.tagline")}</p>
             </div>
           </Link>

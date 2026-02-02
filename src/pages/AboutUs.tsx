@@ -14,7 +14,7 @@ export default function AboutUs() {
         <div className="max-w-4xl mx-auto text-center mb-16">
           <Badge className="mb-4 mx-auto">EST. 2004</Badge>
           <h1 className="text-5xl font-display font-bold text-foreground mb-4">
-            Karnataka Bangle Store
+            Online Bangles Site
           </h1>
           <p className="text-xl text-muted-foreground mb-6">
             Celebrating 20 years of craftsmanship, tradition, and elegance
