@@ -15,14 +15,14 @@ interface OrderSummary {
   created_at: string;
   status: string;
   total_amount?: number | null;
-  total?: number | null;
   delivery_type?: string | null;
   delivery_charge?: number | null;
   order_items?: Array<{
     id: string;
     bangle_id: string;
     quantity: number;
-    price: number;
+    unit_price: number;
+    total_price?: number | null;
     size: string | null;
     color: string | null;
     bangles?: {
@@ -39,7 +39,6 @@ export default function OrderHistory() {
   const { t } = useTranslation();
   const [orders, setOrders] = useState<OrderSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [cancelingOrderId, setCancelingOrderId] = useState<string | null>(null);
   const [cancelingItemId, setCancelingItemId] = useState<string | null>(null);
   const isAdmin =
@@ -68,12 +67,13 @@ export default function OrderHistory() {
     const { data } = await (supabase as any)
       .from("orders")
       .select(`
-        id, created_at, status, total_amount, total, user_id, delivery_type, delivery_charge,
+        id, created_at, status, total_amount, user_id, delivery_type, delivery_charge,
         order_items(
           id,
           bangle_id,
           quantity,
-          price,
+          unit_price,
+          total_price,
           size,
           color,
           bangles:bangle_id(name, image_url)
@@ -152,10 +152,9 @@ export default function OrderHistory() {
             ) : (
               <div className="space-y-3">
                 {orders.map((o) => {
-                  const amount = o.total_amount ?? o.total ?? 0;
+                  const amount = o.total_amount ?? 0;
                   const rawStatus = o.status || "pending";
                   const status = formatStatus(rawStatus);
-                  const isOpen = expandedId === o.id;
                   const firstImage = o.order_items?.[0]?.bangles?.image_url || null;
                   const deliveryLabel = o.delivery_type ? o.delivery_type : "pickup";
                   const deliveryCost = o.delivery_charge ?? 0;
@@ -189,7 +188,9 @@ export default function OrderHistory() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-display font-bold text-lg sm:text-xl text-accent">{t("orders.currency")} {Number(amount).toLocaleString()}</p>
+                            <p className="font-display font-bold text-lg sm:text-xl text-accent">
+                              {t("orders.currency")} {Number(amount).toLocaleString()}
+                            </p>
                             <div className="flex gap-2 justify-end flex-wrap">
                               {canCancelOrder && (
                                 <Button
@@ -210,12 +211,13 @@ export default function OrderHistory() {
                                     addItem({
                                       banglesId: item.bangle_id,
                                       name: item.bangles?.name || "Bangle",
-                                      price: item.price ?? 0,
+                                      price: item.unit_price ?? 0,
                                       imageUrl: item.bangles?.image_url || undefined,
                                       size: item.size || "",
                                       color: item.color || "Default",
                                       colorHex: "#888888",
                                       quantity: item.quantity || 1,
+                                      orderType: user ? "wholesale" : "retail",
                                     });
                                   });
                                   navigate("/cart");
@@ -225,63 +227,15 @@ export default function OrderHistory() {
                               </Button>
                               <Button
                                 size="sm"
-                                variant="link"
-                                className="px-0"
-                                onClick={() => setExpandedId(isOpen ? null : o.id)}
+                                variant="outline"
+                                onClick={() => navigate(`/orders/${o.id}`)}
                               >
-                                {isOpen ? t("orders.hideDetails") : t("orders.viewDetails")}
+                                {t("orders.viewDetails")}
                               </Button>
                             </div>
                           </div>
                         </div>
                       </div>
-
-                      {isOpen && (
-                        <div className="border-t pt-3 space-y-2">
-                          {!o.order_items || o.order_items.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">{t("orders.noItems")}</p>
-                          ) : (
-                            o.order_items.map((item) => (
-                              <div key={item.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-md overflow-hidden border border-border bg-secondary flex items-center justify-center">
-                                    {item.bangles?.image_url ? (
-                                      <img src={item.bangles.image_url} alt={item.bangles?.name || "Bangle"} className="w-full h-full object-cover" />
-                                    ) : (
-                                      <ShoppingBag className="w-5 h-5 text-muted-foreground" />
-                                    )}
-                                  </div>
-                                  <p className="notranslate font-medium text-foreground line-clamp-1">{item.bangles?.name || "Bangle"}</p>
-                                  <div className="text-muted-foreground flex items-center gap-2 flex-wrap text-xs sm:text-sm">
-                                    <span>Qty {item.quantity}</span>
-                                    <span>| Size {item.size || "-"}</span>
-                                    <span className="flex items-center gap-1">
-                                      | Color {item.color || "-"}
-                                      <span
-                                        className="inline-block w-4 h-4 rounded-full border border-border"
-                                        style={getColorSwatchStyle(parseColors([item.color || ""])[0] || { name: item.color || "Default", hex: "#888888" })}
-                                      />
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-3 justify-between sm:justify-end">
-                                  <p className="font-semibold">{t("orders.currency")} {(item.price ?? 0).toLocaleString()}</p>
-                                  {canCancelOrder && (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      disabled={cancelingItemId === item.id}
-                                      onClick={() => handleCancelItem(item.id, rawStatus, item.quantity)}
-                                    >
-                                      {cancelingItemId === item.id ? t("orders.cancelling") : t("orders.cancelItem")}
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      )}
                     </div>
                   );
                 })}

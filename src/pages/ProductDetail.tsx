@@ -2,18 +2,18 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NumericStepper } from "@/components/NumericStepper";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { Loader2, ArrowLeft, ShoppingBag, Trash2, Heart, Share2, Truck, Shield, RotateCcw, Star, MapPin, ZoomIn } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { parseColors, getColorHex as getColorHexFromMap, getColorSwatchStyle } from "@/lib/colorHelpers";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 interface Bangle {
@@ -21,6 +21,7 @@ interface Bangle {
   name: string;
   description: string | null;
   price: number;
+  retail_price?: number | null;
   image_url: string | null;
   secondary_image_url?: string | null;
   available_colors: any[];
@@ -35,6 +36,21 @@ interface ParsedColor {
   hex: string;
   swatchImage?: string;
 }
+
+const SELECT_ALL_LABEL = "Select All";
+
+const preventContextMenu = (e: any) => {
+  e.preventDefault();
+};
+
+const preventDrag = (e: any) => {
+  e.preventDefault();
+};
+
+const IMAGE_PROTECT_STYLE = {
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
+} as const;
 
 const DEFAULT_COLORS: ParsedColor[] = [
   { name: "Red", hex: "#dc2626" },
@@ -78,7 +94,7 @@ const DEFAULT_COLORS: ParsedColor[] = [
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { toast } = useToast();
   const { addItem } = useCart();
   const { t } = useTranslation();
@@ -86,6 +102,7 @@ export default function ProductDetail() {
 const [isZooming, setIsZooming] = useState(false);
 const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 const imageRef = useRef<HTMLDivElement>(null);
+const galleryRef = useRef<HTMLDivElement>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
   
   const [bangle, setBangle] = useState<Bangle | null>(null);
@@ -99,7 +116,14 @@ const imageRef = useRef<HTMLDivElement>(null);
   const [columnQuantities, setColumnQuantities] = useState<Record<string, number>>({});
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeMobileColor, setActiveMobileColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const isWholesale = !!session?.user;
+  const priceToShow = useMemo(() => {
+    const retail = bangle?.retail_price ?? bangle?.price ?? 0;
+    const wholesale = bangle?.price ?? retail;
+    return isWholesale ? wholesale : retail;
+  }, [bangle?.price, bangle?.retail_price, isWholesale]);
+  const allColorsSelected = selectAllQuantity > 0;
   const parsedColors = useMemo<ParsedColor[]>(() => {
     const parsed = parseColors(bangle?.available_colors);
     const base = parsed.length ? parsed : DEFAULT_COLORS;
@@ -119,6 +143,37 @@ const imageRef = useRef<HTMLDivElement>(null);
       return a.name.localeCompare(b.name);
     });
   }, [bangle?.available_colors]);
+
+  const activeColorNames = useMemo(() => {
+    const parsed = parseColors(bangle?.available_colors);
+    return new Set(parsed.filter((c) => c.active !== false).map((c) => c.name.toLowerCase()));
+  }, [bangle?.available_colors]);
+
+  const isColorActive = (name: string) => activeColorNames.has(name.toLowerCase());
+
+  useEffect(() => {
+    if (!parsedColors.length) {
+      setSelectedColor(null);
+      return;
+    }
+    // prefer first active color; if none active, keep null
+    const firstActive = parsedColors.find((c) => isColorActive(c.name));
+    if (!selectedColor || !parsedColors.some((c) => c.name === selectedColor && isColorActive(c.name))) {
+      setSelectedColor(firstActive ? firstActive.name : null);
+    }
+  }, [parsedColors, selectedColor]);
+
+  const visibleColors = useMemo(() => {
+    if (!parsedColors.length) return [];
+    if (allColorsSelected) {
+      return [{ name: "ALL_COLORS", hex: "#000000" }];
+    }
+    if (selectedColor && parsedColors.some((c) => c.name === selectedColor)) {
+      return parsedColors.filter((c) => c.name === selectedColor);
+    }
+    const firstActive = parsedColors.find((c) => isColorActive(c.name));
+    return firstActive ? [firstActive] : [];
+  }, [parsedColors, selectedColor, allColorsSelected]);
 
   const getColorHex = (colorName: string): string => {
     const found = parsedColors.find(c => c.name === colorName);
@@ -164,11 +219,14 @@ const imageRef = useRef<HTMLDivElement>(null);
   }, []);
 
   useEffect(() => {
-    if (!isMobile) return;
-    if (!activeMobileColor && parsedColors.length > 0) {
-      setActiveMobileColor(parsedColors[0].name);
-    }
-  }, [isMobile, parsedColors, activeMobileColor]);
+    const handleContextMenu = (e: MouseEvent) => {
+      if (galleryRef.current && galleryRef.current.contains(e.target as Node)) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => document.removeEventListener("contextmenu", handleContextMenu);
+  }, []);
 
   const fetchBangle = async () => {
     try {
@@ -253,6 +311,15 @@ const imageRef = useRef<HTMLDivElement>(null);
     return bangle.available_sizes.reduce((sum, size) => sum + getQuantity(colorName, size), 0);
   };
 
+  const getAllColorsTotal = (): number => {
+    if (!bangle) return 0;
+    return (bangle.available_sizes.length || 0) * selectAllQuantity;
+  };
+
+  const getColorDisplayTotal = (colorName: string): number => {
+    return allColorsSelected ? getAllColorsTotal() : getColorTotal(colorName);
+  };
+
   const inStock = Boolean(bangle?.is_active);
 
   const selections = useMemo(() => {
@@ -269,8 +336,8 @@ const imageRef = useRef<HTMLDivElement>(null);
   }, [quantities]);
 
   const totalAmount = useMemo(() => {
-    return totalQuantity * (bangle?.price || 0);
-  }, [totalQuantity, bangle?.price]);
+    return totalQuantity * priceToShow;
+  }, [totalQuantity, priceToShow]);
 
   const images = useMemo(() => {
     if (!bangle) return [];
@@ -342,16 +409,6 @@ const handleSelectAll = (quantity: number) => {
       return;
     }
 
-    if (!user) {
-      toast({
-        title: t("productDetail.toast.loginTitle"),
-        description: t("productDetail.toast.loginDesc"),
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
     if (totalQuantity === 0) {
       toast({
         title: t("productDetail.toast.noItemsTitle"),
@@ -367,12 +424,13 @@ const handleSelectAll = (quantity: number) => {
       addItem({
         banglesId: bangle!.id,
         name: bangle!.name,
-        price: bangle!.price,
+        price: priceToShow,
         size: selection.size,
         color: selection.color,
         colorHex: getColorHex(selection.color),
         quantity: selection.quantity,
         imageUrl: primaryImage,
+        orderType: user ? "wholesale" : "retail",
       });
     });
 
@@ -389,7 +447,7 @@ const handleSelectAll = (quantity: number) => {
   const handleShare = async () => {
     const shareData = {
       title: bangle?.name || t("productDetail.shareTitle"),
-      text: `${bangle?.name} - ₹${bangle?.price}`,
+      text: `${bangle?.name} - ₹${priceToShow}`,
       url: window.location.href,
     };
 
@@ -451,8 +509,11 @@ const handleSelectAll = (quantity: number) => {
 
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
           {/* Product Image Gallery with Zoom */}
-          <div className="space-y-4">
-            <div className="bg-card rounded-xl shadow-elegant p-4 sm:p-6 border border-border aspect-square flex items-center justify-center relative overflow-hidden">
+          <div className="space-y-4" ref={galleryRef}>
+            <div
+              className="bg-card rounded-xl shadow-elegant p-4 sm:p-6 border border-border aspect-square flex items-center justify-center relative overflow-hidden select-none"
+              onContextMenu={preventContextMenu}
+            >
               {activeImage ? (
                 <div 
                   ref={imageRef}
@@ -460,12 +521,17 @@ const handleSelectAll = (quantity: number) => {
                   onMouseEnter={() => setIsZooming(true)}
                   onMouseLeave={() => setIsZooming(false)}
                   onMouseMove={handleMouseMove}
+                  onContextMenu={preventContextMenu}
                 >
                   <img
                     src={activeImage}
                     alt={bangle.name}
-                    className="w-full h-full object-cover rounded-lg transition-opacity duration-200"
-                    style={{ opacity: isZooming ? 0 : 1 }}
+                    className="w-full h-full object-cover rounded-lg transition-opacity duration-200 select-none"
+                    style={{ opacity: isZooming ? 0 : 1, ...IMAGE_PROTECT_STYLE }}
+                    draggable={false}
+                    onContextMenu={preventContextMenu}
+                    onDragStart={preventDrag}
+                    onTouchStart={preventContextMenu}
                   />
                   
                   {/* Zoomed Image Overlay */}
@@ -515,8 +581,18 @@ const handleSelectAll = (quantity: number) => {
                     className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden border-2 transition ${
                       activeImage === img ? "border-primary shadow-lg" : "border-border hover:border-primary/60"
                     }`}
+                    onContextMenu={preventContextMenu}
                   >
-                    <img src={img} alt={`${bangle.name} alternate`} className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt={`${bangle.name} alternate`}
+                      className="w-full h-full object-cover select-none"
+                      draggable={false}
+                      onContextMenu={preventContextMenu}
+                      onDragStart={preventDrag}
+                      onTouchStart={preventContextMenu}
+                      style={IMAGE_PROTECT_STYLE}
+                    />
                   </button>
                 ))}
               </div>
@@ -584,7 +660,7 @@ const handleSelectAll = (quantity: number) => {
            {/* Price */}
 <div className="bg-secondary p-4 rounded-lg mb-6">
   <div className="text-sm text-muted-foreground mb-1">{t("productDetail.priceLabel")}</div>
-  <div className="text-3xl sm:text-4xl font-bold text-accent">₹{Number(bangle.price)}</div>
+  <div className="text-3xl sm:text-4xl font-bold text-accent">₹{Number(priceToShow)}</div>
 </div>  
 
 
@@ -608,153 +684,242 @@ const handleSelectAll = (quantity: number) => {
             {bangle.available_sizes.length > 0 && parsedColors.length > 0 ? (
               isMobile ? (
                 <div className="space-y-4">
-                  <div className="bg-secondary/60 border border-border rounded-lg p-3">
-                    <div className="text-sm font-semibold text-foreground mb-2">{t("productDetail.sizeHeading")}</div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {bangle.available_sizes.map((size) => (
-                        <div key={size} className="flex items-center justify-between rounded-md bg-card px-3 py-2 border border-border">
-                          <span className="text-sm font-medium">{size}</span>
-                          <NumericStepper
-                            value={columnQuantities[size] || 0}
-                            onChange={(val) => {
-                              setColumnQuantities((prev) => ({
-                                ...prev,
-                                [size]: val,
-                              }));
-                              const newQuantities = { ...quantities };
-                              parsedColors.forEach((color) => {
-                                const key = `${color.name}-${size}`;
-                                newQuantities[key] = val;
-                              });
-                              setQuantities(newQuantities);
-                            }}
-                            min={0}
-                            max={999}
-                            className="justify-center"
-                          />
-                        </div>
-                      ))}
+                  {!parsedColors.length ? (
+                    <div className="text-center py-4 text-muted-foreground border border-dashed border-border rounded-lg">
+                      {t("productDetail.noSizesColors")}
                     </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {parsedColors.map((color, index) => {
-                      const selectedCount = getColorTotal(color.name);
-                      const isActive = activeMobileColor === color.name;
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => setActiveMobileColor(color.name)}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-full border transition text-sm shadow-sm ${
-                            isActive
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border bg-secondary hover:bg-secondary/80 text-foreground"
-                          }`}
-                        >
-                          <span
-                            className="w-7 h-7 rounded-full ring-2 ring-border"
-                            style={getColorSwatchStyle(color)}
-                          />
-                          <span className="font-semibold">{color.name}</span>
-                          {selectedCount > 0 && (
-                            <span className="text-xs text-muted-foreground bg-background/80 px-2 py-0.5 rounded-full">
-                              {selectedCount}
-                            </span>
+                  ) : (
+                    <div className="space-y-3">
+                      {visibleColors.map((color) => (
+                        <div key={color.name} className="p-3 space-y-3 bg-card border border-border rounded-lg">
+                          {allColorsSelected ? (
+                            <div className="text-sm font-semibold text-foreground">
+                              All colors and sizes have been selected
+                            </div>
+                          ) : (
+                            <Select
+                              value={selectedColor || undefined}
+                              onValueChange={(value) => setSelectedColor(value || null)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder="Choose a color"
+                                  aria-label={selectedColor || undefined}
+                                >
+                                  {selectedColor ? (
+                                    <span className="flex items-center gap-2">
+                                      <span
+                                        className="w-4 h-4 rounded-full border border-border"
+                                        style={getColorSwatchStyle(
+                                          parsedColors.find((c) => c.name === selectedColor) || color
+                                        )}
+                                      />
+                                      {`${selectedColor} (${getColorTotal(selectedColor)})`}
+                                    </span>
+                                  ) : (
+                                    "Choose a color"
+                                  )}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {parsedColors.map((opt) => (
+                                  <SelectItem key={opt.name} value={opt.name} disabled={!isColorActive(opt.name)}>
+                                    <span className="flex items-center gap-3 opacity-100">
+                                    <span
+                                      className="w-6 h-6 rounded-full border border-border"
+                                      style={{
+                                          ...getColorSwatchStyle(opt),
+                                          opacity: isColorActive(opt.name) ? 1 : 0.55,
+                                          backgroundImage: !isColorActive(opt.name)
+                                            ? "repeating-linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12) 6px, rgba(255,255,255,0.12) 6px, rgba(255,255,255,0.12) 12px)"
+                                            : getColorSwatchStyle(opt).backgroundImage,
+                                      }}
+                                    />
+                                      <span className={isColorActive(opt.name) ? "" : "text-muted-foreground"}>
+                                        {`${opt.name} (${getColorDisplayTotal(opt.name)})`}
+                                        {!isColorActive(opt.name) ? ` – ${t("productDetail.outOfStock")}` : ""}
+                                      </span>
+                                    </span>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           )}
-                        </button>
-                      );
-                    })}
-                  </div>
 
-                  {activeMobileColor && (
-                    <div className="p-3 space-y-2 bg-card border border-border rounded-lg">
-                      <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                        <div
-                          className="w-8 h-8 rounded-lg ring-2 ring-border"
-                          style={getColorSwatchStyle(parsedColors.find(c => c.name === activeMobileColor) || { name: activeMobileColor, hex: getColorHex(activeMobileColor) })}
-                        />
-                        <span>{activeMobileColor}</span>
-                      </div>
-                      {bangle.available_sizes.map(size => (
-                        <div key={`${activeMobileColor}-${size}`} className="flex items-center justify-between">
-                          <div className="text-sm font-medium">{size}</div>
-                          <NumericStepper
-                            value={getQuantity(activeMobileColor, size)}
-                            onChange={(val) => handleQuantityChange(activeMobileColor, size, val)}
-                            min={0}
-                            max={999}
-                            className="justify-center"
-                          />
+                          {bangle.available_sizes.map(size => (
+                            <div key={`${color.name}-${size}`} className="flex items-center justify-between">
+                              <div className="text-sm font-medium">{size}</div>
+                              <NumericStepper
+                                value={allColorsSelected ? selectAllQuantity : getQuantity(color.name, size)}
+                                onChange={(val) => {
+                                  if (allColorsSelected) {
+                                    handleSelectAll(val);
+                                  } else {
+                                    handleQuantityChange(color.name, size, val);
+                                  }
+                                }}
+                                min={0}
+                                max={999}
+                                className="justify-center"
+                                disabled={!isColorActive(color.name)}
+                              />
+                            </div>
+                          ))}
                         </div>
                       ))}
+
+                      {isWholesale && (
+                        <div className="bg-secondary/60 border border-border rounded-lg p-3 space-y-2">
+                          <div className="text-xs sm:text-sm font-medium text-muted-foreground">
+                            Each size applies to all colors
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            {bangle.available_sizes.map((size) => (
+                              <div key={size} className="flex items-center justify-between rounded-md bg-card px-3 py-2 border border-border">
+                                <span className="text-sm font-medium">{size}</span>
+                                <NumericStepper
+                                  value={columnQuantities[size] || 0}
+                                  onChange={(val) => {
+                                    setColumnQuantities((prev) => ({
+                                      ...prev,
+                                      [size]: val,
+                                    }));
+                                    const newQuantities = { ...quantities };
+                                    parsedColors.forEach((color) => {
+                                      const key = `${color.name}-${size}`;
+                                      newQuantities[key] = val;
+                                    });
+                                    setQuantities(newQuantities);
+                                  }}
+                                  min={0}
+                                  max={999}
+                                  className="justify-center"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse text-[10px] sm:text-sm">
-                    <thead>
-                      <tr>
-                        <th className="border border-border bg-secondary px-1.5 py-1 sm:px-3 sm:py-2 text-left font-semibold text-foreground min-w-[64px] sm:min-w-[90px]">
-                          <div className="text-[9px] sm:text-sm uppercase tracking-wide">{t("productDetail.sizeHeading")}</div>
-                          <div className="text-[8px] sm:text-xs text-muted-foreground font-normal mt-1">{t("productDetail.colorHeading")}</div>
-                        </th>
-                        {bangle.available_sizes.map(size => (
-                          <th
-                            key={size}
-                            className="border border-border bg-secondary px-1.5 py-1 sm:px-3 sm:py-2 text-center font-bold text-foreground min-w-[50px] sm:min-w-[80px]"
-                          >
-                            <div className="mb-1 sm:mb-2 text-[10px] sm:text-base">{size}</div>
-                            <NumericStepper
-                              value={columnQuantities[size] || 0}
-                              onChange={(val) => {
-                                setColumnQuantities(prev => ({
-                                  ...prev,
-                                  [size]: val
-                                }));
-                                const newQuantities = { ...quantities };
-                                parsedColors.forEach(color => {
-                                  const key = `${color.name}-${size}`;
-                                  newQuantities[key] = val;
-                                });
-                                setQuantities(newQuantities);
-                              }}
-                              min={0}
-                              max={999}
-                              className="justify-center"
-                            />
+                !parsedColors.length ? (
+                  <div className="text-center py-6 text-muted-foreground border border-dashed border-border rounded-lg">
+                    {t("productDetail.noSizesColors")}
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-[10px] sm:text-sm">
+                      <thead>
+                        <tr>
+                          <th className="border border-border bg-secondary px-1.5 py-1 sm:px-3 sm:py-2 text-left font-semibold text-foreground min-w-[64px] sm:min-w-[90px]">
+                            {isWholesale && (
+                              <div className="text-[8px] sm:text-xs font-medium text-muted-foreground">Each size applies to all colors</div>
+                            )}
+                            <div className="text-[8px] sm:text-xs text-muted-foreground font-normal mt-1">{t("productDetail.colorHeading")}</div>
                           </th>
-                        ))}
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {parsedColors.map((color, index) => (
-                      <tr key={index}>
-                        <td className="border border-border px-1.5 py-1 sm:p-2">
-                          <div className="flex items-center gap-1.5">
-                            <div 
-                              className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg shadow-sm ring-2 ring-border flex-shrink-0"
-                              style={getColorSwatchStyle(color)}
-                            />
-                            <span className="font-medium text-foreground text-[10px] sm:text-sm">{color.name}</span>
-                          </div>
-                        </td>
-                        {bangle.available_sizes.map(size => (
-                          <td key={`${color.name}-${size}`} className="border border-border px-1.5 py-1 sm:px-3 sm:py-2 text-center">
-                            <NumericStepper
-                              value={getQuantity(color.name, size)}
-                              onChange={(val) => handleQuantityChange(color.name, size, val)}
-                              min={0}
-                              max={999}
-                              className="justify-center"
-                            />
+                          {bangle.available_sizes.map(size => (
+                            <th
+                              key={size}
+                              className="border border-border bg-secondary px-1.5 py-1 sm:px-3 sm:py-2 text-center font-bold text-foreground min-w-[50px] sm:min-w-[80px]"
+                            >
+                              <div className="mb-1 sm:mb-2 text-[10px] sm:text-base">{size}</div>
+                              {isWholesale && (
+                                <NumericStepper
+                                  value={columnQuantities[size] || 0}
+                                  onChange={(val) => {
+                                    setColumnQuantities(prev => ({
+                                      ...prev,
+                                      [size]: val
+                                    }));
+                                    const newQuantities = { ...quantities };
+                                    parsedColors.forEach(color => {
+                                      const key = `${color.name}-${size}`;
+                                      newQuantities[key] = val;
+                                    });
+                                    setQuantities(newQuantities);
+                                  }}
+                                  min={0}
+                                  max={999}
+                                  className="justify-center"
+                                />
+                              )}
+                            </th>
+                          ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {visibleColors.map((color, index) => (
+                        <tr key={index}>
+                          <td className="border border-border px-1.5 py-1 sm:p-2">
+                            {allColorsSelected ? (
+                              <div className="text-sm font-semibold text-foreground">
+                                All colors and sizes have been selected
+                              </div>
+                            ) : (
+                              <Select
+                                value={selectedColor || undefined}
+                                onValueChange={(value) => setSelectedColor(value || null)}
+                              >
+                                <SelectTrigger className="w-full text-left">
+                                  <SelectValue placeholder="Choose a color">
+                                    {selectedColor ? (
+                                      <span className="flex items-center gap-2">
+                                        <span
+                                          className="w-4 h-4 rounded-full border border-border"
+                                          style={getColorSwatchStyle(
+                                            parsedColors.find((c) => c.name === selectedColor) || color
+                                          )}
+                                        />
+                                        {`${selectedColor} (${getColorTotal(selectedColor)})`}
+                                      </span>
+                                    ) : (
+                                      "Choose a color"
+                                    )}
+                                  </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {parsedColors.map((opt) => (
+                                  <SelectItem key={opt.name} value={opt.name} disabled={!isColorActive(opt.name)}>
+                                    <span className="flex items-center gap-2">
+                                      <span
+                                        className="w-4 h-4 rounded-full border border-border"
+                                        style={{
+                                          ...getColorSwatchStyle(opt),
+                                          opacity: isColorActive(opt.name) ? 1 : 0.35,
+                                          filter: isColorActive(opt.name) ? "none" : "grayscale(0.9)",
+                                        }}
+                                      />
+                                      <span className={isColorActive(opt.name) ? "" : "text-muted-foreground"}>
+                                        {`${opt.name} (${getColorDisplayTotal(opt.name)})`}
+                                        {!isColorActive(opt.name) ? ` – ${t("productDetail.outOfStock")}` : ""}
+                                      </span>
+                                    </span>
+                                  </SelectItem>
+                                ))}
+                                </SelectContent>
+                              </Select>
+                            )}
                           </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          {bangle.available_sizes.map(size => (
+                            <td key={`${color.name}-${size}`} className="border border-border px-1.5 py-1 sm:px-3 sm:py-2 text-center">
+                              <NumericStepper
+                                value={getQuantity(color.name, size)}
+                                onChange={(val) => handleQuantityChange(color.name, size, val)}
+                                min={0}
+                                max={999}
+                                className="justify-center"
+                                disabled={!isColorActive(color.name)}
+                              />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                )
               )
             ) : (
               <div className="text-center py-6 sm:py-8 text-muted-foreground">
@@ -763,27 +928,29 @@ const handleSelectAll = (quantity: number) => {
               </div>
             )}
 
-            <div className="mt-4 sm:mt-6 flex justify-between items-center gap-3 flex-wrap">
-  <div className="flex items-center gap-3">
-    <span className="text-sm font-semibold text-foreground">{t("productDetail.selectAll")}</span>
-    <NumericStepper
-      value={selectAllQuantity}
-      onChange={handleSelectAll}
-      min={0}
-      max={999}
-      className="justify-center"
-    />
-  </div>
-  <Button
-    variant="outline"
-    onClick={handleClear}
-    disabled={totalQuantity === 0}
-    className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-  >
-    <Trash2 className="w-4 h-4" />
-    {t("productDetail.clearAll")}
-  </Button>
-</div>
+            {isWholesale && (
+              <div className="mt-4 sm:mt-6 flex justify-between items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-foreground">{t("productDetail.selectAll")}</span>
+                  <NumericStepper
+                    value={selectAllQuantity}
+                    onChange={handleSelectAll}
+                    min={0}
+                    max={999}
+                    className="justify-center"
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={handleClear}
+                  disabled={totalQuantity === 0}
+                  className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {t("productDetail.clearAll")}
+                </Button>
+              </div>
+            )}
           </div>  
 
           {/* Order Summary Sidebar */}
@@ -816,7 +983,7 @@ const handleSelectAll = (quantity: number) => {
                       </div>
                       <div className="text-right">
                         <div className="font-bold">{item.quantity}×</div>
-                        <div className="text-xs text-muted-foreground">₹{Number(bangle.price)}</div>
+                        <div className="text-xs text-muted-foreground">₹{Number(priceToShow)}</div>
                       </div>
                     </div>
                   ))}
@@ -876,7 +1043,9 @@ const handleSelectAll = (quantity: number) => {
                       </div>
                       <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{product.name}</h3>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-accent">₹{Number(product.price)}</span>
+                        <span className="text-lg font-bold text-accent">
+                          ₹{Number(session?.user ? product.price : (product as any).retail_price ?? product.price)}
+                        </span>
                         <Badge variant="secondary" className="text-xs">
                           {t("productDetail.colorsCount", { count: productColors.length })}
                         </Badge>

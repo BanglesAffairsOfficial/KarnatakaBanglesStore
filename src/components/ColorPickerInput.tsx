@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { getColorSwatchStyle } from "@/lib/colorHelpers";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ColorItem {
   name: string;
   hex: string;
   swatchImage?: string;
+  active?: boolean; // optional; default true
 }
 
 interface ColorPickerInputProps {
@@ -26,15 +28,19 @@ export function ColorPickerInput({ colors, onChange }: ColorPickerInputProps) {
         (c) => c.name.toLowerCase() === newColorName.trim().toLowerCase()
       );
       if (!exists) {
-        onChange([...colors, { name: newColorName.trim(), hex: newColorHex }]);
+        onChange([...colors, { name: newColorName.trim(), hex: newColorHex, active: true }]);
         setNewColorName("");
         setNewColorHex("#ff0000");
       }
     }
   };
 
-  const removeColor = (index: number) => {
-    onChange(colors.filter((_, i) => i !== index));
+  const toggleColor = (index: number, checked: boolean) => {
+    onChange(
+      colors.map((c, i) =>
+        i === index ? { ...c, active: checked } : c
+      )
+    );
   };
 
   return (
@@ -46,21 +52,18 @@ export function ColorPickerInput({ colors, onChange }: ColorPickerInputProps) {
         {colors.map((color, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-secondary"
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-secondary ${color.active === false ? "opacity-50" : ""}`}
           >
+            <Checkbox
+              checked={color.active !== false}
+              onCheckedChange={(val) => toggleColor(index, Boolean(val))}
+              aria-label={`Toggle ${color.name}`}
+            />
             <div
               className="w-5 h-5 rounded-full border border-border shadow-sm"
               style={getColorSwatchStyle(color)}
             />
             <span className="text-sm font-medium">{color.name}</span>
-            <button
-              type="button"
-              onClick={() => removeColor(index)}
-              className="text-muted-foreground hover:text-destructive transition-colors"
-              aria-label={`Remove ${color.name}`}
-            >
-              <X className="w-3 h-3" />
-            </button>
           </div>
         ))}
       </div>

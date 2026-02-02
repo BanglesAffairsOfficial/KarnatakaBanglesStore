@@ -16,7 +16,6 @@ interface AdminOrderRow {
   created_at: string;
   status: string;
   total_amount?: number | null;
-  total?: number | null;
   delivery_type?: string | null;
   delivery_charge?: number | null;
   profiles?: {
@@ -24,6 +23,7 @@ interface AdminOrderRow {
     phone: string | null;
     email: string | null;
   } | null;
+  meta?: any;
 }
 
 const STATUS_OPTIONS: Array<{ value: string; label: string }> = [
@@ -50,6 +50,7 @@ export default function AdminOrders() {
   const [deliveryFilter, setDeliveryFilter] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -82,14 +83,13 @@ export default function AdminOrders() {
           status,
           payment_status,
           total_amount,
-          total,
           delivery_type,
           delivery_charge,
-          profiles:profiles!orders_user_id_fkey(full_name, phone, email)
+          profiles:profiles!orders_user_id_fkey(full_name, phone, email),
+          meta
         `,
         { count: "exact" }
-      )
-      .in("payment_status", ["verification_pending", "paid"]);
+      );
 
     filters.forEach((f) => {
       query = query[f.op](f.column, f.value);
@@ -101,7 +101,8 @@ export default function AdminOrders() {
 
     const { data, error, count } = await query;
     if (error) {
-      toast({ title: "Failed to load orders", description: error.message, variant: "destructive" });
+      const desc = error.message || JSON.stringify(error) || "Unknown error";
+      toast({ title: "Failed to load orders", description: desc, variant: "destructive" });
     } else {
       setRows(data || []);
       setTotalCount(count || 0);
@@ -110,6 +111,46 @@ export default function AdminOrders() {
   };
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(totalCount / PAGE_SIZE)), [totalCount]);
+
+  const handleDeleteOrder = async (orderId: string) => {
+    const confirmed = window.confirm("Delete this order and its items?");
+    if (!confirmed) return;
+    setDeletingId(orderId);
+    try {
+      // Remove items first to avoid FK issues, then the order.
+      const { error: itemsErr } = await supabase.from("order_items").delete().eq("order_id", orderId);
+      if (itemsErr) throw itemsErr;
+      const { error: ordErr } = await supabase.from("orders").delete().eq("id", orderId);
+      if (ordErr) throw ordErr;
+      toast({ title: "Order deleted" });
+      fetchOrders();
+    } catch (err: any) {
+      toast({ title: "Failed to delete", description: err?.message || "Unknown error", variant: "destructive" });
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    const confirmed = window.confirm("Delete ALL orders and their items? This cannot be undone.");
+    if (!confirmed) return;
+    setDeletingId("ALL");
+    try {
+      // Delete payments, then items, then orders to satisfy FK constraints. Supabase requires filters.
+      const { error: payErr } = await supabase.from("payments").delete().not("id", "is", null);
+      if (payErr) throw payErr;
+      const { error: itemsErr } = await supabase.from("order_items").delete().not("id", "is", null);
+      if (itemsErr) throw itemsErr;
+      const { error: ordErr } = await supabase.from("orders").delete().not("id", "is", null);
+      if (ordErr) throw ordErr;
+      toast({ title: "All orders deleted" });
+      fetchOrders();
+    } catch (err: any) {
+      toast({ title: "Failed to delete all", description: err?.message || "Unknown error", variant: "destructive" });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -189,6 +230,7 @@ export default function AdminOrders() {
                     <tr>
                       <th className="py-2">Order ID</th>
                       <th className="py-2">Customer</th>
+                      <th className="py-2">Type</th>
                       <th className="py-2">Delivery</th>
                       <th className="py-2 text-right">Total</th>
                       <th className="py-2 text-right">Delivery Charge</th>
@@ -199,9 +241,12 @@ export default function AdminOrders() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {rows.map((r) => {
-                      const amount = r.total_amount ?? r.total ?? 0;
-                      const customerName = r.profiles?.full_name || "Unknown";
-                      const phone = r.profiles?.phone || "-";
+                      const guest = (r.meta as any)?.guest || null;
+                      const amount = r.total_amount ?? 0;
+                      const customerName = r.profiles?.full_name || guest?.full_name || "Unknown";
+                      const phone = r.profiles?.phone || guest?.phone || "-";
+                      const typeLabel = guest ? "B2C" : "B2B";
+                      const deliveryLabel = guest ? "location" : (r.delivery_type || "-");
                       return (
                         <tr key={r.id} className="hover:bg-muted/40">
                           <td className="py-2 font-semibold">#{r.id.slice(0, 8)}</td>
@@ -209,10 +254,11 @@ export default function AdminOrders() {
                             <div className="font-medium">{customerName}</div>
                             <div className="text-xs text-muted-foreground">{phone}</div>
                           </td>
-                          <td className="py-2 capitalize">{r.delivery_type || "-"}</td>
+                          <td className="py-2">{typeLabel}</td>
+                          <td className="py-2 capitalize">{deliveryLabel}</td>
                           <td className="py-2 text-right">Rs {Number(amount).toLocaleString()}</td>
                           <td className="py-2 text-right">Rs {Number(r.delivery_charge ?? 0).toLocaleString()}</td>
-                      <td className="py-2 capitalize">{r.status === "shipped" ? "Ready for Shipping/Shipped" : (r.status || "pending")}</td>
+                          <td className="py-2 capitalize">{r.status === "shipped" ? "Ready for Shipping/Shipped" : (r.status || "pending")}</td>
                           <td className="py-2 text-sm text-muted-foreground">
                             {new Date(r.created_at).toLocaleString("en-IN", {
                               year: "numeric",
@@ -223,6 +269,15 @@ export default function AdminOrders() {
                           <td className="py-2 text-right">
                             <Button size="sm" variant="outline" onClick={() => navigate(`/admin/orders/${r.id}`)}>
                               View
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="ml-2"
+                              disabled={deletingId === r.id}
+                              onClick={() => handleDeleteOrder(r.id)}
+                            >
+                              {deletingId === r.id ? "Deleting..." : "Delete"}
                             </Button>
                           </td>
                         </tr>

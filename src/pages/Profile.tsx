@@ -46,7 +46,7 @@ interface OrderItem {
   id: string;
   bangle_id: string;
   quantity: number;
-  price: number;
+  unit_price: number;
   size: string;
   color: string;
   bangles: {
@@ -58,7 +58,6 @@ interface OrderItem {
 interface Order {
   id: string;
   total_amount?: number | null;
-  total?: number | null;
   status: string;
   created_at: string;
   delivery_addresses: {
@@ -243,7 +242,7 @@ export default function Profile() {
             id,
             bangle_id,
             quantity,
-            price,
+            unit_price,
             size,
             color,
             bangles:bangle_id(name, image_url)
@@ -456,12 +455,13 @@ export default function Profile() {
         addItem({
           banglesId: item.bangle_id,
           name: item.bangles.name || "Bangle",
-          price: Number(item.price),
+          price: Number(item.unit_price ?? 0),
           imageUrl: item.bangles.image_url || undefined,
           size: item.size,
           color: parsed.name,
           colorHex: parsed.hex,
           quantity: item.quantity,
+          orderType: user ? "wholesale" : "retail",
         });
         itemsAdded++;
       }
@@ -502,7 +502,7 @@ export default function Profile() {
           </p>
         </div>
         <div className="text-right">
-          <p className="font-bold text-2xl text-accent">₹{Number(order.total_amount ?? (order as any).total ?? 0).toLocaleString()}</p>
+          <p className="font-bold text-2xl text-accent">₹{Number(order.total_amount ?? 0).toLocaleString()}</p>
           <Badge className={`mt-2 gap-1 ${getStatusColor(order.status)}`}>
             {getStatusIcon(order.status)}
             <span className="capitalize">{order.status}</span>
@@ -541,7 +541,7 @@ export default function Profile() {
                   <span>{t("profile.qty")}: {item.quantity}</span>
                 </div>
               </div>
-              <p className="font-semibold text-sm">₹{Number(item.price).toLocaleString()}</p>
+              <p className="font-semibold text-sm">₹{Number(item.unit_price ?? 0).toLocaleString()}</p>
             </div>
           );
         })}

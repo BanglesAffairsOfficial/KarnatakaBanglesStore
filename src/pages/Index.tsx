@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { Card, CardContent } from "@/components/ui/card";
     name: string;
     description: string | null;
     price: number;
+    retail_price?: number | null;
     image_url: string | null;
     secondary_image_url?: string | null;
     available_colors: string[];
@@ -84,6 +86,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
   const EnhancedHomepage = () => {
     const navigate = useNavigate();
+    const { session } = useAuth();
     const { t, i18n } = useTranslation();
     const [bangles, setBangles] = useState<Bangle[]>([]);
     const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
@@ -102,6 +105,11 @@ import { Card, CardContent } from "@/components/ui/card";
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentLang, setCurrentLang] = useState("en");
     const [showLangMenu, setShowLangMenu] = useState(false);
+    const getDisplayPrice = (b: any) => {
+      const retail = b?.retail_price ?? b?.price ?? 0;
+      const wholesale = b?.price ?? retail;
+      return session?.user ? wholesale : retail;
+    };
 
           useEffect(() => {
       fetchData();
@@ -139,6 +147,9 @@ import { Card, CardContent } from "@/components/ui/card";
     };
 
     const fetchData = async () => {
+      // Clear any cached top-seller data before fetching fresh results
+      setOrderItems([]);
+      setLoading(true);
       const [banglesRes, slidesRes, categoriesRes, settingsRes, orderItemsRes] = await Promise.all([
         supabase.from("bangles").select("*").eq("is_active", true).order("created_at", { ascending: false }),
         supabase.from("hero_slides").select("*").eq("is_active", true).order("display_order", { ascending: true }),
@@ -239,10 +250,10 @@ import { Card, CardContent } from "@/components/ui/card";
           <CardContent className="p-4">
             <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-1 notranslate">{bangle.name}</h3>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold text-accent">₹{bangle.price}</span>
+              <span className="text-2xl font-bold text-accent">₹{getDisplayPrice(bangle)}</span>
               <div className="flex gap-1">
                 {colors.slice(0, 3).map((c, i) => <div key={i} className="w-5 h-5 rounded-full border-2 border-white" style={getColorSwatchStyle(c)} />)}
-                {colors.length > 3 && <span className="text-xs text-muted-foreground">+{colors.length - 3}</span>}
+                {colors.length > 3 && <span className="text-xs text-muted-foreground">and more</span>}
               </div>
             </div>
           </CardContent>
@@ -324,7 +335,7 @@ import { Card, CardContent } from "@/components/ui/card";
         </header>
 
         {/* Hero - Responsive Banner */}
-        <section className="relative h-[220px] sm:h-[360px] md:h-[500px] lg:h-[620px] xl:h-[680px] overflow-hidden">
+        <section className="relative h-[200px] sm:h-[340px] md:h-[480px] lg:h-[600px] xl:h-[660px] overflow-hidden">
           <div className="absolute inset-0">
             {heroSlides.map((slide, idx) => (
               <div 
@@ -352,14 +363,14 @@ import { Card, CardContent } from "@/components/ui/card";
         </section>
 
         {/* Categories (should appear right after the hero banner) */}
-        <section id="categories" className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
+        <section id="categories" className="py-12 md:py-16">
+          <div className="container mx-auto px-3 sm:px-4">
+            <div className="text-center mb-8 md:mb-12">
               <Badge className="mb-4">{t("categories.badge")}</Badge>
               <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">{t("categories.title")}</h2>
               <p className="text-muted-foreground">{t("categories.subtitle")}</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {categories.length === 0 ? (
                 <div className="col-span-full text-center text-muted-foreground">
                   {t("categories.empty")}
@@ -407,8 +418,8 @@ import { Card, CardContent } from "@/components/ui/card";
         </section>
 
         {/* Stats */}
-        <section className="py-8 bg-card border-y">
-          <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <section className="py-8 md:py-10 bg-card border-y">
+          <div className="container mx-auto px-3 sm:px-4 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
             {[{ icon: Sparkles, value: "50+", label: t("stats.colors") }, { icon: Package, value: "1000+", label: t("stats.products") }, { icon: Users, value: "10k+", label: t("stats.customers") }, { icon: Award, value: "20+", label: t("stats.years") }].map((stat, i) => (
               <div key={i} className="group">
                 <div className="notranslate w-16 h-16 mx-auto mb-3 gradient-gold rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-gold">
@@ -422,8 +433,8 @@ import { Card, CardContent } from "@/components/ui/card";
         </section>
 
         {/* Featured */}
-        <section id="featured" className="py-16">
-          <div className="container mx-auto px-4">
+        <section id="featured" className="py-12 md:py-16">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
               <div>
                 <Badge className="mb-4">{t("featured.badge")}</Badge>
@@ -437,16 +448,23 @@ import { Card, CardContent } from "@/components/ui/card";
             {loading ? (
               <div className="flex justify-center py-20"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredBangles.slice(0, 8).map(b => <ProductCard key={b.id} bangle={b} />)}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {filteredBangles.slice(0, 6).map(b => <ProductCard key={b.id} bangle={b} />)}
+                </div>
+                <div className="flex justify-center mt-6">
+                  <Button variant="outline" onClick={() => safeNavigate(navigate, "/shop")}>
+                    Shop our collection
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </section>
 
         {/* Top Sellers */}
-        <section id="reviews" className="py-16 bg-gradient-to-b from-background to-secondary/30">
-          <div className="container mx-auto px-4">
+        <section id="reviews" className="py-12 md:py-16 bg-gradient-to-b from-background to-secondary/30">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="text-center mb-12">
               <Badge className="mb-4">{t("bestsellers.badge")}</Badge>
               <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">{t("bestsellers.title")}</h2>

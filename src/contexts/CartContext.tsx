@@ -9,6 +9,7 @@ export interface CartItem {
   color: string;
   colorHex: string;
   quantity: number;
+  orderType?: "retail" | "wholesale";
 }
 
 interface CartContextType {
@@ -34,18 +35,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = (newItem: CartItem) => {
+    const itemToAdd = { ...newItem, orderType: newItem.orderType ?? "retail" } as CartItem;
     setItems((prev) => {
       const existing = prev.find(
-        (i) => i.banglesId === newItem.banglesId && i.size === newItem.size && i.color === newItem.color
+        (i) => i.banglesId === itemToAdd.banglesId && i.size === itemToAdd.size && i.color === itemToAdd.color
       );
       if (existing) {
         return prev.map((i) =>
-          i.banglesId === newItem.banglesId && i.size === newItem.size && i.color === newItem.color
-            ? { ...i, quantity: i.quantity + newItem.quantity }
+          i.banglesId === itemToAdd.banglesId && i.size === itemToAdd.size && i.color === itemToAdd.color
+            ? { ...i, quantity: i.quantity + itemToAdd.quantity }
             : i
         );
       }
-      return [...prev, newItem];
+      return [...prev, itemToAdd];
     });
   };
 

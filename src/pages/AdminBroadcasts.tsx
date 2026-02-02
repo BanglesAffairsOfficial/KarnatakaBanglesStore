@@ -31,6 +31,7 @@ export default function AdminBroadcasts() {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<Broadcast[]>([]);
   const [listLoading, setListLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -85,6 +86,34 @@ export default function AdminBroadcasts() {
     fetchBroadcasts();
   };
 
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm("Delete this broadcast?");
+    if (!confirmed) return;
+    setDeletingId(id);
+    const { error } = await supabase.from("broadcasts").delete().eq("id", id);
+    setDeletingId(null);
+    if (error) {
+      toast({ title: "Failed to delete", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Broadcast deleted" });
+    fetchBroadcasts();
+  };
+
+  const handleDeleteAll = async () => {
+    const confirmed = window.confirm("Delete ALL broadcasts? This cannot be undone.");
+    if (!confirmed) return;
+    setDeletingId("ALL");
+    const { error } = await supabase.from("broadcasts").delete().not("id", "is", null);
+    setDeletingId(null);
+    if (error) {
+      toast({ title: "Failed to delete all", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "All broadcasts deleted" });
+    fetchBroadcasts();
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -94,6 +123,17 @@ export default function AdminBroadcasts() {
           <Button variant="outline" size="sm" onClick={fetchBroadcasts} disabled={listLoading}>
             {listLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Refresh
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap gap-2 justify-end">
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={deletingId === "ALL"}
+            onClick={handleDeleteAll}
+          >
+            {deletingId === "ALL" ? "Deleting..." : "Delete All"}
           </Button>
         </div>
 
@@ -160,9 +200,20 @@ export default function AdminBroadcasts() {
             ) : (
               list.map((b) => (
                 <div key={b.id} className="border rounded-lg p-3 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold">{b.title}</p>
-                    <span className="text-xs text-muted-foreground capitalize">{b.audience}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{b.title}</p>
+                      <span className="text-xs text-muted-foreground capitalize">{b.audience}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive"
+                      disabled={deletingId === b.id}
+                      onClick={() => handleDelete(b.id)}
+                    >
+                      {deletingId === b.id ? "Deleting..." : "Delete"}
+                    </Button>
                   </div>
                   <p className="text-sm text-muted-foreground">{b.body}</p>
                   <p className="text-xs text-muted-foreground">

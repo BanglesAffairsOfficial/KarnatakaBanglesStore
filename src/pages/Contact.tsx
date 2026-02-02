@@ -60,18 +60,18 @@ export default function Contact() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-10 sm:py-12">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-display font-bold text-foreground mb-4">
+          <div className="text-center mb-8 sm:mb-12 px-2">
+            <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-3 sm:mb-4">
               {t("contact.title")}
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
               {t("contact.subtitle")}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-start">
             {/* Contact Form */}
             <Card className="shadow-elegant">
               <CardHeader>
@@ -139,16 +139,16 @@ export default function Contact() {
             </Card>
 
             {/* Contact Info */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <Card className="shadow-elegant">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <CardContent className="pt-5 sm:pt-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Visit Us</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-foreground mb-1 text-sm sm:text-base">Visit Us</h3>
+                      <p className="text-muted-foreground text-sm sm:text-base">
                         {t("contact.visit.copy")}
                       </p>
                     </div>
@@ -157,14 +157,14 @@ export default function Contact() {
               </Card>
 
               <Card className="shadow-elegant">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <CardContent className="pt-5 sm:pt-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-foreground mb-1 text-sm sm:text-base">Call Us</h3>
+                      <p className="text-muted-foreground text-sm sm:text-base">
                         {t("contact.call.copy")}
                       </p>
                     </div>
@@ -173,14 +173,14 @@ export default function Contact() {
               </Card>
 
               <Card className="shadow-elegant">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <CardContent className="pt-5 sm:pt-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Mail className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-foreground mb-1 text-sm sm:text-base">Email Us</h3>
+                      <p className="text-muted-foreground text-sm sm:text-base">
                         {t("contact.email.copy")}
                       </p>
                     </div>
@@ -189,11 +189,10 @@ export default function Contact() {
               </Card>
 
               <Card className="shadow-elegant overflow-hidden">
-                <div className="aspect-video bg-muted">
+                <div className="w-full h-56 sm:h-auto sm:aspect-video bg-muted">
                   <iframe
                     src={t("contact.mapUrl")}
-                    width="600"
-                    height="450"
+                    className="w-full h-full"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"

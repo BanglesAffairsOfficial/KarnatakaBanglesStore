@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Phone, ChevronRight } from "lucide-react";
+import { Loader2, Mail, ChevronRight } from "lucide-react";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import { EmailVerificationDialog } from "@/components/EmailVerificationDialog";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,11 +21,15 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [showVerificationDialog, setShowVerificationDialog] = useState(false);
 
   const { signIn, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
   const loginSchema = useMemo(
     () =>
@@ -65,19 +70,40 @@ export default function Login() {
 
     if (!validateForm()) return;
 
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase env missing", { supabaseUrl, supabaseKeyPresent: !!supabaseKey });
+      toast({
+        title: "Configuration error",
+        description: "Supabase environment variables are missing. Check VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.info("Login submit", { email, supabaseUrl, keyPrefix: supabaseKey?.slice(0, 6) });
       const { error } = await signIn(email, password);
       if (error) {
-        toast({
-          title: t("loginPage.toast.loginFailed"),
-          description:
-            error.message === "Invalid login credentials"
-              ? t("loginPage.toast.invalidCreds")
-              : error.message,
-          variant: "destructive",
-        });
+        const lower = (error.message || "").toLowerCase();
+        if (lower.includes("confirm")) {
+          toast({
+            title: t("loginPage.toast.loginFailed"),
+            description: t("authPage.verification.note"),
+            variant: "destructive",
+          });
+          setShowVerificationDialog(true);
+        } else {
+          toast({
+            title: t("loginPage.toast.loginFailed"),
+            description:
+              error.message === "Invalid login credentials"
+                ? t("loginPage.toast.invalidCreds")
+                : error.message,
+            variant: "destructive",
+          });
+        }
       } else {
         toast({
           title: t("loginPage.toast.welcome"),
@@ -92,6 +118,13 @@ export default function Login() {
 
         navigate("/");
       }
+    } catch (err: any) {
+      console.error("Login submit error:", err);
+      toast({
+        title: t("loginPage.toast.loginFailed"),
+        description: err?.message || t("loginPage.toast.unexpected"),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -121,9 +154,10 @@ export default function Login() {
       // The user will be redirected to Google's consent screen
       // After successful authentication, they'll be redirected back to your app
     } catch (error: any) {
+      console.error("Google OAuth error:", error);
       toast({
         title: t("loginPage.toast.loginFailed"),
-        description: t("loginPage.toast.unexpected"),
+        description: error?.message || t("loginPage.toast.unexpected"),
         variant: "destructive",
       });
     } finally {
@@ -308,16 +342,6 @@ export default function Login() {
 
               <Button
                 type="button"
-                variant="outline"
-                className="w-full h-11 gap-2 font-medium"
-                disabled={loading}
-              >
-                <Phone className="w-4 h-4" />
-                {t("loginPage.phone")}
-              </Button>
-
-              <Button
-                type="button"
                 variant="ghost"
                 className="w-full h-11 font-medium"
                 onClick={handleGuestCheckout}
@@ -344,6 +368,12 @@ export default function Login() {
         </Card>
 
       </div>
+
+      <EmailVerificationDialog
+        open={showVerificationDialog}
+        onOpenChange={setShowVerificationDialog}
+        email={email}
+      />
     </div>
   );
 }

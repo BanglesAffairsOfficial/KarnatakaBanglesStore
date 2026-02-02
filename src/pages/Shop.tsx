@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ interface Bangle {
   name: string;
   description: string | null;
   price: number;
+  retail_price?: number | null;
   image_url: string | null;
   secondary_image_url?: string | null;
   available_colors: string[];
@@ -33,6 +35,8 @@ export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const isWholesale = !!session?.user;
 
   const [products, setProducts] = useState<Bangle[]>([]);
   const [categories, setCategories] = useState<Array<{id:string,name:string}>>([]);
@@ -44,6 +48,11 @@ export default function Shop() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const getDisplayPrice = (p: Bangle) => {
+    const retail = p.retail_price ?? p.price ?? 0;
+    const wholesale = p.price ?? retail;
+    return isWholesale ? wholesale : retail;
+  };
 
   const allSizes = ["2.2", "2.4", "2.6", "2.8", "2.10"];
 
@@ -74,7 +83,7 @@ export default function Shop() {
         secondary_image_url: p.secondary_image_url || p.image_url_2 || null,
       }));
       setProducts(mapped);
-      const computedMax = mapped.reduce((max, p) => Math.max(max, p.price || 0), 0);
+      const computedMax = mapped.reduce((max, p) => Math.max(max, getDisplayPrice(p as any)), 0);
       if (computedMax > 0) {
         const paddedMax = Math.ceil(computedMax / 1000) * 1000 + 1000;
         setMaxPrice(paddedMax);
@@ -101,7 +110,10 @@ export default function Shop() {
     }
 
     // Filter by price range
-    result = result.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
+    result = result.filter(p => {
+      const price = getDisplayPrice(p);
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     // Filter by categories
     if (selectedCategories.length > 0) {
@@ -121,10 +133,10 @@ export default function Shop() {
     // Sort
     switch (sortBy) {
       case "price-low":
-        result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => getDisplayPrice(a) - getDisplayPrice(b));
         break;
       case "price-high":
-        result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => getDisplayPrice(b) - getDisplayPrice(a));
         break;
       case "popular":
         // In a real app, this would be based on actual popularity metrics
@@ -349,14 +361,17 @@ export default function Shop() {
                 <Button onClick={clearAllFilters}>{t("shop.filters.clearAll")}</Button>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {filteredAndSortedProducts.map(product => (
                   <div
                     key={product.id}
                     onClick={() => navigate(`/product/${product.id}`)}
                     className="cursor-pointer"
                   >
-                    <ProductCard bangle={product} categoryName={categories.find(c => c.id === product.category_id)?.name} />
+                    <ProductCard
+                      bangle={{ ...product, price: getDisplayPrice(product) }}
+                      categoryName={categories.find(c => c.id === product.category_id)?.name}
+                    />
                   </div>
                 ))}
               </div>

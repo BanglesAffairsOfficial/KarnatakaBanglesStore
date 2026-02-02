@@ -23,11 +23,14 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
-  
+
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
   const baseSchema = useMemo(
     () =>
@@ -44,7 +47,13 @@ export default function Auth() {
     if (user) {
       navigate("/");
     }
-  }, [user, navigate]);
+    if (import.meta.env.DEV) {
+      console.info("Auth page mounted", {
+        supabaseUrl: supabaseUrl || "MISSING",
+        supabaseKeyPrefix: supabaseKey?.slice(0, 6) || "MISSING",
+      });
+    }
+  }, [user, navigate, supabaseKey, supabaseUrl]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -76,22 +85,84 @@ export default function Auth() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-    
+    console.info("HANDLE SUBMIT FIRED");
+
+    const payload = {
+      email: email.trim(),
+      password,
+      fullName: isLogin ? undefined : fullName?.trim(),
+      confirmPassword: isLogin ? undefined : confirmPassword,
+    };
+
+    const isValid = (() => {
+      const newErrors: Record<string, string> = {};
+
+      try {
+        baseSchema.parse(payload);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          error.errors.forEach((err) => {
+            if (err.path[0]) newErrors[err.path[0] as string] = err.message;
+          });
+        }
+      }
+
+      if (!isLogin) {
+        if (!payload.fullName || payload.fullName.length < 2) {
+          newErrors.fullName = t("authPage.errors.fullName");
+        }
+        if (payload.password !== payload.confirmPassword) {
+          newErrors.confirmPassword = t("authPage.errors.confirmPassword");
+        }
+      }
+
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    })();
+    console.info("Validate result", { isValid, errors });
+    if (!isValid) {
+      toast({
+        title: "Invalid form",
+        description: "Please check email/password and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase env missing", { supabaseUrl, supabaseKeyPresent: !!supabaseKey });
+      toast({
+        title: "Configuration error",
+        description: "Supabase environment variables are missing. Check VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (isLogin) {
+        console.info("Auth submit", { email, supabaseUrl, keyPrefix: supabaseKey?.slice(0, 6) });
         const { error } = await signIn(email, password);
         if (error) {
-          toast({
-            title: t("authPage.toast.loginFailed"),
-            description: error.message === "Invalid login credentials" 
-              ? t("authPage.toast.invalidCreds")
-              : error.message,
-            variant: "destructive",
-          });
+          const lower = (error.message || "").toLowerCase();
+          if (lower.includes("confirm")) {
+            toast({
+              title: t("authPage.toast.loginFailed"),
+              description: t("authPage.verification.note"),
+              variant: "destructive",
+            });
+            setShowVerificationDialog(true);
+          } else {
+            toast({
+              title: t("authPage.toast.loginFailed"),
+              description: error.message === "Invalid login credentials"
+                ? t("authPage.toast.invalidCreds")
+                : error.message,
+              variant: "destructive",
+            });
+          }
         } else {
           toast({
             title: t("authPage.toast.welcome"),
@@ -113,6 +184,13 @@ export default function Auth() {
           setShowVerificationDialog(true);
         }
       }
+    } catch (err: any) {
+      console.error("Auth submit error:", err);
+      toast({
+        title: t("authPage.toast.loginFailed"),
+        description: err?.message || t("authPage.toast.unexpected"),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -124,11 +202,17 @@ export default function Auth() {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      toast({ title: t("authPage.toast.googleFailed"), description: error.message, variant: "destructive" });
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast({ title: t("authPage.toast.googleFailed"), description: error.message, variant: "destructive" });
+      }
+    } catch (err: any) {
+      console.error("Google auth error:", err);
+      toast({ title: t("authPage.toast.googleFailed"), description: err?.message || t("authPage.toast.unexpected"), variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

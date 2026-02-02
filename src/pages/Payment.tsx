@@ -34,26 +34,31 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+    // Allow guest checkout: don't force auth; still fetch order.
     fetchOrder();
   }, [authLoading, user, orderId]);
 
   const fetchOrder = async () => {
     if (!orderId) return;
     setLoading(true);
-    const { data, error } = await supabase
+    const query = supabase
       .from("orders")
-      .select("id, total_amount, total, payment_status, status")
+      .select("id, user_id, total_amount, payment_status, status")
       .eq("id", orderId)
-      .eq("user_id", user!.id)
-      .single();
+      .maybeSingle();
+
+    const { data, error } = await query;
 
     if (error || !data) {
       toast({ title: "Order not found", description: error?.message, variant: "destructive" });
-      navigate("/orders");
+      navigate("/");
+      return;
+    }
+
+    // If the order belongs to a logged-in user and it's not theirs, block.
+    if (data.user_id && user && data.user_id !== user.id) {
+      toast({ title: "Access denied", description: "This order does not belong to you.", variant: "destructive" });
+      navigate("/");
       return;
     }
 
@@ -61,7 +66,7 @@ export default function PaymentPage() {
     setLoading(false);
   };
 
-  const amount = order?.total_amount ?? order?.total ?? 0;
+  const amount = order?.total_amount ?? 0;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -124,7 +129,13 @@ export default function PaymentPage() {
         title: "Payment submitted",
         description: "Verification in progress.",
       });
-      navigate("/orders");
+      navigate(`/payment/${orderId}/submitted`, {
+        state: {
+          orderId,
+          amount,
+          method: "QR Payment",
+        },
+      });
     } catch (err: any) {
       console.error("Payment submit error:", err);
       toast({

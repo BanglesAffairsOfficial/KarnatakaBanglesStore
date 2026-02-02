@@ -60,6 +60,7 @@ export interface ColorInfo {
   name: string;
   hex: string;
   swatchImage?: string;
+  active?: boolean;
 }
 
 /**
@@ -67,10 +68,11 @@ export interface ColorInfo {
  * Handles: objects with {name, hex}, plain strings, and JSON strings
  */
 export const parseColor = (color: string | any): ColorInfo => {
-  const withSwatch = (name: string, hex: string, swatchImage?: string): ColorInfo => ({
+  const withSwatch = (name: string, hex: string, swatchImage?: string, active?: boolean): ColorInfo => ({
     name,
     hex,
     ...(swatchImage ? { swatchImage } : {}),
+    ...(active === false ? { active: false } : {}),
   });
   const normalizeHexForName = (name: string, fallbackHex: string) => {
     const mapped = COLOR_MAP[name.toLowerCase()];
@@ -83,7 +85,7 @@ export const parseColor = (color: string | any): ColorInfo => {
       const swatchImage = color.swatchImage || COLOR_SWATCH_IMAGES[color.name.toLowerCase()];
       const normalized = color.hex.startsWith('#') ? color.hex : `#${color.hex}`;
       const hex = normalizeHexForName(color.name, normalized);
-      return withSwatch(color.name, hex, swatchImage);
+      return withSwatch(color.name, hex, swatchImage, color.active);
     }
     // Object with just hex
     if (color.hex) {

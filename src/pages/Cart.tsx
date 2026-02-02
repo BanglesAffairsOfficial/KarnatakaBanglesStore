@@ -47,6 +47,9 @@ const DELIVERY_CHARGES: Record<DeliveryOption, number> = {
   delivery: 200,
 };
 
+const formatPrice = (value: number) =>
+  `₹ ${value.toLocaleString("en-IN", { minimumFractionDigits: 0 })}`;
+
 const checkProfileComplete = async (userId: string) => {
   const { data, error } = await supabase
     .from("profiles")
@@ -67,7 +70,7 @@ const checkProfileComplete = async (userId: string) => {
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, clearCart, totalAmount } = useCart();
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -79,6 +82,15 @@ export default function Cart() {
   const [profileComplete, setProfileComplete] = useState(false);
   const [checkingProfile, setCheckingProfile] = useState(true);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>("pickup");
+  const [guestDetails, setGuestDetails] = useState({
+    full_name: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -98,13 +110,22 @@ export default function Cart() {
   };
 
   const fetchAddresses = async () => {
-    const { data } = await supabase
+    setLoadingAddresses(true);
+    const { data, error } = await supabase
       .from("delivery_addresses")
       .select("*")
       .eq("user_id", user!.id)
       .order("is_default", { ascending: false });
 
-    if (data) {
+    if (error) {
+      console.error("Address fetch failed:", error);
+      toast({
+        title: "Unable to load addresses",
+        description: error.message,
+        variant: "destructive",
+      });
+      setAddresses([]);
+    } else if (data) {
       setAddresses(data);
       const defaultAddr = data.find((a) => a.is_default);
       if (defaultAddr) setSelectedAddressId(defaultAddr.id);
@@ -113,20 +134,11 @@ export default function Cart() {
     setLoadingAddresses(false);
   };
 
-  const deliveryCharge = DELIVERY_CHARGES[deliveryOption];
+  const deliveryCharge = user ? DELIVERY_CHARGES[deliveryOption] : 0;
   const finalTotal = totalAmount + deliveryCharge;
+  const isWholesale = !!session?.user;
 
   const handlePlaceOrder = async () => {
-    if (!user) {
-      toast({
-        title: t("cart.toast.loginTitle"),
-        description: t("cart.toast.loginDesc"),
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
     if (items.length === 0) {
       toast({ title: t("cart.toast.empty"), variant: "destructive" });
       return;
@@ -134,45 +146,103 @@ export default function Cart() {
 
     setPlacingOrder(true);
 
-    const { isComplete } = await checkProfileComplete(user.id);
-    if (!isComplete) {
-      toast({
-        title: t("cart.toast.completeProfileTitle"),
-        description: t("cart.toast.completeProfileDesc"),
-        variant: "destructive",
-      });
-      setPlacingOrder(false);
-      navigate("/profile");
-      return;
-    }
+    if (user) {
+      const { isComplete } = await checkProfileComplete(user.id);
+      if (!isComplete) {
+        toast({
+          title: t("cart.toast.completeProfileTitle"),
+          description: t("cart.toast.completeProfileDesc"),
+          variant: "destructive",
+        });
+        setPlacingOrder(false);
+        navigate("/profile");
+        return;
+      }
 
-    if (deliveryOption === "delivery" && !selectedAddressId) {
-      toast({
-        title: t("cart.toast.selectAddressTitle"),
-        description: t("cart.toast.selectAddressDesc"),
-        variant: "destructive",
-      });
-      setPlacingOrder(false);
-      return;
+      if (deliveryOption === "delivery" && !selectedAddressId) {
+        toast({
+          title: t("cart.toast.selectAddressTitle"),
+          description: t("cart.toast.selectAddressDesc"),
+          variant: "destructive",
+        });
+        setPlacingOrder(false);
+        return;
+      }
+    } else {
+      // Basic guest validation
+      if (
+        !guestDetails.full_name.trim() ||
+        !guestDetails.phone.trim() ||
+        !guestDetails.address.trim() ||
+        !guestDetails.city.trim() ||
+        !guestDetails.state.trim() ||
+        !guestDetails.pincode.trim()
+      ) {
+        toast({
+          title: "Missing details",
+          description: "Please fill name, phone, address, city, state, and pincode.",
+          variant: "destructive",
+        });
+        setPlacingOrder(false);
+        return;
+      }
     }
 
     try {
+      // Confirm current Supabase auth user (authoritative for RLS auth.uid())
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+
+      // If context says user is logged in but Supabase reports no user, stop and prompt re-login
+      if (user && !currentUser) {
+        toast({ title: "Authentication required", description: "Your session has expired. Please log in again.", variant: "destructive" });
+        setPlacingOrder(false);
+        navigate("/auth");
+        return;
+      }
+
+      const orderUserId = currentUser ? currentUser.id : null;
+      const orderType = orderUserId ? "wholesale" : "retail";
+
+      const orderPayload = {
+        user_id: orderUserId,
+        total_amount: finalTotal,
+        delivery_address_id: orderUserId && deliveryOption === "delivery" ? selectedAddressId : null,
+        status: "payment_pending",
+        payment_status: "pending",
+        delivery_type: deliveryOption,
+        delivery_charge: deliveryCharge,
+        order_type: orderType,
+        meta: {
+          guest: orderUserId ? null : {
+            full_name: guestDetails.full_name,
+            phone: guestDetails.phone,
+            email: guestDetails.email,
+            address: guestDetails.address,
+            city: guestDetails.city,
+            state: guestDetails.state,
+            pincode: guestDetails.pincode,
+          }
+        }
+      };
+
+      if (import.meta.env.DEV) console.log("Creating order with payload:", orderPayload);
+
+      // Diagnostic: check authoritative Supabase auth user (helps troubleshoot RLS failures)
+      const { data: { user: sessionCheck } } = await supabase.auth.getUser();
+      if (import.meta.env.DEV) console.log("SESSION CHECK —", {
+        sessionUser: sessionCheck?.id ?? null,
+        orderUserId: orderPayload.user_id,
+        role: sessionCheck ? "authenticated" : "anon",
+      });
+
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
-        .insert({
-          user_id: user.id,
-          total_amount: finalTotal,
-          total: finalTotal,
-          delivery_address_id: deliveryOption === "delivery" ? selectedAddressId : null,
-          status: "payment_pending",
-          payment_status: "pending",
-          delivery_type: deliveryOption,
-          delivery_charge: deliveryCharge,
-        })
+        .insert(orderPayload)
         .select()
         .single();
 
       if (orderError || !orderData) {
+        console.error("Order insert failed", orderError);
         throw new Error(orderError?.message || "Failed to create order");
       }
 
@@ -181,13 +251,13 @@ export default function Cart() {
         bangle_id: item.banglesId,
         quantity: item.quantity,
         unit_price: item.price,
-        price: item.price,
         total_price: item.price * item.quantity,
         product_name: item.name,
         size: item.size || null,
         color: item.color || null,
         status: "active",
         cancelled_qty: 0,
+        order_type: orderType,
       }));
 
       const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
@@ -219,7 +289,19 @@ export default function Cart() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-display font-bold text-foreground mb-8">{t("cart.title")}</h1>
+        <div className="flex items-start sm:items-center justify-between gap-3 mb-8 flex-wrap">
+          <h1 className="text-3xl font-display font-bold text-foreground">{t("cart.title")}</h1>
+          {items.length > 0 && (
+            <Button
+              variant="outline"
+              className="gap-2 text-destructive hover:text-destructive-foreground hover:bg-destructive w-full sm:w-auto"
+              onClick={clearCart}
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear Cart
+            </Button>
+          )}
+        </div>
 
         {user && !checkingProfile && !profileComplete && (
           <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-start gap-3">
@@ -259,8 +341,8 @@ export default function Cart() {
                 return (
                   <Card key={`${item.banglesId}-${item.size}-${item.color}`} className="shadow-elegant">
                     <CardContent className="p-4">
-                      <div className="flex gap-4">
-                        <div className="w-20 h-20 bg-secondary rounded-lg overflow-hidden flex-shrink-0 border border-border">
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="w-full sm:w-20 h-48 sm:h-20 bg-secondary rounded-lg overflow-hidden flex-shrink-0 border border-border">
                           {item.imageUrl ? (
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                           ) : (
@@ -274,32 +356,34 @@ export default function Cart() {
                             </div>
                           )}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="notranslate font-semibold text-foreground truncate">{item.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                            <span>{t("profile.size")}: {item.size}</span>
-                            <span>|</span>
-                            <div className="flex items-center gap-1">
-                              <div
-                                className="w-4 h-4 rounded-full border border-border"
-                                style={swatchStyle}
-                                title={displayColor}
-                              />
-                              <span>{displayColor}</span>
+                        <div className="flex-1 min-w-0 flex flex-col gap-3">
+                          <div className="flex justify-between gap-2">
+                            <div className="min-w-0">
+                              <h3 className="notranslate font-semibold text-foreground truncate">{item.name}</h3>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1 flex-wrap">
+                                <span>{t("profile.size")}: {item.size}</span>
+                                <span className="hidden sm:inline">|</span>
+                              <div className="flex items-center gap-1">
+                                <div
+                                  className="w-4 h-4 rounded-full border border-border"
+                                  style={swatchStyle}
+                                  title={displayColor}
+                                />
+                                <span>{displayColor}</span>
+                              </div>
                             </div>
+                            <p className="text-accent font-bold mt-1">{formatPrice(item.price)}</p>
                           </div>
-                          <p className="text-accent font-bold mt-1">₹{item.price}</p>
-                        </div>
-                        <div className="flex flex-col items-end justify-between">
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => removeItem(item.banglesId, item.size, item.color)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                          <div className="flex items-center gap-2">
+                              className="text-destructive self-start"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          <div className="flex items-center gap-2 sm:justify-start justify-between">
                             <Button
                               variant="outline"
                               size="icon"
@@ -308,7 +392,7 @@ export default function Cart() {
                             >
                               <Minus className="w-3 h-3" />
                             </Button>
-                            <span className="w-8 text-center font-medium">{item.quantity}</span>
+                            <span className="w-10 text-center font-medium">{item.quantity}</span>
                             <Button
                               variant="outline"
                               size="icon"
@@ -327,72 +411,108 @@ export default function Cart() {
             </div>
 
             <div className="space-y-4">
-              <Card className="shadow-elegant">
-                <CardHeader>
-                  <CardTitle className="font-display">Delivery Options</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={deliveryOption} onValueChange={(value) => setDeliveryOption(value as DeliveryOption)}>
-                    <div className="space-y-4">
-                      <div
-                             className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                               deliveryOption === "pickup" ? "border-accent bg-accent/5" : "border-border"
-                             }`}
-                           >
-                        <div className="flex items-start gap-3">
-                          <RadioGroupItem value="pickup" id="pickup" className="mt-1" />
-                          <Label htmlFor="pickup" className="flex-1 cursor-pointer">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Store className="w-5 h-5 text-accent" />
-                              <span className="font-semibold text-base">{t("cart.delivery.pickupTitle")}</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">{t("cart.delivery.pickupCharge")}</p>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {t("cart.delivery.pickupDesc")}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {["secure", "quick", "nearby"].map((k) => (
-                                <span key={k} className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded">
-                                  {t(`cart.delivery.pickupPill.${k}`)}
-                                </span>
-                              ))}
-                            </div>
-                          </Label>
+              {user && (
+                <Card className="shadow-elegant">
+                  <CardHeader>
+                    <CardTitle className="font-display">Delivery Options</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <RadioGroup value={deliveryOption} onValueChange={(value) => setDeliveryOption(value as DeliveryOption)}>
+                      <div className="space-y-4">
+                        <div
+                          className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                            deliveryOption === "pickup" ? "border-accent bg-accent/5" : "border-border"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <RadioGroupItem value="pickup" id="pickup" className="mt-1" />
+                            <Label htmlFor="pickup" className="flex-1 cursor-pointer">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Store className="w-5 h-5 text-accent" />
+                                <span className="font-semibold text-base">{t("cart.delivery.pickupTitle")}</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">{t("cart.delivery.pickupCharge")}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t("cart.delivery.pickupDesc")}
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {["secure", "quick", "nearby"].map((k) => (
+                                  <span key={k} className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded">
+                                    {t(`cart.delivery.pickupPill.${k}`)}
+                                  </span>
+                                ))}
+                              </div>
+                            </Label>
+                          </div>
                         </div>
-                      </div>
 
-                      <div
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                          deliveryOption === "delivery" ? "border-accent bg-accent/5" : "border-border"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <RadioGroupItem value="delivery" id="delivery" className="mt-1" />
-                          <Label htmlFor="delivery" className="flex-1 cursor-pointer">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Truck className="w-5 h-5 text-accent" />
-                              <span className="font-semibold text-base">{t("cart.delivery.deliveryTitle")}</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">{t("cart.delivery.deliveryCharge")}</p>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {t("cart.delivery.deliveryDesc")}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {["doorstep", "safe", "outstation"].map((k) => (
-                                <span key={k} className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded">
-                                  {t(`cart.delivery.deliveryPill.${k}`)}
-                                </span>
-                              ))}
-                            </div>
-                          </Label>
+                        <div
+                          className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                            deliveryOption === "delivery" ? "border-accent bg-accent/5" : "border-border"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <RadioGroupItem value="delivery" id="delivery" className="mt-1" />
+                            <Label htmlFor="delivery" className="flex-1 cursor-pointer">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Truck className="w-5 h-5 text-accent" />
+                                <span className="font-semibold text-base">{t("cart.delivery.deliveryTitle")}</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">{t("cart.delivery.deliveryCharge")}</p>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {t("cart.delivery.deliveryDesc")}
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {["doorstep", "safe", "outstation"].map((k) => (
+                                  <span key={k} className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded">
+                                    {t(`cart.delivery.deliveryPill.${k}`)}
+                                  </span>
+                                ))}
+                              </div>
+                            </Label>
+                          </div>
                         </div>
                       </div>
+                    </RadioGroup>
+                  </CardContent>
+                </Card>
+              )}
+
+              {!user && (
+                <Card className="shadow-elegant">
+                  <CardHeader>
+                    <CardTitle className="font-display">Retail Checkout Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[
+                      { key: "full_name", label: "Full Name", type: "text" },
+                      { key: "phone", label: "Phone", type: "tel" },
+                      { key: "email", label: "Email (optional)", type: "email" },
+                      { key: "address", label: "Address", type: "text" },
+                      { key: "city", label: "City", type: "text" },
+                      { key: "state", label: "State", type: "text" },
+                      { key: "pincode", label: "Pincode", type: "text" },
+                    ].map((field) => (
+                      <div key={field.key} className="space-y-1">
+                        <Label>{field.label}</Label>
+                        <input
+                          type={field.type}
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                          value={(guestDetails as any)[field.key]}
+                          onChange={(e) =>
+                            setGuestDetails((prev) => ({ ...prev, [field.key]: e.target.value }))
+                          }
+                        />
+                      </div>
+                    ))}
+                    <div className="text-xs text-muted-foreground">
+                      Order type: Retail (no account required). For wholesale pricing, log in.
                     </div>
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
 
-              {deliveryOption === "delivery" && (
+              {user && deliveryOption === "delivery" && (
                 <Card className="shadow-elegant">
                   <CardHeader>
                     <CardTitle className="font-display flex items-center gap-2">
@@ -460,26 +580,37 @@ export default function Cart() {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between text-muted-foreground">
                     <span>{t("cart.summary.items", { count: items.reduce((s, i) => s + i.quantity, 0) })}</span>
-                    <span>₹ {totalAmount}</span>
+                    <span>{formatPrice(totalAmount)}</span>
                   </div>
 
                   <div className="flex justify-between text-muted-foreground">
-                    <span>{deliveryOption === "pickup" ? t("cart.summary.pickup") : t("cart.summary.packaging")}</span>
-                    <span>₹ {deliveryCharge}</span>
+                    <span>{user && deliveryOption === "delivery" ? t("cart.summary.packaging") : t("cart.summary.pickup")}</span>
+                    <span>{formatPrice(deliveryCharge)}</span>
                   </div>
 
                   <div className="border-t border-border pt-3 flex justify-between font-bold text-lg">
                     <span>{t("cart.summary.total")}</span>
-                    <span className="text-accent">₹ {finalTotal}</span>
+                    <span className="text-accent">{formatPrice(finalTotal)}</span>
                   </div>
+                  {!user && (
+                    <div className="text-xs text-muted-foreground">
+                      Retail checkout (no login). For wholesale pricing, log in.
+                    </div>
+                  )}
                   <Button
                     className="w-full gradient-gold text-foreground"
                     size="lg"
                     onClick={handlePlaceOrder}
-                    disabled={placingOrder || items.length === 0 || !user || (user && !profileComplete)}
+                    disabled={
+                      placingOrder ||
+                      items.length === 0 ||
+                      loadingAddresses ||
+                      (user && deliveryOption === "delivery" && !selectedAddressId) ||
+                      (user && !profileComplete)
+                    }
                   >
                     {placingOrder && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    {!user ? t("cart.summary.loginCta") : !profileComplete ? t("cart.summary.profileCta") : t("cart.summary.placeOrder")}
+                    {!user ? "Place Retail Order" : !profileComplete ? t("cart.summary.profileCta") : t("cart.summary.placeOrder")}
                   </Button>
 
                   {user && !profileComplete && (

@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function Header() {
-  const { user, isAdmin, signOut, unreadNotifications = 0 } = useAuth();
+  const { user, isAdmin, signOut, unreadNotifications = 0, clearUnread } = useAuth();
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -44,7 +44,8 @@ export function Header() {
     localStorage.setItem("preferred_language", code);
   };
 
-  const hasUnreadNotifications = (unreadNotifications || 0) > 0;
+  const unreadCount = unreadNotifications || 0;
+  const hasUnreadNotifications = unreadCount > 0;
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
@@ -96,13 +97,16 @@ export function Header() {
           {/* Auth Buttons, Cart, Translate */}
           <div className="hidden md:flex items-center gap-3">
             {user && (
-              <Link to="/inbox" className="relative p-2 hover:bg-secondary rounded-lg transition-colors">
+              <Link
+                to="/inbox"
+                className="relative p-2 hover:bg-secondary rounded-lg transition-colors"
+                onClick={() => clearUnread()}
+              >
                 <Bell className="w-5 h-5" />
                 {hasUnreadNotifications && (
-                  <>
-                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-sky-500/30 animate-ping" />
-                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-sky-500 rounded-full border border-white animate-pulse" />
-                  </>
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[11px] rounded-full flex items-center justify-center font-bold">
+                    {unreadCount}
+                  </span>
                 )}
               </Link>
             )}
@@ -154,13 +158,12 @@ export function Header() {
           {/* Mobile Menu Button & Cart/Inbox */}
           <div className="md:hidden flex items-center gap-2">
             {user && (
-              <Link to="/inbox" className="relative p-2">
+              <Link to="/inbox" className="relative p-2" onClick={() => clearUnread()}>
                 <Bell className="w-5 h-5" />
                 {hasUnreadNotifications && (
-                  <>
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-sky-500/30 animate-ping" />
-                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-sky-500 rounded-full border border-white animate-pulse" />
-                  </>
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                    {unreadCount}
+                  </span>
                 )}
               </Link>
             )}
@@ -205,63 +208,63 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <nav className="flex flex-col gap-3">
-              <Link to="/" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+          <div className="md:hidden py-3 border-t border-border bg-background/95 backdrop-blur-sm">
+            <nav className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto text-sm px-2">
+              <Link to="/" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                 {t("nav.home")}
               </Link>
               {isHome ? (
                 <>
-                  <a href="#categories" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <a href="#categories" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("header.nav.categories")}
                   </a>
-                  <a href="#featured" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <a href="#featured" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("header.nav.featured")}
                   </a>
-                  <a href="#reviews" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <a href="#reviews" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("header.nav.reviews")}
                   </a>
-                  <a href="#contact" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <a href="#contact" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("header.nav.contact")}
                   </a>
                 </>
               ) : (
                 <>
-                  <Link to="/shop" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/shop" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.shop")}
                   </Link>
-                  <Link to="/faq" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/faq" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.faq")}
                   </Link>
-                  <Link to="/contact" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/contact" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.contact")}
                   </Link>
                 </>
               )}
               {user && (
                 <>
-                  <Link to="/orders" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/orders" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.orders")}
                   </Link>
-                  <Link to="/wishlist" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/wishlist" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.wishlist")}
                   </Link>
-                  <Link to="/profile" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/profile" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                     {t("nav.profile")}
                   </Link>
                 </>
               )}
               {isAdmin && (
-                <Link to="/admin" className="px-4 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/admin" className="px-3 py-2 text-foreground hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                   {t("nav.admin")}
                 </Link>
               )}
               {user ? (
-                <button onClick={() => { signOut(); setMobileMenuOpen(false); }} className="px-4 py-2 text-left text-destructive hover:bg-secondary rounded-lg">
+                <button onClick={() => { signOut(); setMobileMenuOpen(false); }} className="px-3 py-2 text-left text-destructive hover:bg-secondary rounded-lg">
                   {t("auth.logout")}
                 </button>
               ) : (
-                <Link to="/auth" className="px-4 py-2 text-primary font-medium hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/auth" className="px-3 py-2 text-primary font-medium hover:bg-secondary rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                   {t("auth.loginSignup")}
                 </Link>
               )}

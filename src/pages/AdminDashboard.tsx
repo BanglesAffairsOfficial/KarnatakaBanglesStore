@@ -14,16 +14,17 @@ interface OrderRow {
   delivery_type: string | null;
   delivery_charge: number | null;
   total_amount: number | null;
-  total: number | null;
   profiles?: {
     full_name: string | null;
     phone: string | null;
+    email: string | null;
   } | null;
+  meta?: any;
 }
 
 interface OrderItemRow {
   quantity: number;
-  price: number | null;
+  unit_price: number | null;
   bangles?: {
     id: string;
     name: string;
@@ -67,8 +68,8 @@ export default function AdminDashboard() {
               delivery_type,
               delivery_charge,
               total_amount,
-              total,
-              profiles:profiles!orders_user_id_fkey(full_name, phone)
+              profiles:profiles!orders_user_id_fkey(full_name, phone, email),
+              meta
             `
           )
           .order("created_at", { ascending: false })
@@ -78,7 +79,7 @@ export default function AdminDashboard() {
           .select(
             `
               quantity,
-              price,
+              unit_price,
               bangles:bangle_id(id, name, category_id)
             `
           )
@@ -117,7 +118,7 @@ export default function AdminDashboard() {
 
     orders.forEach((o) => {
       const createdTs = new Date(o.created_at).getTime();
-      const amt = o.total_amount ?? o.total ?? 0;
+      const amt = o.total_amount ?? 0;
       revenue += amt;
       if (createdTs >= startOfToday) totalOrdersToday++;
       if (createdTs >= startOfMonth) totalOrdersMonth++;
@@ -151,7 +152,7 @@ export default function AdminDashboard() {
       const key = id;
       const existing = map.get(key) || { name: item.bangles?.name || "Bangle", qty: 0, revenue: 0 };
       const qty = item.quantity || 0;
-      const price = item.price ?? 0;
+      const price = item.unit_price ?? 0;
       existing.qty += qty;
       existing.revenue += price * qty;
       map.set(key, existing);
@@ -260,41 +261,98 @@ export default function AdminDashboard() {
             ) : recentOrders.length === 0 ? (
               <p className="text-muted-foreground text-sm">No recent orders.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="text-left text-muted-foreground">
-                    <tr>
-                      <th className="py-2">Order</th>
-                      <th className="py-2">Customer</th>
-                      <th className="py-2">Total</th>
-                      <th className="py-2">Delivery</th>
-                      <th className="py-2">Status</th>
-                      <th className="py-2">Created</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {recentOrders.map((o) => (
-                      <tr key={o.id}>
-                        <td className="py-2 font-semibold">#{o.id.slice(0, 8)}</td>
-                        <td className="py-2">
-                          <div className="font-medium">{o.profiles?.full_name || "Unknown"}</div>
-                          <div className="text-xs text-muted-foreground">{o.profiles?.phone || "-"}</div>
-                        </td>
-                        <td className="py-2">Rs {Number(o.total_amount ?? o.total ?? 0).toLocaleString()}</td>
-                        <td className="py-2 capitalize">{o.delivery_type || "-"}</td>
-                        <td className="py-2 capitalize">{o.status || "pending"}</td>
-                        <td className="py-2 text-muted-foreground">
-                          {new Date(o.created_at).toLocaleString("en-IN", {
-                            year: "numeric",
-                            month: "short",
-                            day: "2-digit",
-                          })}
-                        </td>
+              <>
+                {/* Desktop table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-muted-foreground">
+                      <tr>
+                        <th className="py-2">Order</th>
+                        <th className="py-2">Customer</th>
+                        <th className="py-2">Type</th>
+                        <th className="py-2">Total</th>
+                        <th className="py-2">Delivery</th>
+                        <th className="py-2">Status</th>
+                        <th className="py-2">Created</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {recentOrders.map((o) => {
+                        const guest = (o.meta as any)?.guest || null;
+                        const name = o.profiles?.full_name || guest?.full_name || "Unknown";
+                        const phone = o.profiles?.phone || guest?.phone || "-";
+                        const deliveryLabel = guest ? "location" : (o.delivery_type || "-");
+                        const typeLabel = guest ? "B2C" : "B2B";
+                        return (
+                          <tr key={o.id}>
+                            <td className="py-2 font-semibold">#{o.id.slice(0, 8)}</td>
+                            <td className="py-2">
+                              <div className="font-medium">{name}</div>
+                              <div className="text-xs text-muted-foreground">{phone}</div>
+                            </td>
+                            <td className="py-2">{typeLabel}</td>
+                            <td className="py-2">Rs {Number(o.total_amount ?? 0).toLocaleString()}</td>
+                            <td className="py-2 capitalize">{deliveryLabel}</td>
+                            <td className="py-2 capitalize">{o.status || "pending"}</td>
+                            <td className="py-2 text-muted-foreground">
+                              {new Date(o.created_at).toLocaleString("en-IN", {
+                                year: "numeric",
+                                month: "short",
+                                day: "2-digit",
+                              })}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="md:hidden space-y-3">
+                  {recentOrders.map((o) => {
+                    const guest = (o.meta as any)?.guest || null;
+                    const name = o.profiles?.full_name || guest?.full_name || "Unknown";
+                    const phone = o.profiles?.phone || guest?.phone || "-";
+                    const deliveryLabel = guest ? "location" : (o.delivery_type || "-");
+                    const typeLabel = guest ? "B2C" : "B2B";
+                    return (
+                      <div key={o.id} className="p-3 rounded-lg border border-border space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-semibold">#{o.id.slice(0, 8)}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(o.created_at).toLocaleDateString("en-IN", {
+                              year: "numeric",
+                              month: "short",
+                              day: "2-digit",
+                            })}
+                          </span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">{name}</span>
+                          <span className="text-xs text-muted-foreground block">{phone}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Type</span>
+                          <span className="text-foreground font-semibold">{typeLabel}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Total</span>
+                          <span className="text-foreground font-semibold">Rs {Number(o.total_amount ?? 0).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Delivery</span>
+                          <span className="capitalize text-foreground font-semibold">{deliveryLabel}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Status</span>
+                          <span className="capitalize text-foreground font-semibold">{o.status || "pending"}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </CardContent>
         </Card>

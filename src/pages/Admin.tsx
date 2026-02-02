@@ -14,10 +14,10 @@ import { useFormCache } from "@/hooks/useFormCache";
 import { useUnsavedChangesWarning, useDetectChanges } from "@/hooks/useUnsavedChanges";
 import { Loader2, Plus, Pencil, Trash2, Package, Settings, Image as ImageIcon, Share2, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ColorPickerInput } from "@/components/ColorPickerInput";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UnsavedChangesDialog } from "@/components/UnsavedChangesDialog";
+import { ColorPickerInput } from "@/components/ColorPickerInput";
 
 interface ColorItem {
   name: string;
@@ -30,6 +30,7 @@ interface Bangle {
   name: string;
   description: string | null;
   price: number;
+  retail_price?: number | null;
   image_url: string | null;
   secondary_image_url?: string | null;
   available_sizes: string[];
@@ -39,7 +40,7 @@ interface Bangle {
 
 const DEFAULT_SIZES = ["2.2", "2.4", "2.6", "2.8", "2.10"];
 const DEFAULT_COLORS: ColorItem[] = [
-  { name: "Red", hex: "#dc2626" },
+  { name: "Red", hex: "#dc2626", active: true },
   { name: "Orange", hex: "#ea580c" },
   { name: "Yellow", hex: "#eab308" },
   { name: "Green", hex: "#16a34a" },
@@ -73,8 +74,8 @@ const DEFAULT_COLORS: ColorItem[] = [
   { name: "Peach", hex: "#ffb07c" },
   { name: "Ferozi", hex: "#0fc7c7" },
   { name: "Purple", hex: "#9333ea" },
-  { name: "Dark multi color", hex: "#4b5563", swatchImage: "/DarkMulti.jpg" },
-  { name: "Light multi color", hex: "#e5e7eb", swatchImage: "/LightMulti.jpg" },
+  { name: "Dark multi color", hex: "#4b5563", swatchImage: "/DarkMulti.jpg", active: true },
+  { name: "Light multi color", hex: "#e5e7eb", swatchImage: "/LightMulti.jpg", active: true },
 ];
 
 export default function Admin() {
@@ -104,6 +105,7 @@ export default function Admin() {
     name: "",
     description: "",
     price: "",
+    retail_price: "",
     image_url: "",
     secondary_image_url: "",
     available_sizes: DEFAULT_SIZES,
@@ -125,6 +127,7 @@ export default function Admin() {
     display_order: 0,
     is_active: true
   });
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Form caching
   const { clearCache: clearFormCache } = useFormCache('admin_product_form', form, setForm, !editingBangle);
@@ -170,6 +173,10 @@ export default function Admin() {
     setLoading(false);
   };
 
+  const filteredBangles = bangles.filter((b) =>
+    b.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
+
   const fetchSettings = async () => {
     const { data } = await (supabase as any).from("settings").select("*").single();
     if (data) {
@@ -191,8 +198,8 @@ export default function Admin() {
   };
 
   const resetForm = () => {
-    setForm({ name: "", description: "", price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
-    setInitialForm({ name: "", description: "", price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setForm({ name: "", description: "", price: "", retail_price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setInitialForm({ name: "", description: "", price: "", retail_price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
     setEditingBangle(null);
     setSelectedCategoryId(null);
     clearFormCache();
@@ -204,25 +211,48 @@ export default function Admin() {
     try {
       if (bangle.available_colors && bangle.available_colors.length > 0) {
         const firstColor = bangle.available_colors[0];
-        if (firstColor.includes("{")) {
-          colors = bangle.available_colors.map(c => JSON.parse(c));
-        } else {
-          colors = bangle.available_colors.map(name => {
-            const found = DEFAULT_COLORS.find(dc => dc.name === name);
-            return found || { name, hex: "#888888" };
+
+        // Case 1: already objects from DB
+        if (typeof firstColor === "object" && firstColor !== null) {
+          colors = (bangle.available_colors as any[]).map((c) => ({
+            name: c.name ?? String(c),
+            hex: c.hex ?? "#888888",
+            swatchImage: c.swatchImage,
+            active: c.active !== false,
+          }));
+        }
+        // Case 2: stored as JSON strings
+        else if (typeof firstColor === "string" && firstColor.includes("{")) {
+          colors = (bangle.available_colors as string[]).map((c) => {
+            const parsed = JSON.parse(c);
+            return { ...parsed, active: parsed.active !== false };
+          });
+        }
+        // Case 3: stored as plain color names
+        else {
+          colors = (bangle.available_colors as string[]).map((name) => {
+            const found = DEFAULT_COLORS.find((dc) => dc.name === name);
+            return found || { name, hex: "#888888", active: true };
           });
         }
       }
     } catch { /* use defaults */ }
+
+    // Merge with defaults so every standard color is present (inactive if missing)
+    const merged = new Map<string, any>();
+    DEFAULT_COLORS.forEach((c) => merged.set(c.name.toLowerCase(), { ...c, active: false }));
+    colors.forEach((c) => merged.set((c.name || "").toLowerCase(), { ...c, active: c.active !== false }));
+    const mergedColors = Array.from(merged.values());
     
     setForm({
       name: bangle.name,
       description: bangle.description || "",
-      price: bangle.price.toString(),
+      price: bangle.price?.toString() || "",
+      retail_price: ((bangle as any).retail_price ?? bangle.price ?? 0).toString(),
       image_url: bangle.image_url || "",
       secondary_image_url: (bangle as any).secondary_image_url || (bangle as any).image_url_2 || "",
       available_sizes: bangle.available_sizes || DEFAULT_SIZES,
-      available_colors: colors,
+      available_colors: mergedColors,
       is_active: bangle.is_active,
     });
     setSelectedCategoryId((bangle as any).category_id || null);
@@ -255,8 +285,8 @@ export default function Admin() {
       return;
     }
 
-    if (!form.name || !form.price) {
-      toast({ title: "Missing fields", description: "Please fill in name and price.", variant: "destructive" });
+    if (!form.name || !form.price || !form.retail_price) {
+      toast({ title: "Missing fields", description: "Please fill in name, wholesale price, and retail price.", variant: "destructive" });
       return;
     }
     
@@ -267,9 +297,12 @@ export default function Admin() {
 
     setSaving(true);
     try {
-      const colorData = form.available_colors.map(c => ({
+      const colorArray = Array.isArray(form.available_colors) ? form.available_colors : [];
+      const colorData = colorArray.map(c => ({
         name: typeof c === 'string' ? c : c.name,
-        hex: typeof c === 'object' ? c.hex : '#888888',
+        hex: typeof c === 'object' ? (c as any).hex : '#888888',
+        swatchImage: (c as any).swatchImage,
+        active: (c as any).active !== false,
       }));
 
       const sizesArray = Array.isArray(form.available_sizes) 
@@ -279,7 +312,8 @@ export default function Admin() {
       const bangleData = {
         name: form.name.trim(),
         description: form.description?.trim() || null,
-        price: Math.max(0, parseFloat(form.price) || 0),
+        price: Math.max(0, parseFloat(form.price) || 0), // treat as wholesale/base
+        retail_price: Math.max(0, parseFloat(form.retail_price) || 0),
         image_url: form.image_url?.trim() || null,
         secondary_image_url: form.secondary_image_url?.trim() || null,
         available_sizes: sizesArray,
@@ -485,8 +519,17 @@ export default function Admin() {
 
           {/* Products Tab */}
           <TabsContent value="products" className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
               <h2 className="text-2xl font-bold">Manage Products</h2>
+              <div className="flex items-center gap-3 w-full md:w-80">
+                <Input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search bangles by name"
+                  className="w-full"
+                />
+                <Button variant="outline" onClick={() => setSearchTerm("")}>Clear</Button>
+              </div>
               <Dialog open={dialogOpen} onOpenChange={(open) => {
                 if (!open && formHasChanges) {
                   setShowUnsavedDialog(true);
@@ -515,8 +558,22 @@ export default function Admin() {
                         <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Bangle name" />
                       </div>
                       <div className="space-y-2">
-                        <Label>Price (₹) *</Label>
-                        <Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0" />
+                        <Label>Wholesale Price (₹) *</Label>
+                        <Input
+                          type="number"
+                          value={form.price}
+                          onChange={(e) => setForm({ ...form, price: e.target.value })}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Retail Price (₹) *</Label>
+                        <Input
+                          type="number"
+                          value={form.retail_price}
+                          onChange={(e) => setForm({ ...form, retail_price: e.target.value })}
+                          placeholder="0"
+                        />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -591,7 +648,10 @@ export default function Admin() {
                         ))}
                       </div>
                     </div>
-                    <ColorPickerInput colors={form.available_colors} onChange={(colors) => setForm({ ...form, available_colors: colors })} />
+                    <ColorPickerInput
+                      colors={Array.isArray(form.available_colors) ? (form.available_colors as any) : []}
+                      onChange={(colors) => setForm({ ...form, available_colors: colors })}
+                    />
                     <div className="flex items-center gap-2">
                       <Switch checked={form.is_active} onCheckedChange={(checked) => setForm({ ...form, is_active: checked })} />
                       <Label>In Stock (visible to customers)</Label>
@@ -616,27 +676,29 @@ export default function Admin() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {bangles.length === 0 ? (
+                {filteredBangles.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No bangles added yet.</p>
+                    <p>No bangles match your search.</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {bangles.map((bangle) => (
+                    {filteredBangles.map((bangle) => (
                       <div key={bangle.id} className={`p-4 rounded-lg border ${bangle.is_active ? "border-border" : "border-destructive/30 bg-destructive/5"}`}>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
-                              {bangle.image_url ? (
-                                <img src={bangle.image_url} alt={bangle.name} className="w-full h-full object-cover" />
-                              ) : (
+                              <div className="flex items-center gap-4">
+                                <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                                  {bangle.image_url ? (
+                                    <img src={bangle.image_url} alt={bangle.name} className="w-full h-full object-cover" />
+                                  ) : (
                                 <Package className="w-6 h-6 text-muted-foreground" />
                               )}
                             </div>
                             <div>
                               <h3 className="font-semibold text-foreground">{bangle.name}</h3>
-                              <p className="text-accent font-bold">₹{Number(bangle.price)}</p>
+                              <p className="text-accent font-bold">
+                                Wholesale: ₹{Number(bangle.price)} • Retail: ₹{Number((bangle as any).retail_price ?? bangle.price)}
+                              </p>
                               <p className="text-xs text-muted-foreground">
                                 {(bangle.available_sizes || []).length} sizes • {(bangle.available_colors || []).length} colors
                               </p>

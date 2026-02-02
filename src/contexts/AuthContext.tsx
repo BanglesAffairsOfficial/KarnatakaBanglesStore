@@ -9,6 +9,7 @@ interface AuthContextType {
   isAdmin: boolean;
   unreadNotifications: number;
   refreshUnread: () => Promise<void>;
+  clearUnread: () => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
@@ -24,6 +25,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [notificationChannel, setNotificationChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
+
+  // If the reset password email lands on the wrong route (e.g., /login),
+  // detect the recovery hash and send the user to /reset-password with tokens intact.
+  useEffect(() => {
+    const { hash, search, pathname } = window.location;
+    const hasRecovery = hash.includes("type=recovery") || search.includes("type=recovery");
+    if (hasRecovery && !pathname.startsWith("/reset-password")) {
+      const suffix = hash || search || "";
+      // Preserve tokens and query/fragment when sending to reset page
+      window.location.replace(`/reset-password${suffix}`);
+    }
+  }, []);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -145,19 +158,63 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUnreadNotifications(0);
       return;
     }
-    const { count, error } = await supabase
+
+    const userEmail = user?.email?.toLowerCase() || "";
+    const userId = id.toLowerCase();
+
+    // Count unread personal notifications
+    const { count: notifCount, error: notifErr } = await supabase
       .from("notifications")
       .select("*", { count: "exact", head: true })
       .eq("user_id", id)
       .eq("is_read", false);
-    if (!error) {
-      setUnreadNotifications(count || 0);
+
+    let broadcastCount = 0;
+    // Count broadcasts applicable to this user (all or custom including email/id)
+    const { data: broadcasts, error: bErr } = await supabase
+      .from("broadcasts")
+      .select("audience")
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (!bErr && broadcasts) {
+      broadcasts.forEach((b) => {
+        const audience = (b.audience || "all").toLowerCase();
+        if (audience === "all") {
+          broadcastCount += 1;
+        } else if (audience.startsWith("custom:")) {
+          const targets = audience
+            .replace("custom:", "")
+            .split(",")
+            .map((t) => t.trim().toLowerCase())
+            .filter(Boolean);
+          if (targets.includes(userEmail) || targets.includes(userId)) {
+            broadcastCount += 1;
+          }
+        }
+      });
     }
+
+    if (!notifErr) {
+      setUnreadNotifications((notifCount || 0) + broadcastCount);
+    }
+  };
+
+  const clearUnread = async () => {
+    const id = user?.id;
+    if (id) {
+      await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("user_id", id)
+        .eq("is_read", false);
+    }
+    setUnreadNotifications(0);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, isAdmin, unreadNotifications, refreshUnread, signUp, signIn, signInWithGoogle, signOut }}
+      value={{ user, session, loading, isAdmin, unreadNotifications, refreshUnread, clearUnread, signUp, signIn, signInWithGoogle, signOut }}
     >
       {children}
     </AuthContext.Provider>
