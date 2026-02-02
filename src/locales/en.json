@@ -37,6 +37,13 @@
     "logout": "Logout",
     "loginSignup": "Login / Sign Up"
   },
+  "b2b": {
+    "title": "Notice",
+    "banner": "Log in to place bulk (B2B) orders. Single (B2C) orders can be placed directly—no login required.",
+    "login": "Login",
+    "dismiss": "Dismiss",
+    "learnMore": "Learn more"
+  },
   "loginPage": {
     "branding": "Premium Glass Bangles - Wholesale & Retail",
     "title": "Welcome Back",

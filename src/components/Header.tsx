@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { User, ShoppingCart, LogOut, Menu, X, Bell } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { B2BBanner } from "@/components/B2BBanner";
 
 export function Header() {
   const { user, isAdmin, signOut, unreadNotifications = 0, clearUnread } = useAuth();
@@ -49,6 +50,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
+      <B2BBanner />
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo - Changed to square */}
