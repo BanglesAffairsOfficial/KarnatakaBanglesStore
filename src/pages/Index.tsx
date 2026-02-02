@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
   import { parseColors, getColorSwatchStyle } from "@/lib/colorHelpers";
   import { safeNavigate } from "@/lib/safeNavigate";
   import { useTranslation } from "react-i18next";
+  import B2BNotice from "@/components/B2BNotice";
 
   interface Bangle {
     id: string;
@@ -333,6 +334,8 @@ import { Card, CardContent } from "@/components/ui/card";
             </div>
           </div>
         </header>
+
+        <B2BNotice />
 
         {/* Hero - Responsive Banner */}
         <section className="relative h-[200px] sm:h-[340px] md:h-[480px] lg:h-[600px] xl:h-[660px] overflow-hidden">
