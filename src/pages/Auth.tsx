@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Eye, EyeOff, Mail } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { EmailVerificationDialog } from "@/components/EmailVerificationDialog";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -30,7 +30,7 @@ export default function Auth() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
 
-  const { signIn, signUp, signInWithGoogle, user } = useAuth();
+  const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -61,7 +61,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/profile");
     }
     if (import.meta.env.DEV) {
       console.info("Auth page mounted", {
@@ -285,21 +285,6 @@ export default function Auth() {
 
   const handleGuestCheckout = () => {
     navigate("/cart");
-  };
-
-  const handleGoogle = async () => {
-    setLoading(true);
-    try {
-      const { error } = await signInWithGoogle();
-      if (error) {
-        toast({ title: t("authPage.toast.googleFailed"), description: error.message, variant: "destructive" });
-      }
-    } catch (err: any) {
-      console.error("Google auth error:", err);
-      toast({ title: t("authPage.toast.googleFailed"), description: err?.message || t("authPage.toast.unexpected"), variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -593,41 +578,6 @@ export default function Auth() {
                 )}
               </Button>
             </form>
-
-            {isLogin && (
-              <>
-                <div className="my-6">
-                  <Separator />
-                  <div className="flex justify-center -translate-y-3">
-                    <span className="bg-background px-2 text-xs text-muted-foreground font-medium">
-                      {t("authPage.or")}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 mb-6">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full h-11 gap-2 font-medium"
-                    disabled={loading}
-                    onClick={handleGoogle}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        {t("authPage.signingIn")}
-                      </>
-                    ) : (
-                      <>
-                        <Mail className="w-4 h-4" />
-                        {t("authPage.google")}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </>
-            )}
 
             <div className="space-y-3 mb-6">
               <Button

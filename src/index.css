@@ -129,6 +129,32 @@
   .gradient-gold {
     background: linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)), hsl(var(--gold-dark)));
   }
+
+  @keyframes attention-hop {
+    0%, 100% { transform: translateY(0); }
+    10% { transform: translateY(-8px); }
+    20% { transform: translateY(0); }
+    30% { transform: translateY(-4px); }
+    40% { transform: translateY(0); }
+  }
+
+  .animate-attention-hop {
+    animation: attention-hop 2.2s ease-in-out infinite;
+  }
+
+  @keyframes attention-rgb {
+    0% { background-color: rgb(255, 82, 82); }
+    20% { background-color: rgb(255, 196, 82); }
+    40% { background-color: rgb(82, 255, 147); }
+    60% { background-color: rgb(82, 170, 255); }
+    80% { background-color: rgb(179, 82, 255); }
+    100% { background-color: rgb(255, 82, 82); }
+  }
+
+  .animate-attention-rgb {
+    animation: attention-rgb 4s linear infinite;
+    color: #1a1a1a;
+  }
   
   .gradient-maroon {
     background: linear-gradient(135deg, hsl(var(--maroon-light)), hsl(var(--maroon)));

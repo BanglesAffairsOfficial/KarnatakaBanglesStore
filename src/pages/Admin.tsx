@@ -653,10 +653,6 @@ export default function Admin() {
               <Users className="w-4 h-4" />
               B2B Requests
             </TabsTrigger>
-            <TabsTrigger value="reels" className="gap-2">
-              <Video className="w-4 h-4" />
-              Reels
-            </TabsTrigger>
             <TabsTrigger value="banner" className="gap-2">
               <ImageIcon className="w-4 h-4" />
               Banner
@@ -1125,66 +1121,6 @@ export default function Admin() {
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Reels Tab */}
-          <TabsContent value="reels" className="space-y-4">
-            <Card className="shadow-elegant">
-              <CardHeader className="flex flex-col gap-2">
-                <CardTitle className="font-display flex items-center gap-2">
-                  <Video className="w-5 h-5" />
-                  Reels Upload (Cloudinary)
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Uses unsigned preset <code>ml_default</code> (folder: samples/ecommerce). Uploaded reels are saved to Supabase and appear on the home page.
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Caption (optional)</Label>
-                    <Input value={reelCaption} onChange={(e) => setReelCaption(e.target.value)} placeholder="e.g., New Festive Drop" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Creator handle</Label>
-                    <Input value={reelCreator} onChange={(e) => setReelCreator(e.target.value)} placeholder="@karnatakabangles" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Upload vertical video (9:16)</Label>
-                  <Input
-                    ref={reelInputRef}
-                    type="file"
-                    accept="video/*"
-                    onChange={handleReelFileChange}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Requires VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET (unsigned) in .env.
-                  </p>
-                </div>
-                {reelError && <p className="text-sm text-destructive">{reelError}</p>}
-                <div className="flex items-center gap-2">
-                  <Button disabled={!reelUrl} variant="outline" size="sm" onClick={copyReelUrl} className="gap-2">
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copied ? "Copied" : "Copy URL"}
-                  </Button>
-                  <span className="text-xs text-muted-foreground break-all">{reelUrl || "Upload to get a URL"}</span>
-                </div>
-                {reelUrl && (
-                  <div className="aspect-[9/16] w-full max-w-xs rounded-xl overflow-hidden border">
-                    <video src={reelUrl} controls className="w-full h-full object-cover" />
-                    <div className="p-2 text-sm">
-                      <p className="font-semibold">{reelCaption || "New Reel"}</p>
-                      <p className="text-muted-foreground">{reelCreator}</p>
-                    </div>
-                  </div>
-                )}
-                <Button disabled={reelUploading || reelSaving} className="w-full gap-2" onClick={() => reelInputRef.current?.click()}>
-                  {(reelUploading || reelSaving) && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {reelUploading || reelSaving ? "Uploading..." : "Select & Upload Reel"}
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>

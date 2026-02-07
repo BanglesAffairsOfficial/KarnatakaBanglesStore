@@ -1,14 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, ChevronRight } from "lucide-react";
+import { Loader2, ChevronRight } from "lucide-react";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { EmailVerificationDialog } from "@/components/EmailVerificationDialog";
@@ -17,7 +16,6 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -42,7 +40,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/profile");
     }
   }, [user, navigate]);
 
@@ -116,7 +114,7 @@ export default function Login() {
           localStorage.removeItem("remembered_email");
         }
 
-        navigate("/");
+        navigate("/profile");
       }
     } catch (err: any) {
       console.error("Login submit error:", err);
@@ -127,41 +125,6 @@ export default function Login() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
-
-      if (error) {
-        toast({
-          title: t("loginPage.toast.googleFailed"),
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-      // The user will be redirected to Google's consent screen
-      // After successful authentication, they'll be redirected back to your app
-    } catch (error: any) {
-      console.error("Google OAuth error:", error);
-      toast({
-        title: t("loginPage.toast.loginFailed"),
-        description: error?.message || t("loginPage.toast.unexpected"),
-        variant: "destructive",
-      });
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -306,6 +269,15 @@ export default function Login() {
                   </>
                 )}
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-11 text-base"
+                onClick={handleForgotPassword}
+                disabled={loading}
+              >
+                Reset Password
+              </Button>
             </form>
 
             {/* Divider */}
@@ -318,28 +290,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Alternative Login Methods */}
             <div className="space-y-3 mb-6">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-11 gap-2 font-medium"
-                disabled={loading || googleLoading}
-                onClick={handleGoogleSignIn}
-              >
-                {googleLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    {t("loginPage.signingIn")}
-                  </>
-                ) : (
-                  <>
-                    <Mail className="w-4 h-4" />
-                    {t("loginPage.google")}
-                  </>
-                )}
-              </Button>
-
               <Button
                 type="button"
                 variant="ghost"

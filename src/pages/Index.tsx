@@ -533,7 +533,11 @@ import { useTranslation } from "react-i18next";
                   {filteredBangles.slice(0, 6).map(b => <ProductCard key={b.id} bangle={b} />)}
                 </div>
                 <div className="flex justify-center mt-6">
-                  <Button variant="outline" onClick={() => safeNavigate(navigate, "/shop")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => safeNavigate(navigate, "/shop")}
+                    className="animate-attention-hop animate-attention-rgb shadow-gold border-0"
+                  >
                     Shop our collection
                   </Button>
                 </div>
