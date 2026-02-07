@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ?????",
-    "tagline": "???????? ??????? ????????",
+    "since": "2004 पासून",
+    "tagline": "प्रीमियम ग्लास चुड़ी",
     "nav": {
       "home": "??????????",
       "shop": "?????",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "अटी व शर्ती",
+    "description": "आमचي साईट आणि ऑर्डर देण्याची मूलभूत माहिती.",
+    "useOfSite": "साइटचा वापर",
+    "useOfSiteContent": "साइटचा दुरुपयोग करू नका, वंचना प्रयत्न करू नका किंवा लागू कायद्यांचे उल्लंघन करू नका.",
+    "ordersAndPricing": "ऑर्डर आणि किंमत",
+    "ordersAndPricingContent": "भुगतान प्राधिकरण नंतर ऑर्डर पुष्टी केले जातात. किंमत आणि उपलब्धता बदलू शकते; स्पष्ट त्रुटी सुधारले जाऊ शकतात.",
+    "liability": "जबाबदारी",
+    "liabilityContent": "आम्ही अप्रत्यक्ष नुकसानासाठी जबाबदार नाही; उपचार ऑर्डर मूल्यापर्यंत मर्यादित आहेत."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "गोपनीयता धोरण",
+    "description": "आम्ही आपला डेटा कसे गोळा करतो, वापरतो आणि संरक्षित करतो.",
+    "dataCollect": "आम्ही डेटा गोळा करतो",
+    "dataCollectContent": "खाते माहिती (नाव, ईमेल), ऑर्डर तपशील, भुगतान पुष्टी स्तर (पूर्ण कार्ड डेटा नाही), आणि साइट वापर विश्लेषण.",
+    "howWeUseIt": "आम्ही याचा उपयोग कसा करतो",
+    "howWeUseItContent": "ऑर्डर प्रक्रिया करण्यासाठी, कॅटलॉग सुधारण्यासाठी, ऑर्डर अपडेट पाठवण्यासाठी आणि सुझाव वैयक्तिकृत करण्यासाठी.",
+    "yourControls": "आपले नियंत्रण",
+    "yourControlsContent": "संपर्कद्वारे डेटा निर्यात किंवा हटविण्याची विनंती करा. आपल्या प्रोफाइलमध्ये विपणन ऑप्ट-इन व्यवस्थापित करा (लवकरच येणार आहे)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "शिपिंग आणि परत",
+    "description": "डिलिव्हरी वेळापत्रक, शुल्क आणि परत पात्रता याबद्दल जाणून घ्या."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "रिफंड आणि रद्दीकरण धोरण",
+    "updated": "अपडेट: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "आमच्या विषयी",
+    "story": "आमची कहानी",
+    "mission": "आमचे दृष्टिकोन",
+    "vision": "आमचा दृष्टिकोन",
+    "values": "मूल मूल्ये",
+    "chooseUs": "आम्हाला का निवडायचे?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "पृष्ठ सापडले नाही",
+    "message": "अरे! आपण शोधत असलेले पृष्ठ अस्तित्वात नाही किंवा हलविले गेले आहे.",
+    "goHome": "होमला जा",
+    "continueShopping": "खरेदी सुरू ठेवा",
+    "goBack": "मागे जा",
+    "popularLinks": "लोकप्रिय लिंक"
   }
 }

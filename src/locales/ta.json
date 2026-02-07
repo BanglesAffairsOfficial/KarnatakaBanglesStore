@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ?????",
-    "tagline": "????????? ??????? ?????????",
+    "since": "2004 இல் இருந்து",
+    "tagline": "ப்ரீமியம் கண்ணாடி வளையல்",
     "nav": {
       "home": "???????",
       "shop": "???",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "விதி முறைகள் மற்றும் நிபந்தனைகள்",
+    "description": "எங்கள் தளம் மற்றும் ஆணைகளை வைக்க படிப்புகள்.",
+    "useOfSite": "இணையத்தலத்தின் பயன்பாடு",
+    "useOfSiteContent": "தளத்தை தவறாக பயன்படுத்த வேண்டாம், மோசடி முயற்சி செய்ய வேண்டாம் அல்லது சட்டங்களை மீறக்கூடாது.",
+    "ordersAndPricing": "ஆணைகள் மற்றும் விலை",
+    "ordersAndPricingContent": "ஆணைகள் பணம் செலுத்தும் அங்கீகாரத்தின் பின்பு உறுதி செய்யப்படுகின்றன. விலை மற்றும் கிடைக்குதல் மாறுபடலாம்; தெளிவான பிழைகள் சரிசெய்யப்படலாம்.",
+    "liability": "பொறுப்பு",
+    "liabilityContent": "நாங்கள் மறைமுக சேதத்திற்கு பொறுப்பற்றவர்கள்; தீர்வுகள் ஆணை மূல்யத்திற்கு সীமிதம்."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "தனியுரிமை கொள்கை",
+    "description": "நாம் உங்கள் தரவை எவ்வாறு சংগ்রহ, பயன்படுத்த மற்றும் பாதுகாக்கிறோம்.",
+    "dataCollect": "நாம் சேகரிக்கும் தரவு",
+    "dataCollectContent": "கணக்கு தகவல் (பெயர், மின்னஞ்சல்), ஆணை விவரங்கள், பணம் செலுத்தும் உறுதிப்பாடி நிலை (முழு கார்ட் தரவு அல்ல), மற்றும் தளப் பயன்பாட்டு பகுப்பாய்வு.",
+    "howWeUseIt": "நாம் இதை எவ்வாறு பயன்படுத்துகிறோம்",
+    "howWeUseItContent": "ஆணைகளை செயல்படுத்த, பொருள் பட்டியலை மேம்படுத்த, ஆணை புதுப்பிப்புகள் அனுப்ப மற்றும் பரிந்துரைகளைப் பொருத்தமாக்க.",
+    "yourControls": "உங்கள் கட்டுப்பாடுகள்",
+    "yourControlsContent": "தொடர்பு வழியாக தரவு ஏற்றுமதி அல்லது நீக்குவதற்குக் கோரிக்கை செய்யுங்கள். உங்கள் சுயவிவரத்தில் விளம்பர விருப்பங்களைக் நிர்வகிக்கவும் (விரைவில் வரும்)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "அனுப்பல் மற்றும் திரும்பல்",
+    "description": "விநியோகம் கால அளவு, கட்டணங்கள் மற்றும் திரும்பல் விளக்கங்களைப் பற்றிக் கற்க."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "திரும்ப பணம் மற்றும் ரத்து கொள்கை",
+    "updated": "புதுப்பிக்கப்பட்டது: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "எங்களைப் பற்றி",
+    "story": "எங்கள் கதை",
+    "mission": "நமது இலக்கு",
+    "vision": "நமது பார்வை",
+    "values": "மதிப்புமிக்க நோ்க்ங்கள்",
+    "chooseUs": "ஏன் எங்களைத் தேர்ந்தெடுக்க வேண்டும்?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "பக்கம் கண்டுபிடிக்கப்படவில்லை",
+    "message": "ஓஹோ! நீங்கள் தேடும் பக்கம் இல்லை அல்லது நகர்த்தப்பட்டுவிட்டது.",
+    "goHome": "முகப்புக்குச் செல்லவும்",
+    "continueShopping": "வாங்குதல் தொடரவும்",
+    "goBack": "பின்னுக்குச் செல்லவும்",
+    "popularLinks": "பிரபலமான இணைப்புகள்"
   }
 }

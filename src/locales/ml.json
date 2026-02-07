@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ????",
-    "tagline": "???????? ?????? ??????",
+    "since": "2004 മുതൽ",
+    "tagline": "പ്രിമിയം ഗ്ലാസ് വളമ്പരികള്‍",
     "nav": {
       "home": "???",
       "shop": "??????",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "പദ്ധതിയും വ്യവസ്ഥകളും",
+    "description": "ഞങ്ങളുടെ സൈറ്റ് ഉപയോഗ ചെയ്യുന്നതിന്റെ അടിസ്ഥാനകാര്യങ്ങൾ.",
+    "useOfSite": "സൈറ്റിന്റെ ഉപയോഗം",
+    "useOfSiteContent": "സൈറ്റിനെ ദുരുപയോഗം ചെയ്യരുത്, വഞ്ചന ശ്രമിക്കരുത് അല്ലെങ്കിൽ ബാധ്യതയുള്ള നിയമങ്ങൾ ലംഘിക്കരുത്.",
+    "ordersAndPricing": "ഓർഡർ ചെയ്യുന്നതും വിലനിർണ്ണയവും",
+    "ordersAndPricingContent": "പേയ്‌മെന്റ് അനുമതിയ്ക്ക് ശേഷം ഓർഡർ സ്ഥിരീകരിക്കപ്പെടുന്നു. വിലയും ലഭ്യതയും മാറാം; സ്പഷ്ടമായ പിശകുകൾ തിരുത്താം.",
+    "liability": "ബാധ്യത",
+    "liabilityContent": "ഞങ്ങൾ പരോക്ഷ നിഷേധിക്കപ്പെടാത്തത്ിന് ബാധ്യരല്ല; നിവാരണങ്ങൾ ഓർഡർ മൂല്യത്തിലേക്ക് പരിമിതം."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "സ്വകാര്യതാ നയം",
+    "description": "നിങ്ങളുടെ ഡാറ്റ ഞങ്ങൾ എങ്ങനെ സ്വരൂപ്പ ചെയ്യുന്നു, ഉപയോഗിക്കുന്നു, സംരക്ഷിക്കുന്നു.",
+    "dataCollect": "എന്നാൽ ഞങ്ങൾ ഡാറ്റ ശേഖരിക്കുന്നു",
+    "dataCollectContent": "അക്കൌണ്ട് വിവരം (പേര്, ഇമെയിൽ), ഓർഡർ വിവരങ്ങൾ, പേയ്‌മെന്റ് സ്ഥിരീകരണ നിലപാട് (പൂർണ്ണ കാർഡ് ഡാറ്റ ഇല്ല), സൈറ്റ് ഉപയോഗ വിശകലനം.",
+    "howWeUseIt": "നമ്മൾ ഇത് എങ്ങനെ ഉപയോഗിക്കുന്നു",
+    "howWeUseItContent": "ഓർഡർ പ്രോസെസ് ചെയ്യാൻ, കാറ്റലോഗ് ഉന്നത് ചെയ്യാൻ, ഓർഡർ അപ്ഡേറ്റ് അയയ്ക്കാൻ, പരിചയാരജനക പരാമർശങ്ങൾ നൽകാൻ.",
+    "yourControls": "നിങ്ങളുടെ നിയന്ത്രണങ്ങൾ",
+    "yourControlsContent": "ഡാറ്റ കയറ്റി അറ്റിയോ തിരുകേനോ സംപര്ക്കത്തിൽ നിവേദനം നൽകുക. പ്രമോഷൻ സം സ്വീകാരങ്ങൾ മാത്രമാത്രായി നിരീക്ഷണം ചെയ്യുക (വരാൻ പോകുന്നത്)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "ഷിപ്പിംഗ് & റിട്ടേണുകൾ",
+    "description": "കടത്തിപ്പ് സമയ സമൂഹം, ഫീസ്, റിമടൻ ഗുണ വിത്ത് വിജ്ഞാപനം വായിക്കുക."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "മടി നൽകൽ & പരിപാടി ബാധ്യത നയം",
+    "updated": "അപ്ഡേറ്റ് ചെയ്തിരിക്കുന്നു: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "നമ്മെ പറ്റി",
+    "story": "നമ്മുടെ കഥ",
+    "mission": "നമ്മുടെ ദൃഷ്ടി",
+    "vision": "നമ്മുടെ കാഴ്ചപ്പാട്",
+    "values": "മൂലമായ മൂല്യങ്ങൾ",
+    "chooseUs": "നീ എന്തിനാണ് നെമ്പിയ സവരണം ചെയ്യുന്നത്?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "പേജ് കണ്ടെത്താൻ കഴിയില്ല",
+    "message": "അരെ! നിങ്ങൾ തെരയുന്ന പേജ് നിലവിലില്ലേ നീക്കം ചെയ്തതാണ്.",
+    "goHome": "ഹോമിലേക്ക് പോകുക",
+    "continueShopping": "കയ്യെഞ്ഞുതരുക തുടരുക",
+    "goBack": "കുറച്ചിൽ പുറത്തേക്കു പോകുക",
+    "popularLinks": "ജനപ്രിയ ലിങ്കുകൾ"
   }
 }

@@ -1,41 +1,41 @@
 {
   "header": {
-    "since": "2004 ??",
-    "tagline": "???????? ????? ????????",
+    "since": "2004 से",
+    "tagline": "प्रीमियम ग्लास चूड़ियाँ",
     "nav": {
-      "home": "???",
-      "shop": "?????",
+      "home": "होम",
+      "shop": "दुकान",
       "faq": "FAQ",
-      "contact": "??????",
-      "orders": "?????",
-      "wishlist": "????????",
-      "profile": "???? ?????????",
-      "admin": "?????",
-      "categories": "?????????",
-      "featured": "???????",
-      "reviews": "?????????",
-      "inbox": "???????"
+      "contact": "संपर्क",
+      "orders": "ऑर्डर",
+      "wishlist": "विशलिस्ट",
+      "profile": "मेरी प्रोफाइल",
+      "admin": "एडमिन",
+      "categories": "श्रेणियाँ",
+      "featured": "फीचर्ड",
+      "reviews": "समीक्षाएँ",
+      "inbox": "इनबॉक्स"
     },
-    "translate": "??????",
-    "searchLanguage": "???? ?????",
-    "selectLanguage": "???? ?????",
-    "shopNow": "??? ??????"
+    "translate": "अनुवाद",
+    "searchLanguage": "भाषा खोजें",
+    "selectLanguage": "भाषा चुनें",
+    "shopNow": "अभी खरीदें"
   },
   "nav": {
-    "home": "???",
-    "shop": "?????",
+    "home": "होम",
+    "shop": "दुकान",
     "faq": "FAQ",
-    "contact": "??????",
-    "orders": "?????",
-    "wishlist": "????????",
-    "profile": "???? ?????????",
-    "admin": "?????",
-    "inbox": "???????"
+    "contact": "संपर्क",
+    "orders": "ऑर्डर",
+    "wishlist": "विशलिस्ट",
+    "profile": "मेरी प्रोफाइल",
+    "admin": "एडमिन",
+    "inbox": "इनबॉक्स"
   },
   "auth": {
-    "login": "?????",
-    "logout": "??????",
-    "loginSignup": "????? / ???? ??"
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "loginSignup": "लॉगिन / साइन अप"
   },
   "loginPage": {
     "branding": "???????? ????? ???????? - ?????? ?? ?????",
@@ -516,47 +516,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "शर्तें और शिकायत",
+    "description": "हमारी साइट और ऑर्डर देने की बुनियादी जानकारी।",
+    "useOfSite": "साइट का उपयोग",
+    "useOfSiteContent": "साइट का गलत उपयोग, धोखाधड़ी करना या कानून का उल्लंघन न करें।",
+    "ordersAndPricing": "ऑर्डर और कीमत",
+    "ordersAndPricingContent": "ऑर्डर भुगतान के बाद की पुष्टि होते हैं। कीमत में बदलाव हो सकता है; स्पष्ट गलतियों को सुधारा जा सकता है।",
+    "liability": "दायित्व",
+    "liabilityContent": "हम अप्रत्यक्ष नुकसान के लिए जिम्मेदार नहीं हैं; उपचार ऑर्डर मूल्य तक सीमित हैं।"
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "गोपनीयता नीति",
+    "description": "हम आपके डेटा को कैसे एकत्र, उपयोग और सुरक्षित करते हैं।",
+    "dataCollect": "हम कौन सा डेटा एकत्र करते हैं",
+    "dataCollectContent": "खाता जानकारी (नाम, ईमेल), ऑर्डर विवरण, भुगतान की पुष्टि (पूरा कार्ड डेटा नहीं), और साइट उपयोग विश्लेषण।",
+    "howWeUseIt": "हम इसका उपयोग कैसे करते हैं",
+    "howWeUseItContent": "ऑर्डर को प्रोसेस करने, कैटलॉग में सुधार करने, ऑर्डर अपडेट भेजने और सुझाव देने के लिए।",
+    "yourControls": "आपके नियंत्रण",
+    "yourControlsContent": "संपर्क के माध्यम से डेटा निर्यात या हटाने का अनुरोध करें। प्रोफाइल में मार्केटिंग विकल्प शीघ्र ही आएंगे।"
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "शिपिंग और रिटर्न",
+    "description": "डिलीवरी समय, शुल्क और रिटर्न शर्तों के बारे में जानें।"
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "रिफंड और रद्दीकरण नीति",
+    "updated": "अपडेट: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "हमारे बारे में",
+    "story": "हमारी कहानी",
+    "mission": "हमारा मिशन",
+    "vision": "हमारी दृष्टि",
+    "values": "मुख्य मूल्य",
+    "chooseUs": "हमें क्यों चुनें?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "पृष्ठ नहीं मिला",
+    "message": "अरे! आप जिस पृष्ठ को खोज रहे हैं वह मौजूद नहीं है या स्थानांतरित हो गया है।",
+    "goHome": "होम पर जाएं",
+    "continueShopping": "शॉपिंग जारी रखें",
+    "goBack": "वापस जाएं",
+    "popularLinks": "लोकप्रिय लिंक"
   }
 }

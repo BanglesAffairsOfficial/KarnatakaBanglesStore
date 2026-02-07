@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ??",
-    "tagline": "???????? ????? ?????",
+    "since": "2004 થી",
+    "tagline": "પ્રિમિયમ ગ્લાસ ચૂડીઓ",
     "nav": {
       "home": "???",
       "shop": "?????",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "શરતો અને શર્તાઓ",
+    "description": "આমારી સાઇટ વાપરવા અને ઓર્ડર આપવાના મૂલ બાબતો.",
+    "useOfSite": "સાઇટનો ઉપયોગ",
+    "useOfSiteContent": "સાઇટનો દુરુપયોગ કરશો નહીં, છેતરપિંડી કરશો નહીં અથવા લાગુ કાયદાનો ભંગ કરશો નહીં.",
+    "ordersAndPricing": "ઓર્ડર અને કિંમત",
+    "ordersAndPricingContent": "ઓર્ડર ચેતા મંજૂરી પછી પુષ્ટિ થાય છે. કિંમત અને ઉપલબ્ધતા બદલાઈ શકે છે; સ્પષ્ટ ભૂલો સુધારી શકાય છે.",
+    "liability": "જવાબદારી",
+    "liabilityContent": "આપણે પરોક્ષ નુકસાન માટે જવાબદાર નથી; ઉપચાર ઓર્ડર મૂલ્યતક સીમિત છે."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "ગોપનીયતા નીતિ",
+    "description": "આપણે તમારો ડેટા કેવી રીતે એકત્રિત કરીએ છીએ, ઉપયોગ કરીએ છીએ અને રક્ષણ આપીએ છીએ.",
+    "dataCollect": "આપણે ડેટા એકત્રિત કરીએ છીએ",
+    "dataCollectContent": "ખાતાની માહિતી (નામ, ઇમેલ), ઓર્ડર વિગતો, ચેતા પુષ્ટિ સ્થિતિ (સંપૂર્ણ કાર્ડ ડેટા નહીં), અને સાઇટ ઉપયોગ વિશ્લેષણ.",
+    "howWeUseIt": "આપણે તેનો ઉપયોગ કેવી રીતે કરીએ છીએ",
+    "howWeUseItContent": "ઓર્ડર પ્રોસેસ કરવા, કેટલોગ સુધારવા, ઓર્ડર અપડેટ મોકલવા અને ભલામણોને વ્યક્તિગતકૃત કરવા.",
+    "yourControls": "તમારા નિયંત્રણો",
+    "yourControlsContent": "સંપર્ક દ્વારા ડેટા નિકાસ અથવા કાઢી નાખવાની વિનંતી કરો. તમારી પ્રોફાઇલમાં માર્કેટિંગ ઑપ્ટ-ઇન્સ સંચાલિત કરો (શીઘ્રમાં આવશે)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "શિપિંગ અને રીટર્નણ",
+    "description": "ડિલીવરી સમય સુચી, ફી અને રીટર્ન યોગ્યતા વિશે શીખો."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "રીફંડ અને રદ્દી કરવાની નીતિ",
+    "updated": "અપડેટ: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "આપણા વિશે",
+    "story": "આપણી કઠીનતા",
+    "mission": "આપણું મિશન",
+    "vision": "આપણું દદ્દણ",
+    "values": "મુખ્ય મૂલ્યો",
+    "chooseUs": "આપણને શેમ પસંદ કરો?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "પૃષ્ઠ મળ્યું નહીં",
+    "message": "અરે! તમે જે પાનુ શોધી રહ્યા છો તે અસ્તિત્વમાં નથી અથવા ખસેવામાં આવ્યું છે.",
+    "goHome": "ઘરે જાઓ",
+    "continueShopping": "શોપિંગ ચાલુ રાખો",
+    "goBack": "પાછળ જાઓ",
+    "popularLinks": "લોકપ્રિય લિંક"
   }
 }

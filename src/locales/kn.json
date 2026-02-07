@@ -1,41 +1,41 @@
 {
   "header": {
-    "since": "2004 ????",
-    "tagline": "???????? ?????? ???????",
+    "since": "2004 ರಿಂದ",
+    "tagline": "ಪ್ರೀಮಿಯಮ್ ಗ್ಲಾಸ್ ಚೂಡಿ",
     "nav": {
-      "home": "??????",
-      "shop": "?????",
+      "home": "ಮುಖ್ಯ",
+      "shop": "ಅಂಗಡಿ",
       "faq": "FAQ",
-      "contact": "??????",
-      "orders": "??????????",
-      "wishlist": "??????????",
-      "profile": "???? ????????",
-      "admin": "???????",
-      "categories": "???????",
-      "featured": "???????",
-      "reviews": "??????????",
-      "inbox": "??????????"
+      "contact": "ಸಂಪರ್ಕ",
+      "orders": "ಆದೇಶಗಳು",
+      "wishlist": "ಇಚ್ಛಾಪಟ್ಟಿ",
+      "profile": "ನನ್ನ ಪ್ರೊಫೈಲ್",
+      "admin": "ಅಡ್ಮಿನ್",
+      "categories": "ವರ್ಗಗಳು",
+      "featured": "ವೈಶಿಷ್ಟ",
+      "reviews": "ವಿಮರ್ಶೆಗಳು",
+      "inbox": "ಇನ್ಬಾಕ್ಸ್"
     },
-    "translate": "??????",
-    "searchLanguage": "???? ??????",
-    "selectLanguage": "???? ?????????",
-    "shopNow": "?? ???????"
+    "translate": "ಭಾಷೆ",
+    "searchLanguage": "ಭಾಷೆ ಹುಡುಕಿ",
+    "selectLanguage": "ಭಾಷೆ ಆಯ್ಕೆ",
+    "shopNow": "ಈಗ ಖರೀದಿಸಿ"
   },
   "nav": {
-    "home": "??????",
-    "shop": "?????",
+    "home": "ಮುಖ್ಯ",
+    "shop": "ಅಂಗಡಿ",
     "faq": "FAQ",
-    "contact": "??????",
-    "orders": "??????????",
-    "wishlist": "??????????",
-    "profile": "???? ????????",
-    "admin": "???????",
-    "inbox": "??????????"
+    "contact": "ಸಂಪರ್ಕ",
+    "orders": "ಆದೇಶಗಳು",
+    "wishlist": "ಇಚ್ಛಾಪಟ್ಟಿ",
+    "profile": "ನನ್ನ ಪ್ರೊಫೈಲ್",
+    "admin": "ಅಡ್ಮಿನ್",
+    "inbox": "ಇನ್ಬಾಕ್ಸ್"
   },
   "auth": {
-    "login": "??????",
-    "logout": "??????",
-    "loginSignup": "?????? / ???? ???"
+    "login": "ಲಾಗಿನ್",
+    "logout": "ಲಾಗ್ ಔಟ್",
+    "loginSignup": "ಲಾಗಿನ್ / ಸೈನ್ ಅಪ್"
   },
   "loginPage": {
     "branding": "???????? ?????? ??????? - ???????? ????? ??????",
@@ -516,47 +516,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "ನಿಯಮ ಮತ್ತು ಷರತ್ತುಗಳು",
+    "description": "ನಮ್ಮ ಸೈಟ್ ಮತ್ತು ಆದೇಶ ನೀಡುವುದರ ಮೂಲ ತಿಳುವಳಿಕೆ।",
+    "useOfSite": "ಸೈಟ್ ಬಳಕೆ",
+    "useOfSiteContent": "ಸೈಟ್ ನ ದುರ್ಬಳಕೆ, ವಂಚನೆ ಅಥವಾ ಕಾನೂನಿನ ಉಲ್ಲಂಘನೆ ಬೇಡ.",
+    "ordersAndPricing": "ಆದೇಶ ಮತ್ತು ಮೂಲ್ಯ",
+    "ordersAndPricingContent": "ಆದೇಶಗಳು ಪಾವತಿ ಅನುಮೋದನೆಯ ನಂತರ ಖಚಿತವಾಗುತ್ತದೆ. ಮೂಲ್ಯ ಮತ್ತು ಲಭ್ಯತೆ ಬದಲಾಗಬಹುದು; ಸ್ಪಷ್ಟ ತಪ್ಪುಗಳನ್ನು ಸರಿಪಡಿಸಬಹುದು.",
+    "liability": "ಜವಾಬ್ದಾರಿ",
+    "liabilityContent": "ನಾವು ಪರೋಕ್ಷ ನಷ್ಟಗಳಿಗೆ ಜವಾಬ್ದಾರರಲ್ಲೇ ಇಲ್ಲ; ಪರಿಹಾರಗಳು ಆದೇಶ ಮೌಲ್ಯಕ್ಕೆ ಸೀಮಿತವಾಗಿದ್ದು."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "ಗೌಪ್ಯತೆ ನೀತಿ",
+    "description": "ನಾವು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಹೇಗೆ ಸಂಗ್ರಹ, ಬಳಕೆ ಮತ್ತು ರಕ್ಷಿಸುತ್ತೇವೆ.",
+    "dataCollect": "ನಾವು ಸಂಗ್ರಹ ಮಾಡುವ ಡೇಟಾ",
+    "dataCollectContent": "ಖಾತೆಯ ಮಾಹಿತಿ (ಹೆಸರು, ಇಮೇಲ್), ಆದೇಶ ವಿವರಣೆ, ಪಾವತಿ ಸಂಪುಷ್ಟಿ (ಪೂರ್ಣ ಕಾರ್ಡ್ ಡೇಟಾ ಅಲ್ಲ), ಮತ್ತು ಸೈಟ್ ಬಳಕೆ ವಿಶ್ಲೇಷಣೆ.",
+    "howWeUseIt": "ನಾವು ಇದನ್ನು ಹೇಗೆ ಬಳಸುತ್ತೇವೆ",
+    "howWeUseItContent": "ಆದೇಶಗಳನ್ನು ಪ್ರಕ್ರಿಯೆ ಮಾಡಲು, ಕ್ಯಾಟಲಾಗ್ ಸುಧಾರಿಸಲು, ಆದೇಶ ನವೀಕರಣ ಮಾಡಲು ಮತ್ತು ಸಂಸ್ಥಾಪನ ಗಳನ್ನು ವೈಯಕ್ತಿಕಗತ ಮಾಡಲು.",
+    "yourControls": "ನಿಮ್ಮ ನಿಯಂತ್ರಣ",
+    "yourControlsContent": "ಸಂಪರ್ಕದ ಮೂಲಕ ಡೇಟಾ ರಫ್ತು ಅಥವಾ ಅಳಿಸುವಿಕೆಯ ವಿನಂತಿ ಮಾಡಿ. ಪ್ರೊಫೈಲ್ನಲ್ಲಿ ಮಾರ್ಕೆಟಿಂಗ್ ಪರ್ಯಾಯಗಳನ್ನು ನಿರ್ವಹಿಸಿ (ಶೀಘ್ರ ಬರುತ್ತಿದೆ)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "ಶಿಪಿಂಗ್ ಮತ್ತು ರಿಟರ್ನ್",
+    "description": "ವಿತರಣೆ ಸಮಯ, ಶುಲ್ಕ ಮತ್ತು ರಿಟರ್ನ ನೀತಿಯ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "ಹಣ ಹಿಂತೆಗೆ ಮತ್ತು ರದ್ದುಗೊಳಿಸುವ ನೀತಿ",
+    "updated": "ನವೀಕರಿಸಲಾಗಿದೆ: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "ನಮ್ಮ ಬಗ್ಗೆ",
+    "story": "ನಮ್ಮ ಕತೆ",
+    "mission": "ನಮ್ಮ ಉದ್ದೇಶ",
+    "vision": "ನಮ್ಮ ದೃಷ್ಟಿಕೋನ",
+    "values": "ಮೂಲ ಮೌಲ್ಯಗಳು",
+    "chooseUs": "ನನ್ನನ್ನು ಏಕೆ ಆರಿಸುವುದು?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "ಪುಟ ಕಂಡುಬಂದಿಲ್ಲ",
+    "message": "ಓಹೋ! ನೀವು ಹುಡುಕುತ್ತಿರುವ ಪುಟ ಅಸ್ತಿತ್ವದಲ್ಲಿ ಇಲ್ಲ ಅಥವಾ ಸ್ಥಳಾಂತರಿತವಾಗಿದೆ.",
+    "goHome": "ಮುಖ್ಯ ಪುಟಕ್ಕೆ ಹೋಗಿ",
+    "continueShopping": "ಶಾಪಿಂಗ್ ಮುಂದುವರಿಸಿ",
+    "goBack": "ಹಿಂದಕ್ಕೆ ಹೋಗಿ",
+    "popularLinks": "ಜನಪ್ರಿಯ ಲಿಂಕ್"
   }
 }

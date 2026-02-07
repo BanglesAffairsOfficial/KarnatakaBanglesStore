@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ?????",
-    "tagline": "???????? ?????? ?????????",
+    "since": "2004 నుండి",
+    "tagline": "ప్రీమియం గ్లాస్ బంగారు",
     "nav": {
       "home": "????",
       "shop": "????",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "నిబంధనలు & షరతులు",
+    "description": "మన సైట్ ఉపయోగ మరియు ఆర్డర్ ఇచ్చు ప్రాథమికాలు.",
+    "useOfSite": "సైట్ వాడుక",
+    "useOfSiteContent": "సైట్‌ను దుర్వినియోగం చేయవద్దు, మోసం ప్రయత్నించవద్దు లేదా వర్తమాన చట్టాలను ఉల్లంఘించవద్దు.",
+    "ordersAndPricing": "ఆర్డర్లు & ధర",
+    "ordersAndPricingContent": "ఆర్డర్లు చెల్లింపు ఆమోదం తర్వాత నిర్ధారిత. ధర మరియు లభ్యత మార్పు చెందవచ్చు; స్పష్టమైన లోపాలను సరైనవిగా చేయవచ్చు.",
+    "liability": "బాధ్యత",
+    "liabilityContent": "మేము పరోక్ష నష్టాలకు బాధ్యత వహించము; నివారణలు ఆర్డర్ విలువకు సమీపంగా ఉంటాయి."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "గోప్యతా విధానం",
+    "description": "మేము మీ డేటాను ఎలా సేకరించు, ఉపయోగించు మరియు రక్షించుకుంటాము.",
+    "dataCollect": "మేము సేకరించే డేటా",
+    "dataCollectContent": "ఖాతా సమాచారం (పేరు, ఇమెయిల్), ఆర్డర్ వివరాలు, పేమెంట్ నిర్ధారణ స్థితి (పూర్తి కార్డ్ డేటా కాదు), మరియు సైట్ వాడుక విశ్లేషణ.",
+    "howWeUseIt": "మేము దీన్ని ఎలా ఉపయోగిస్తాము",
+    "howWeUseItContent": "ఆర్డర్లను ప్రక్రియ చేయటానికి, కాటలాగ్‌ను మెరుగుపరచటానికి, ఆర్డర్ నవీకరణలను పంపటానికి మరియు సిఫారసులను వ్యక్తిగతీకరించటానికి.",
+    "yourControls": "మీ నియంత్రణలు",
+    "yourControlsContent": "సంప్రదింపు ద్వారా డేటా ఎగుమతి లేదా తొలగింపుకు అభ్యర్థన చేయండి. మీ ప్రొఫైల్‌లో మార్కెటింగ్ ఎంపికలను నిర్వహించండి (చేరువకు వస్తుంది)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "షిప్పింగ్ & రిటర్న్లు",
+    "description": "డెలివరీ సమయ అనుసూచీ, ఫీజులు మరియు రిటర్న్ అర్హత గురించి తెలుసుకోండి."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "మొత్తం & రద్దు చేయడం విధానం",
+    "updated": "నవీకరించబడింది: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "మేము గురించి",
+    "story": "మా కధ",
+    "mission": "మన లక్ష్యం",
+    "vision": "మన దృష్టి",
+    "values": "ప్రధాన విలువలు",
+    "chooseUs": "ఎందుకు మమ్మల్ని ఎంచుకోండి?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "పేజీ కనుగొనబడలేదు",
+    "message": "అరే! మీరు చరుస్తున్న పేజీ ఉనికిలో లేదు లేదా తరలించబడింది.",
+    "goHome": "హోమ్‌కు రండి",
+    "continueShopping": "షాపింగ్ కొనసాగించండి",
+    "goBack": "వెనుకకు వెళ్లండి",
+    "popularLinks": "ప్రసిద్ధ లింకులు"
   }
 }

@@ -1,7 +1,7 @@
 {
   "header": {
-    "since": "2004 ???",
-    "tagline": "???????? ???? ??????",
+    "since": "2004 ਤੋਂ",
+    "tagline": "ਪ੍ਰੀਮਿਅਮ ਗਲਾਸ ਚੂੜੀਆਂ",
     "nav": {
       "home": "??",
       "shop": "?????",
@@ -515,47 +515,47 @@
     }
   },
   "terms": {
-    "title": "Terms & Conditions",
-    "description": "The basics of using our site and placing orders.",
-    "useOfSite": "Use of the Site",
-    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
-    "ordersAndPricing": "Orders & Pricing",
-    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
-    "liability": "Liability",
-    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+    "title": "ਸ਼ਰਤਾਂ & ਸ਼ਰਤਾਂ",
+    "description": "ਸਾਡੀ ਸਾਈਟ ਵਰਤਣ ਅਤੇ ਆਰਡਰ ਦੇਣ ਦਾ ਮੁਲਾਂਕਣ.",
+    "useOfSite": "ਸਾਈਟ ਦਾ ਉਪਯੋਗ",
+    "useOfSiteContent": "ਸਾਈਟ ਦਾ ਦੁਰ-ਵਧਾਤ ਨਾ ਕਰੋ, ਧੋਖਾ ਨਾ ਕਰੋ ਜਾਂ ਲਾਗੂ ਕਾਨੂੰਨਾਂ ਦੀ ਉਲੰਘਣਾ ਨਾ ਕਰੋ.",
+    "ordersAndPricing": "ਆਰਡਰ & ਮੁੱਲ",
+    "ordersAndPricingContent": "ਆਰਡਰ ਅਦਾਇਗੀ ਦੀ ਪ੍ਰਮਾਣਿਕਤਾ ਤੋਂ ਬਾਅਦ ਮੁਨਾਸਿਬ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਮੁੱਲ ਅਤੇ ਉਪਲਬਧਤਾ ਬਦਲ ਸਕਦੀ ਹੈ; ਸਪਸ਼ਟ ਗਲਤੀਆਂ ਠੀਕ ਕੀਤੀਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ.",
+    "liability": "ਜ਼ਿੰਮੇਵਾਰੀ",
+    "liabilityContent": "ਅਸੀਂ ਅਸਿੱਧ ਨੁਕਸਾਨ ਲਈ ਜ਼ਿੰਮੇਵਾਰ ਨਹੀਂ ਹਾਂ; ਉਪਚਾਰ ਆਰਡਰ ਮੁੱਲ ਤੱਕ ਸਮਿਤ ਹਨ."
   },
   "privacy": {
-    "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your data.",
-    "dataCollect": "Data We Collect",
-    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
-    "howWeUseIt": "How We Use It",
-    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
-    "yourControls": "Your Controls",
-    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+    "title": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
+    "description": "ਅਸੀਂ ਆਪਣਾ ਡਾਟਾ ਕਿਵੇਂ ਸੰਗ੍ਰਹਿ, ਵਰਤਦੇ ਅਤੇ ਸੁਰੱਖਿਆ ਦਿੰਦੇ ਹਾਂ.",
+    "dataCollect": "ਅਸੀਂ ਡਾਟਾ ਸੰਗ੍ਰਹਿ ਕਰਨ ਹਾਂ",
+    "dataCollectContent": "ਖਾਤਾ ਸੂਚਨਾ (ਨਾਮ, ਇਮੇਲ), ਆਰਡਰ ਵੇਰਵੇ, ਅਦਾਇਗੀ ਮੁਨਾਸਿਬਤਾ ਰਾਜ (ਪੂਰਾ ਕਾਰਡ ਡਾਟਾ ਨਹੀਂ), ਅਤੇ ਸਾਈਟ ਉਪਯੋਗ ਵਿਸ਼ਲੇਸ਼ਣ.",
+    "howWeUseIt": "ਅਸੀਂ ਇਸਦੀ ਵਰਤੋਂ ਕਿਵੇਂ ਕਰਦੇ ਹਾਂ",
+    "howWeUseItContent": "ਆਰਡਰ ਨੂੰ ਪ੍ਰਕਿਰਿਆ ਕਰਨ, ਕੈਟਲਾਗ ਵਿੱਚ ਸੁਧਾਰ ਕਰਨ, ਆਰਡਰ ਅੱਪਡੇਟ ਭੇਜਣ ਅਤੇ ਸਲਾਹਾਂ ਨੂੰ ਨਿੱਜੀ ਬਣਾਉਣ ਲਈ.",
+    "yourControls": "ਆਪਣਾ ਨਿਯੰਤ੍ਰਣ",
+    "yourControlsContent": "ਸੰਪਰਕ ਦੁਆਰਾ ਡਾਟਾ ਨਿਰਯਾਤ ਜਾਂ ਹਟਾਉਣ ਦੀ ਬੇਨਤੀ ਕਰੋ. ਆਪਣੀ ਪ੍ਰੋਫਾਇਲ ਵਿੱਚ ਮਾਰਕੀਟਿੰਗ ਅਕਲਪੀ ਨੂੰ ਪ੍ਰਬੰਧਨ ਕਰੋ (ਬੱਹੁਤ ਜ਼ਲਦ ਆ ਰਿਹਾ ਹੈ)."
   },
   "shippingReturns": {
-    "title": "Shipping & Returns",
-    "description": "Learn about delivery timelines, fees, and return eligibility."
+    "title": "ਸ਼ਿਪਿੰਗ & ਵਾਪਸੀ",
+    "description": "ਡਿਲਿਵਰੀ ਮਿਆਦ, ਫੀਸ ਅਤੇ ਵਾਪਸੀ ਯੋਗ್ਯਤਾ ਬਾਰੇ ਜਾਣੋ."
   },
   "refundPolicy": {
-    "title": "Refund & Cancellation Policy",
-    "updated": "Updated: 2024"
+    "title": "ਰਿਫੰਡ & ਰੱਦ ਨੀਤੀ",
+    "updated": "ਅੱਪਡੇਟ: 2024"
   },
   "aboutUs": {
-    "title": "About Us",
-    "story": "Our Story",
-    "mission": "Mission",
-    "vision": "Vision",
-    "values": "Core Values",
-    "chooseUs": "Why Choose Us?"
+    "title": "ਸਾਡੇ ਬਾਰੇ",
+    "story": "ਸਾਡੀ ਕਹਾਣੀ",
+    "mission": "ਸਾਡਾ ਮਿਸ਼ਨ",
+    "vision": "ਸਾਡਾ ਨਜ਼ਰੀਆ",
+    "values": "ਮੂਲ ਮੁੱਲ",
+    "chooseUs": "ਤੁਸੀਂ ਸਾਨੂੰ ਕਿਉਂ ਚੁਣਦੇ ਹੋ?"
   },
   "notFound": {
-    "title": "Page Not Found",
-    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "goHome": "Go to Home",
-    "continueShopping": "Continue Shopping",
-    "goBack": "Go Back",
-    "popularLinks": "Popular links"
+    "title": "ਸਫ਼ਾ ਨਹੀਂ ਮਿਲਿਆ",
+    "message": "ਓਓਪਸ! ਜਾ ਸਫ਼ਾ ਤੁਸੀਂ ਭਾਲ ਰਹੇ ਹੋ ਅਸਤਤਵ ਵਿੱਚ ਨਹੀਂ ਹੈ ਜਾਂ ਤਬਦੀਲ ਕੀਤਾ ਗਿਆ ਹੈ.",
+    "goHome": "ਘਰ ਜਾਓ",
+    "continueShopping": "ਖਰੀਦਦਾਰੀ ਜਾਰੀ ਰਖੋ",
+    "goBack": "ਪਿੱਠ ਪਾਸੇ ਜਾਓ",
+    "popularLinks": "ਜਨਤਾ ਲਿੰਕ"
   }
 }
