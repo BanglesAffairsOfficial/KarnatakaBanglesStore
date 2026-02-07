@@ -126,6 +126,8 @@ export default function Admin() {
   const [copied, setCopied] = useState(false);
   const reelInputRef = useRef<HTMLInputElement | null>(null);
   const [reelSaving, setReelSaving] = useState(false);
+  const [bulkStockValue, setBulkStockValue] = useState("999");
+  const [bulkStockLoading, setBulkStockLoading] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -529,6 +531,29 @@ export default function Admin() {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleFillAllStock = async () => {
+    const targetValue = Math.max(0, parseInt(bulkStockValue, 10) || 0);
+    if (!confirm(`Set stock for all bangles to ${targetValue}?`)) return;
+    setBulkStockLoading(true);
+    try {
+      const { error } = await (supabase as any)
+        .from("bangles")
+        .update({ number_of_stock: targetValue })
+        .not("id", "is", null);
+      if (error) throw error;
+      toast({ title: "Stock updated", description: `All bangles set to ${targetValue}.` });
+      fetchBangles();
+    } catch (err: any) {
+      toast({
+        title: "Failed to update stock",
+        description: err?.message || "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBulkStockLoading(false);
+    }
+  };
+
   const handleSaveCategory = async () => {
     if (!categoryForm.name.trim()) {
       toast({ title: "Missing name", description: "Please enter a category name.", variant: "destructive" });
@@ -654,6 +679,25 @@ export default function Admin() {
                   className="w-full"
                 />
                 <Button variant="outline" onClick={() => setSearchTerm("")}>Clear</Button>
+              </div>
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <Input
+                  type="number"
+                  min="0"
+                  value={bulkStockValue}
+                  onChange={(e) => setBulkStockValue(e.target.value)}
+                  placeholder="Stock value"
+                  className="w-full md:w-32"
+                />
+                <Button
+                  variant="secondary"
+                  onClick={handleFillAllStock}
+                  disabled={bulkStockLoading || loading || bangles.length === 0}
+                  className="gap-2"
+                >
+                  {(bulkStockLoading || loading) && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Fill All Stock
+                </Button>
               </div>
               <Dialog open={dialogOpen} onOpenChange={(open) => {
                 if (!open && formHasChanges) {
