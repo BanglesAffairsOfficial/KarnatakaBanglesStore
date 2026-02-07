@@ -35,8 +35,8 @@ export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   const { t } = useTranslation();
-  const { session } = useAuth();
-  const isWholesale = !!session?.user;
+  const { canWholesale } = useAuth();
+  const isWholesale = canWholesale;
 
   const [products, setProducts] = useState<Bangle[]>([]);
   const [categories, setCategories] = useState<Array<{id:string,name:string}>>([]);
@@ -71,7 +71,7 @@ export default function Shop() {
 
   const fetchProducts = async () => {
     const { data, error } = await (supabase as any)
-      .from("bangles")
+      .from("bangles_public")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -382,3 +382,4 @@ export default function Shop() {
     </div>
   );
 }
+

@@ -74,7 +74,7 @@ export default function SizeGuide() {
         </div>
 
         <Tabs defaultValue="guide" className="max-w-4xl mx-auto mb-12">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3">
             <TabsTrigger value="guide">Size Guide</TabsTrigger>
             <TabsTrigger value="measurement">Measurement Steps</TabsTrigger>
             <TabsTrigger value="faq">Size FAQ</TabsTrigger>

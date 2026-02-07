@@ -30,6 +30,7 @@ interface OrderItemRow {
     name: string;
     category_id: string | null;
   } | null;
+  price?: number | null;
 }
 
 interface CategoryRow {
@@ -95,7 +96,7 @@ export default function AdminDashboard() {
 
       setOrders(ordersRes.data || []);
       setOrderItems(itemsRes.data || []);
-      setCategories(catsRes.data || []);
+      setCategories(catsRes.data || []);  
     } catch (err: any) {
       console.error("[AdminDashboard] fetch error", err);
       toast({ title: "Failed to load dashboard", description: err.message || String(err), variant: "destructive" });

@@ -45,7 +45,7 @@ export default function Wishlist() {
       return;
     }
     const { data } = await (supabase as any)
-      .from("bangles")
+      .from("bangles_public")
       .select("id, name, image_url, price")
       .in("id", ids);
     setItems(data || []);
@@ -110,3 +110,4 @@ export default function Wishlist() {
     </div>
   );
 }
+

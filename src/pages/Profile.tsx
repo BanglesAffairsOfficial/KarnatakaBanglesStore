@@ -49,10 +49,6 @@ interface OrderItem {
   unit_price: number;
   size: string;
   color: string;
-  bangles: {
-    name: string;
-    image_url: string | null;
-  } | null;
 }
 
 interface Order {
@@ -119,7 +115,7 @@ const getStatusIcon = (status: string) => {
 };
 
 export default function Profile() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading, canWholesale } = useAuth();
   const { addItem } = useCart();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -141,6 +137,13 @@ export default function Profile() {
   
   const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [bangleMetaById, setBangleMetaById] = useState<Record<string, { name: string; image_url: string | null }>>({});
+  const [b2bRequestId, setB2bRequestId] = useState<string | null>(null);
+  const [b2bStatus, setB2bStatus] = useState<string | null>(null);
+  const [b2bProofUrl, setB2bProofUrl] = useState("");
+  const [b2bProofType, setB2bProofType] = useState<"visiting_card" | "shop_board" | "">("");
+  const [b2bSaving, setB2bSaving] = useState(false);
+  const [b2bError, setB2bError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -244,8 +247,7 @@ export default function Profile() {
             quantity,
             unit_price,
             size,
-            color,
-            bangles:bangle_id(name, image_url)
+            color
           )
         `)
         .eq("user_id", user.id)
@@ -253,6 +255,41 @@ export default function Profile() {
 
       if (orderData) {
         setOrders(orderData as Order[]);
+        const ids = Array.from(
+          new Set(
+            orderData
+              .flatMap((o: any) => o.order_items || [])
+              .map((it: any) => it.bangle_id)
+              .filter(Boolean)
+          )
+        );
+        if (ids.length > 0) {
+          const { data: bangleRows } = await supabase
+            .from("bangles_public")
+            .select("id,name,image_url")
+            .in("id", ids);
+          if (bangleRows) {
+            const map: Record<string, { name: string; image_url: string | null }> = {};
+            bangleRows.forEach((b: any) => {
+              map[b.id] = { name: b.name, image_url: b.image_url || null };
+            });
+            setBangleMetaById(map);
+          }
+        }
+      }
+
+      // Fetch latest B2B request
+      const { data: b2bRow } = await (supabase as any)
+        .from("b2b_requests")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (b2bRow) {
+        setB2bRequestId(b2bRow.id);
+        setB2bStatus(b2bRow.status || "pending");
+        setB2bProofUrl(b2bRow.business_proof_url || "");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -279,10 +316,6 @@ export default function Profile() {
       errors.phone = "profile.errors.phoneInvalid";
     }
     
-    if (!profile.address?.trim()) {
-      errors.address = "profile.errors.address";
-    }
-
     if (profile.gst_no && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(profile.gst_no)) {
       errors.gst_no = "profile.errors.gst";
     }
@@ -335,6 +368,12 @@ export default function Profile() {
           variant: "destructive",
         });
       } else {
+        if (profile.shop_name.trim()) {
+          await (supabase as any)
+            .from("b2b_requests")
+            .update({ shop_name: profile.shop_name.trim() })
+            .eq("user_id", user.id);
+        }
         toast({
           title: t("profile.toast.updateSuccessTitle"),
           description: t("profile.toast.updateSuccessDesc"),
@@ -450,21 +489,19 @@ export default function Profile() {
 
     let itemsAdded = 0;
     order.order_items.forEach((item) => {
-      if (item.bangles) {
-        const parsed = parseColor(item.color);
-        addItem({
-          banglesId: item.bangle_id,
-          name: item.bangles.name || "Bangle",
-          price: Number(item.unit_price ?? 0),
-          imageUrl: item.bangles.image_url || undefined,
-          size: item.size,
-          color: parsed.name,
-          colorHex: parsed.hex,
-          quantity: item.quantity,
-          orderType: user ? "wholesale" : "retail",
-        });
-        itemsAdded++;
-      }
+      const parsed = parseColor(item.color);
+      addItem({
+        banglesId: item.bangle_id,
+        name: bangleMetaById[item.bangle_id]?.name || "Bangle",
+        price: Number(item.unit_price ?? 0),
+        imageUrl: bangleMetaById[item.bangle_id]?.image_url || undefined,
+        size: item.size,
+        color: parsed.name,
+        colorHex: parsed.hex,
+        quantity: item.quantity,
+        orderType: canWholesale ? "wholesale" : "retail",
+      });
+      itemsAdded++;
     });
 
     if (itemsAdded > 0) {
@@ -479,6 +516,45 @@ export default function Profile() {
         description: t("profile.toast.repeatEmptyDesc"),
         variant: "destructive" 
       });
+    }
+  };
+
+  const handleB2bProofUpload = async (url: string) => {
+    if (!user) return;
+    setB2bSaving(true);
+    setB2bError(null);
+    try {
+      if (b2bRequestId) {
+        const { error } = await (supabase as any)
+          .rpc("update_b2b_proof", { p_url: url });
+        if (error) throw error;
+      } else {
+        const { data, error } = await (supabase as any)
+          .from("b2b_requests")
+          .insert({
+            user_id: user.id,
+            email: user.email || "",
+            full_name: profile.full_name || "",
+            phone: profile.phone || "",
+            shop_name: profile.shop_name.trim() || null,
+            gst_number: profile.gst_no || null,
+            business_proof_url: url,
+            status: "pending",
+          })
+          .select("id, status")
+          .single();
+        if (error) throw error;
+        setB2bRequestId(data?.id || null);
+        setB2bStatus(data?.status || "pending");
+        // Ensure proof url is saved via RPC even if a row was just created.
+        await (supabase as any).rpc("update_b2b_proof", { p_url: url });
+      }
+      setB2bProofUrl(url);
+      toast({ title: "Business proof uploaded" });
+    } catch (err: any) {
+      setB2bError(err?.message || "Failed to upload business proof.");
+    } finally {
+      setB2bSaving(false);
     }
   };
 
@@ -517,8 +593,12 @@ export default function Profile() {
           return (
             <div key={item.id} className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
               <div className="w-12 h-12 bg-background rounded-md overflow-hidden flex-shrink-0">
-                {item.bangles?.image_url ? (
-                  <img src={item.bangles.image_url} alt={item.bangles.name} className="w-full h-full object-cover" />
+                {bangleMetaById[item.bangle_id]?.image_url ? (
+                  <img
+                    src={bangleMetaById[item.bangle_id]?.image_url || ""}
+                    alt={bangleMetaById[item.bangle_id]?.name || t("profile.bangle")}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <ShoppingCart className="w-6 h-6 text-muted-foreground" />
@@ -526,7 +606,9 @@ export default function Profile() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="notranslate font-medium text-sm truncate">{item.bangles?.name || t("profile.bangle")}</p>
+                <p className="notranslate font-medium text-sm truncate">
+                  {bangleMetaById[item.bangle_id]?.name || t("profile.bangle")}
+                </p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span>{t("profile.size")}: {item.size}</span>
                   <span>•</span>
@@ -604,6 +686,14 @@ export default function Profile() {
         )}
 
         <Tabs defaultValue={defaultTab === "orders" ? "profile" : defaultTab} className="space-y-6">
+          {!b2bProofUrl && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-900">
+              <p className="font-semibold">B2B verification pending</p>
+              <p className="text-sm">
+                Please upload your Visiting Card or Shop Board photo in the Business Proof section to complete verification.
+              </p>
+            </div>
+          )}
           <TabsList className="grid w-full grid-cols-2 max-w-md">
             <TabsTrigger value="profile" className="gap-2">
               <User className="w-4 h-4" />
@@ -714,7 +804,53 @@ export default function Profile() {
                   </div>
                 </div>
 
-            
+                <div className="border-t pt-6 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-lg font-semibold">Business Proof (B2B)</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Upload after login. Image size can be anything.
+                      </p>
+                    </div>
+                    {b2bStatus && (
+                      <Badge variant="secondary" className="capitalize">
+                        {b2bStatus}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant={b2bProofType === "visiting_card" ? "default" : "outline"}
+                      className="h-11"
+                      onClick={() => setB2bProofType("visiting_card")}
+                      disabled={b2bSaving}
+                    >
+                      Visiting Card
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={b2bProofType === "shop_board" ? "default" : "outline"}
+                      className="h-11"
+                      onClick={() => setB2bProofType("shop_board")}
+                      disabled={b2bSaving}
+                    >
+                      Shop Board
+                    </Button>
+                  </div>
+                  {b2bProofType ? (
+                    <ImageUpload
+                      bucket="b2b-verification"
+                      folder="b2b-proofs"
+                      currentImageUrl={b2bProofUrl || null}
+                      onUpload={(url) => handleB2bProofUpload(url)}
+                      onRemove={() => setB2bProofUrl("")}
+                    />
+                  ) : (
+                    <p className="text-xs text-muted-foreground">Choose Visiting Card or Shop Board to upload.</p>
+                  )}
+                  {b2bError && <p className="text-sm text-destructive">{b2bError}</p>}
+                </div>
 
                 <Button
                   onClick={handleProfileUpdate}
@@ -857,3 +993,4 @@ export default function Profile() {
     </div>
   );
 }
+

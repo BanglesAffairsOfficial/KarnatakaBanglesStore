@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+                                            import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { NumericStepper } from "@/components/NumericStepper";
 import { Trash2, ShoppingBag } from "lucide-react";

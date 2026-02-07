@@ -7,10 +7,20 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
+  roleChecked: boolean;
+  canWholesale: boolean;
   unreadNotifications: number;
   refreshUnread: () => Promise<void>;
   clearUnread: () => Promise<void>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    fullName: string,
+    phone?: string,
+    shopName?: string,
+    gstNumber?: string,
+    businessLink?: string
+  ) => Promise<{ error: Error | null; userId?: string }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -23,6 +33,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [roleChecked, setRoleChecked] = useState(false);
+  const [canWholesale, setCanWholesale] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [notificationChannel, setNotificationChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
 
@@ -45,16 +57,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        setCanWholesale(false);
+        setRoleChecked(false);
 
-        // Check admin status with setTimeout to avoid deadlock
+        // Check admin/wholesale status with setTimeout to avoid deadlock
         if (session?.user) {
           setTimeout(() => {
-            checkAdminStatus(session.user.id);
+            checkRoles(session.user.id);
             refreshUnread(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
+          setCanWholesale(false);
           setUnreadNotifications(0);
+          setRoleChecked(true);
         }
       }
     );
@@ -64,12 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      setCanWholesale(false);
+      setRoleChecked(false);
 
       if (session?.user) {
-        checkAdminStatus(session.user.id);
+        checkRoles(session.user.id);
         refreshUnread(session.user.id);
       } else {
         setUnreadNotifications(0);
+        setRoleChecked(true);
       }
     });
 
@@ -101,31 +120,95 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [user?.id]);
 
-  const checkAdminStatus = async (userId: string) => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    
-    setIsAdmin(!!data);
+  const checkRoles = async (userId: string) => {
+    const [{ data: adminData }, { data: b2bData, error: b2bErr }] = await Promise.all([
+      supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle(),
+      (supabase as any)
+        .from("b2b_requests")
+        .select("status")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ]);
+
+    const admin = !!adminData;
+    setIsAdmin(admin);
+    const approved = !b2bErr && b2bData ? b2bData.status === "approved" : false;
+    setCanWholesale(admin || approved);
+    setRoleChecked(true);
+
+    // Ensure the user has a B2B request row; harmless if already exists
+    if (!admin) {
+      void ensureB2bRequest(userId);
+    }
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+  const ensureB2bRequest = async (userId: string) => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from("b2b_requests")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (!error && data) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email, full_name, phone")
+        .eq("id", userId)
+        .maybeSingle();
+
+      // fallback to auth user metadata if profile incomplete
+      const { data: authUser } = await supabase.auth.getUser();
+      const meta = authUser?.user?.user_metadata || {};
+
+      await (supabase as any).from("b2b_requests").insert({
+        user_id: userId,
+        email: profile?.email || authUser?.user?.email || "",
+        full_name: profile?.full_name || meta.full_name || meta.name || "",
+        phone: profile?.phone || meta.phone || meta.phone_number || "",
+        gst_number: meta.gst_no || meta.gst_number || null,
+        business_link: meta.business_link || null,
+        business_proof_url: meta.business_proof_url || null,
+        status: "pending",
+      });
+    } catch (err) {
+      console.warn("ensureB2bRequest failed", err);
+    }
+  };
+
+  const signUp = async (
+    email: string,
+    password: string,
+    fullName: string,
+    phone?: string,
+    shopName?: string,
+    gstNumber?: string,
+    businessLink?: string
+  ) => {
+    const redirectUrl = `${window.location.origin}/profile`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName,
+          phone,
+          shop_name: shopName || undefined,
+          gst_no: gstNumber || undefined,
+          business_link: businessLink || undefined,
         },
       },
     });
-    return { error };
+    return { error, userId: data?.user?.id };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -139,6 +222,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    setCanWholesale(false);
+    setRoleChecked(false);
     setUnreadNotifications(0);
   };
 
@@ -214,7 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, isAdmin, unreadNotifications, refreshUnread, clearUnread, signUp, signIn, signInWithGoogle, signOut }}
+      value={{ user, session, loading, isAdmin, roleChecked, canWholesale, unreadNotifications, refreshUnread, clearUnread, signUp, signIn, signInWithGoogle, signOut }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
   import { Badge } from "@/components/ui/badge";
-  import { 
+import { 
     ShoppingBag, Search as SearchIcon, Sparkles, 
     Users, Shield, Truck, RotateCcw, Instagram, Facebook, 
-    Twitter, Mail, ChevronRight, Award, Package, Zap, Phone, MapPin, MessageCircle, Globe
+    Twitter, Mail, ChevronRight, ChevronLeft, Play, Award, Package, Zap, Phone, MapPin, MessageCircle, Globe
   } from "lucide-react";
-  import { parseColors, getColorSwatchStyle } from "@/lib/colorHelpers";
-  import { safeNavigate } from "@/lib/safeNavigate";
-  import { useTranslation } from "react-i18next";
+import { parseColors, getColorSwatchStyle } from "@/lib/colorHelpers";
+import { safeNavigate } from "@/lib/safeNavigate";
+import { useTranslation } from "react-i18next";
 
   interface Bangle {
     id: string;
@@ -54,14 +54,42 @@ import { Card, CardContent } from "@/components/ui/card";
   interface OrderItemSale {
     bangle_id: string;
     quantity: number;
-    bangles?: {
-      name: string;
-      image_url: string | null;
-      secondary_image_url?: string | null;
-      price?: number | null;
-      category_id?: string | null;
-    } | null;
   }
+
+  interface ReelRow {
+    id: string;
+    video_url: string;
+    caption: string | null;
+    creator: string | null;
+    poster_url?: string | null;
+    display_order?: number | null;
+    is_active?: boolean | null;
+  }
+
+  interface ReelCard {
+    id: string;
+    caption: string;
+    creator: string;
+    videoUrl: string;
+    poster?: string | null;
+  }
+
+  const videoReels: ReelCard[] = [
+    {
+      id: "reel-2",
+      caption: "New Arrival Alert: Stone Glass Bangles",
+      creator: "@Bnaglesaffairs",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770187005/New_Arrival_Alert_Introducing_our_stunning_stone_glass_bangles_-_each_piece_has_a_story_to_t_tdzie5.mp4",
+      poster: "/reels/reel2.jpg",
+    },
+    {
+      id: "reel-3",
+      caption: "Wholesale Bangles",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770187345/Searching_for_wholesale_bangles_to_start_your_business_Skip_the_hassle_Karnataka_Bangles_Stores_rnmufu.mp4",
+      poster: "/reels/reel3.jpg",
+    },
+  ];
 
 
   const features = [
@@ -86,13 +114,14 @@ import { Card, CardContent } from "@/components/ui/card";
 
   const EnhancedHomepage = () => {
     const navigate = useNavigate();
-    const { session } = useAuth();
+    const { session, canWholesale } = useAuth();
     const { t, i18n } = useTranslation();
     const [bangles, setBangles] = useState<Bangle[]>([]);
     const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [orderItems, setOrderItems] = useState<OrderItemSale[]>([]);
     const [whatsappNumber, setWhatsappNumber] = useState("");
+    const [reels, setReels] = useState<ReelRow[]>([]);
     const [socialLinks, setSocialLinks] = useState<SocialLinks>({
       instagram: "",
       facebook: "",
@@ -105,10 +134,11 @@ import { Card, CardContent } from "@/components/ui/card";
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentLang, setCurrentLang] = useState("en");
     const [showLangMenu, setShowLangMenu] = useState(false);
+    const reelsRef = useRef<HTMLDivElement | null>(null);
     const getDisplayPrice = (b: any) => {
       const retail = b?.retail_price ?? b?.price ?? 0;
       const wholesale = b?.price ?? retail;
-      return session?.user ? wholesale : retail;
+      return canWholesale ? wholesale : retail;
     };
 
           useEffect(() => {
@@ -146,21 +176,28 @@ import { Card, CardContent } from "@/components/ui/card";
       setShowLangMenu(false);
     };
 
+    const scrollReels = (direction: number) => {
+      if (!reelsRef.current) return;
+      const { clientWidth } = reelsRef.current;
+      reelsRef.current.scrollBy({ left: direction * (clientWidth * 0.8), behavior: "smooth" });
+    };
+
     const fetchData = async () => {
       // Clear any cached top-seller data before fetching fresh results
       setOrderItems([]);
       setLoading(true);
-      const [banglesRes, slidesRes, categoriesRes, settingsRes, orderItemsRes] = await Promise.all([
-        supabase.from("bangles").select("*").eq("is_active", true).order("created_at", { ascending: false }),
-        supabase.from("hero_slides").select("*").eq("is_active", true).order("display_order", { ascending: true }),
+      const [banglesRes, slidesRes, categoriesRes, settingsRes, orderItemsRes, reelsRes] = await Promise.all([
+        (supabase as any).from("bangles_public").select("*").eq("is_active", true).order("created_at", { ascending: false }),
+        (supabase as any).from("hero_slides").select("*").eq("is_active", true).order("display_order", { ascending: true }),
         // Use any to avoid typed client mismatch for custom table
         (supabase as any).from("categories").select("*").eq("is_active", true).order("display_order", { ascending: true }),
         // @ts-ignore - settings table may be custom, ignore strict client typings
-        supabase.from("settings").select("*").single(),
-        (supabase as any).from("order_items").select("bangle_id, quantity, bangles:bangle_id(name, image_url, secondary_image_url, price, category_id)")
+        (supabase as any).from("settings").select("*").single(),
+        (supabase as any).from("order_items").select("bangle_id, quantity"),
+        (supabase as any).from("reels").select("*").eq("is_active", true).order("display_order", { ascending: true }),
       ]);
       
-      if (banglesRes.data) setBangles(banglesRes.data);
+      if (banglesRes.data) setBangles(banglesRes.data as Bangle[]);
       if (slidesRes.data) setHeroSlides(slidesRes.data);
       if (categoriesRes.data) {
         setCategories(
@@ -185,8 +222,21 @@ import { Card, CardContent } from "@/components/ui/card";
         });
       }
       if (orderItemsRes.data) setOrderItems(orderItemsRes.data);
+      if (reelsRes.data) setReels(reelsRes.data as ReelRow[]);
       setLoading(false);
     };
+
+  const reelCards: ReelCard[] = reels.length
+    ? reels
+        .filter((reel) => !!reel.video_url)
+        .map((reel, idx) => ({
+          id: reel.id || `reel-${idx}`,
+          caption: reel.caption || "New Reel",
+          creator: reel.creator || "@karnatakabangles",
+          videoUrl: reel.video_url,
+          poster: (reel as any).poster_url || null,
+        }))
+    : videoReels;
 
   const filteredBangles = useMemo(() => {
     if (!searchQuery.trim()) return bangles;
@@ -201,7 +251,7 @@ import { Card, CardContent } from "@/components/ui/card";
       orderItems.forEach((item) => {
         const existing = tally.get(item.bangle_id);
         const quantity = (existing?.quantity || 0) + (item.quantity || 0);
-        const bangleData = bangleMap.get(item.bangle_id) || (item.bangles as any);
+        const bangleData = bangleMap.get(item.bangle_id);
         tally.set(item.bangle_id, { quantity, bangle: bangleData || null });
       });
       return Array.from(tally.entries())
@@ -215,7 +265,7 @@ import { Card, CardContent } from "@/components/ui/card";
       const catTally = new Map<string, number>();
       const bangleMap = new Map(bangles.map(b => [b.id, b]));
       orderItems.forEach((item) => {
-        const bangle = bangleMap.get(item.bangle_id) || (item.bangles as any);
+        const bangle = bangleMap.get(item.bangle_id);
         const catId = bangle?.category_id;
         if (!catId) return;
         catTally.set(catId, (catTally.get(catId) || 0) + (item.quantity || 0));
@@ -359,8 +409,8 @@ import { Card, CardContent } from "@/components/ui/card";
                 className={`h-2 rounded-full transition-all ${idx === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/50'}`} 
               />
             ))}
-          </div>
-        </section>
+        </div>
+      </section>
 
         {/* Categories (should appear right after the hero banner) */}
         <section id="categories" className="py-12 md:py-16">
@@ -530,6 +580,66 @@ import { Card, CardContent } from "@/components/ui/card";
                     ))
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Video Reels */}
+        <section className="py-16 bg-background" id="reels">
+          <div className="container mx-auto px-3 sm:px-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <Badge className="mb-3">{t("reels.badge")}</Badge>
+                <h2 className="text-3xl sm:text-4xl font-display font-bold">{t("reels.title")}</h2>
+                <p className="text-muted-foreground text-sm sm:text-base">Vertical 9:16 reels (1080x1920) - no cropping, rounded corners.</p>
+              </div>
+              <div className="hidden sm:flex gap-2">
+                <Button variant="outline" size="icon" className="rounded-full" onClick={() => scrollReels(-1)}>
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full" onClick={() => scrollReels(1)}>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="relative">
+              <div
+                ref={reelsRef}
+                className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {reelCards.map((reel) => (
+                  <div key={reel.id} className="snap-start w-[220px] sm:w-[260px] md:w-[300px] lg:w-[320px] flex-shrink-0">
+                    <div className="relative aspect-[9/16] w-full rounded-3xl overflow-hidden bg-black shadow-2xl">
+                      <video
+                        src={reel.videoUrl}
+                        className="h-full w-full object-cover"
+                        poster={reel.poster || heroSlides[0]?.image_url || undefined}
+                        playsInline
+                        muted
+                        loop
+                        autoPlay
+                        controls
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent p-3 text-white">
+                        <p className="text-xs opacity-80 notranslate">{reel.creator}</p>
+                        <p className="text-sm font-semibold leading-tight notranslate">{reel.caption}</p>
+                      </div>
+                      <div className="absolute top-3 right-3 bg-white/85 text-primary rounded-full p-2 shadow-md">
+                        <Play className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="sm:hidden flex justify-end gap-2 mt-4">
+                <Button variant="outline" size="icon" className="rounded-full" onClick={() => scrollReels(-1)}>
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full" onClick={() => scrollReels(1)}>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
@@ -710,3 +820,5 @@ import { Card, CardContent } from "@/components/ui/card";
   };
 
   export default EnhancedHomepage;
+
+

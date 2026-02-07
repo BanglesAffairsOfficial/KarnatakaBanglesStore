@@ -62,9 +62,22 @@ export function EmailVerificationDialog({
           <DialogTitle className="text-xl font-display">
             {t("authPage.verification.title")}
           </DialogTitle>
-          <DialogDescription className="text-base pt-2">
-            {t("authPage.verification.desc")}{" "}
-            <span className="font-semibold text-foreground">{email}</span>.
+          <DialogDescription className="text-base pt-2 space-y-2">
+            <div>
+              {t("authPage.verification.desc")}{" "}
+              <span className="font-semibold text-foreground">{email}</span>.
+            </div>
+            <div className="text-sm text-muted-foreground leading-snug">
+              {t("authPage.verification.steps")}
+            </div>
+            <div className="flex flex-wrap justify-center gap-2 text-xs">
+              <span className="px-2 py-1 rounded-full bg-muted text-foreground border">
+                From: noreply@mail.app.supabase.io
+              </span>
+              <span className="px-2 py-1 rounded-full bg-muted text-foreground border">
+                Subject: “Confirm Your Signup”
+              </span>
+            </div>
           </DialogDescription>
         </DialogHeader>
 

@@ -20,7 +20,7 @@ interface Broadcast {
 }
 
 export default function AdminBroadcasts() {
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, roleChecked } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -34,13 +34,13 @@ export default function AdminBroadcasts() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || !roleChecked) return;
     if (!isAdmin) {
       navigate("/auth");
       return;
     }
     fetchBroadcasts();
-  }, [authLoading, isAdmin]);
+  }, [authLoading, roleChecked, isAdmin]);
 
   const fetchBroadcasts = async () => {
     setListLoading(true);

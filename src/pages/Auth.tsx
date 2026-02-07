@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, Mail } from "lucide-react";
 import { EmailVerificationDialog } from "@/components/EmailVerificationDialog";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +19,11 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [shopName, setShopName] = useState("");
+  const [gstNumber, setGstNumber] = useState("");
+  const [businessLink, setBusinessLink] = useState("");
+  const applyB2B = true; // always capture a B2B request on signup
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +37,15 @@ export default function Auth() {
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const gstRegex = /^[0-9A-Z]{15}$/i;
+  const isValidUrl = (value: string) => {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
 
   const baseSchema = useMemo(
     () =>
@@ -38,6 +53,7 @@ export default function Auth() {
         email: z.string().email(t("authPage.errors.email")),
         password: z.string().min(6, t("authPage.errors.password")),
         fullName: z.string().min(2, t("authPage.errors.fullName")).optional(),
+        phone: z.string().optional(),
         confirmPassword: z.string().optional(),
       }),
     [t]
@@ -74,8 +90,20 @@ export default function Auth() {
       if (!fullName || fullName.length < 2) {
         newErrors.fullName = t("authPage.errors.fullName");
       }
+      if (!shopName || shopName.trim().length < 2) {
+        newErrors.shopName = "Shop name is required";
+      }
       if (password !== confirmPassword) {
         newErrors.confirmPassword = t("authPage.errors.confirmPassword");
+      }
+      if (!phone || phone.trim().length < 8) {
+        newErrors.phone = "Phone / WhatsApp number is required";
+      }
+      if (gstNumber && !gstRegex.test(gstNumber.trim())) {
+        newErrors.gstNumber = "GST number must be 15 characters (letters/numbers).";
+      }
+      if (businessLink && businessLink.trim() && !isValidUrl(businessLink.trim())) {
+        newErrors.businessLink = "Enter a valid link starting with http:// or https://.";
       }
     }
 
@@ -91,6 +119,10 @@ export default function Auth() {
       email: email.trim(),
       password,
       fullName: isLogin ? undefined : fullName?.trim(),
+      phone: isLogin ? undefined : phone.trim(),
+      shopName: isLogin ? undefined : shopName.trim(),
+      gstNumber: isLogin ? undefined : gstNumber.trim(),
+      businessLink: isLogin ? undefined : businessLink.trim(),
       confirmPassword: isLogin ? undefined : confirmPassword,
     };
 
@@ -111,8 +143,20 @@ export default function Auth() {
         if (!payload.fullName || payload.fullName.length < 2) {
           newErrors.fullName = t("authPage.errors.fullName");
         }
+        if (!payload.shopName || payload.shopName.trim().length < 2) {
+          newErrors.shopName = "Shop name is required";
+        }
         if (payload.password !== payload.confirmPassword) {
           newErrors.confirmPassword = t("authPage.errors.confirmPassword");
+        }
+        if (!payload.phone || payload.phone.length < 8) {
+          newErrors.phone = "Phone / WhatsApp number is required";
+        }
+        if (payload.gstNumber && !gstRegex.test(payload.gstNumber)) {
+          newErrors.gstNumber = "GST number must be 15 characters (letters/numbers).";
+        }
+        if (payload.businessLink && payload.businessLink.trim() && !isValidUrl(payload.businessLink.trim())) {
+          newErrors.businessLink = "Enter a valid link starting with http:// or https://.";
         }
       }
 
@@ -168,20 +212,63 @@ export default function Auth() {
             title: t("authPage.toast.welcome"),
             description: t("authPage.toast.success"),
           });
-          navigate("/");
+          navigate("/profile");
         }
       } else {
-        const { error } = await signUp(email, password, fullName);
+        const { error, userId } = await signUp(
+          email,
+          password,
+          fullName,
+          phone,
+          shopName,
+          gstNumber,
+          businessLink
+        );
         if (error) {
+          const lower = (error.message || "").toLowerCase();
           toast({
             title: t("authPage.toast.signupFailed"),
-            description: error.message.includes("already registered")
+            description: lower.includes("rate limit")
+              ? "Too many signup emails were sent. Please wait a few minutes and try again."
+              : error.message.includes("already registered")
               ? t("authPage.toast.emailExists")
               : error.message,
             variant: "destructive",
           });
         } else {
+          // Capture B2B intent for admin review
+          if (userId) {
+            try {
+              await (supabase as any).from("b2b_requests").upsert({
+                user_id: userId,
+                email: email.trim(),
+                full_name: fullName.trim(),
+                phone: phone.trim(),
+                shop_name: shopName.trim(),
+                gst_number: gstNumber.trim() || null,
+                business_link: businessLink.trim() || null,
+                status: "pending",
+              });
+              await (supabase as any).from("notifications").insert({
+                user_id: userId,
+                title: "B2B verification pending",
+                body: "Thanks! Our team will verify your wholesale account request soon.",
+              });
+            } catch (reqErr: any) {
+              console.error("B2B request logging failed", reqErr);
+              toast({
+                title: "Signup noted",
+                description: "Account created, but we could not log your B2B request automatically. Please contact support.",
+              });
+            }
+          }
+
           setShowVerificationDialog(true);
+          toast({
+            title: "Signup successful",
+            description: "Verify your email. We’ll review and approve B2B access after verification.",
+          });
+          navigate("/profile");
         }
       }
     } catch (err: any) {
@@ -272,6 +359,33 @@ export default function Auth() {
                 </div>
               )}
 
+              {/* Shop Name */}
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="shopName" className="font-medium">
+                    Shop Name (required)
+                  </Label>
+                  <Input
+                    id="shopName"
+                    type="text"
+                    placeholder="e.g. Shri Lakshmi Bangles"
+                    value={shopName}
+                    onChange={(e) => {
+                      setShopName(e.target.value);
+                      if (errors.shopName) setErrors({ ...errors, shopName: "" });
+                    }}
+                    disabled={loading}
+                    className="h-11 text-base"
+                    aria-describedby={errors.shopName ? "shopName-error" : undefined}
+                  />
+                  {errors.shopName && (
+                    <p id="shopName-error" className="text-sm text-destructive flex items-center gap-1">
+                      {errors.shopName}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="font-medium">
@@ -299,18 +413,9 @@ export default function Auth() {
 
               {/* Password */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="font-medium">
-                    {t("authPage.passwordLabel")}
-                  </Label>
-                  <button
-                    type="button"
-                    onClick={() => navigate("/forgot-password")}
-                    className="text-xs text-primary hover:underline font-medium"
-                  >
-                    {t("authPage.forgot")}
-                  </button>
-                </div>
+                <Label htmlFor="password" className="font-medium">
+                  {t("authPage.passwordLabel")}
+                </Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -378,6 +483,98 @@ export default function Auth() {
                 </div>
               )}
 
+              {/* Phone / WhatsApp */}
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="font-medium">
+                    Phone / WhatsApp (required)
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="e.g. +91 98765 43210"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (errors.phone) setErrors({ ...errors, phone: "" });
+                    }}
+                    disabled={loading}
+                    className="h-11 text-base"
+                    aria-describedby={errors.phone ? "phone-error" : undefined}
+                  />
+                  {errors.phone && (
+                    <p id="phone-error" className="text-sm text-destructive flex items-center gap-1">
+                      {errors.phone}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* GST Number (Optional) */}
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="gstNumber" className="font-medium">
+                    GST Number (optional)
+                  </Label>
+                  <Input
+                    id="gstNumber"
+                    type="text"
+                    placeholder="15-character GSTIN"
+                    value={gstNumber}
+                    onChange={(e) => {
+                      setGstNumber(e.target.value.toUpperCase());
+                      if (errors.gstNumber) setErrors({ ...errors, gstNumber: "" });
+                    }}
+                    disabled={loading}
+                    className="h-11 text-base"
+                    aria-describedby={errors.gstNumber ? "gstNumber-error" : undefined}
+                  />
+                  {errors.gstNumber && (
+                    <p id="gstNumber-error" className="text-sm text-destructive flex items-center gap-1">
+                      {errors.gstNumber}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Business Link */}
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="businessLink" className="font-medium">
+                    Website or Social Link (optional)
+                  </Label>
+                  <Input
+                    id="businessLink"
+                    type="url"
+                    placeholder="https://instagram.com/yourshop"
+                    value={businessLink}
+                    onChange={(e) => {
+                      setBusinessLink(e.target.value);
+                      if (errors.businessLink) setErrors({ ...errors, businessLink: "" });
+                    }}
+                    disabled={loading}
+                    className="h-11 text-base"
+                    aria-describedby={errors.businessLink ? "businessLink-error" : undefined}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    If provided, link should match your GST/phone/email details.
+                  </p>
+                  {errors.businessLink && (
+                    <p id="businessLink-error" className="text-sm text-destructive flex items-center gap-1">
+                      {errors.businessLink}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {!isLogin && (
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    Business proof upload is available after signup/login.
+                  </p>
+                </div>
+              )}
+
               {/* Submit */}
               <Button
                 type="submit"
@@ -397,38 +594,42 @@ export default function Auth() {
               </Button>
             </form>
 
-            {/* Divider */}
-            <div className="my-6">
-              <Separator />
-              <div className="flex justify-center -translate-y-3">
-                <span className="bg-background px-2 text-xs text-muted-foreground font-medium">
-                  {t("authPage.or")}
-                </span>
-              </div>
-            </div>
+            {isLogin && (
+              <>
+                <div className="my-6">
+                  <Separator />
+                  <div className="flex justify-center -translate-y-3">
+                    <span className="bg-background px-2 text-xs text-muted-foreground font-medium">
+                      {t("authPage.or")}
+                    </span>
+                  </div>
+                </div>
 
-            {/* Alternative Login Methods */}
+                <div className="space-y-3 mb-6">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-11 gap-2 font-medium"
+                    disabled={loading}
+                    onClick={handleGoogle}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {t("authPage.signingIn")}
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4" />
+                        {t("authPage.google")}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
+
             <div className="space-y-3 mb-6">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-11 gap-2 font-medium"
-                disabled={loading}
-                onClick={handleGoogle}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    {t("authPage.signingIn")}
-                  </>
-                ) : (
-                  <>
-                    <Mail className="w-4 h-4" />
-                    {t("authPage.google")}
-                  </>
-                )}
-              </Button>
-
               <Button
                 type="button"
                 variant="ghost"
@@ -469,3 +670,5 @@ export default function Auth() {
     </div>
   );
 }
+
+

@@ -1,6 +1,8 @@
 // components/ProductCard.tsx
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { UrgencyBadge, OutOfStockOverlay } from "@/components/UrgencyBadge";
+import { isOutOfStock } from "@/lib/stockHelpers";
 
 interface Bangle {
   id: string;
@@ -11,6 +13,7 @@ interface Bangle {
   secondary_image_url?: string | null;
   available_sizes?: string[];
   is_active?: boolean;
+  number_of_stock?: number;
 }
 
 interface ProductCardProps {
@@ -26,7 +29,7 @@ const formatPrice = (price: number) =>
 export const ProductCard = ({ bangle, categoryName }: ProductCardProps) => {
   const previewImage = bangle.image_url || bangle.secondary_image_url || null;
   const sizes = Array.isArray(bangle.available_sizes) ? bangle.available_sizes : [];
-  const outOfStock = bangle.is_active === false;
+  const outOfStock = bangle.is_active === false || isOutOfStock(bangle.number_of_stock);
 
   return (
     <Card className="group cursor-pointer overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
@@ -35,7 +38,9 @@ export const ProductCard = ({ bangle, categoryName }: ProductCardProps) => {
           <img
             src={previewImage}
             alt={bangle.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${
+              outOfStock ? "opacity-60" : ""
+            }`}
             loading="lazy"
           />
         ) : (
@@ -44,15 +49,14 @@ export const ProductCard = ({ bangle, categoryName }: ProductCardProps) => {
           </div>
         )}
 
+        {/* Out of stock overlay */}
+        {outOfStock && <OutOfStockOverlay stock={bangle.number_of_stock} />}
+
         <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
           <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary">
             New
           </div>
-          {outOfStock && (
-            <div className="bg-destructive/90 text-destructive-foreground px-3 py-1 rounded-full text-[11px] font-semibold">
-              Out of Stock
-            </div>
-          )}
+          {!outOfStock && <UrgencyBadge stock={bangle.number_of_stock} variant="badge" />}
         </div>
 
         {categoryName && (

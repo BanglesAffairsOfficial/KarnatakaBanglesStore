@@ -10,10 +10,12 @@ import { NumericStepper } from "@/components/NumericStepper";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
-import { Loader2, ArrowLeft, ShoppingBag, Trash2, Heart, Share2, Truck, Shield, RotateCcw, Star, MapPin, ZoomIn } from "lucide-react";
+import { Loader2, ArrowLeft, ShoppingBag, Trash2, Heart, Share2, Truck, Shield, RotateCcw, Star, MapPin, ZoomIn, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { parseColors, getColorHex as getColorHexFromMap, getColorSwatchStyle } from "@/lib/colorHelpers";
 import { useAuth } from "@/contexts/AuthContext";
+import { UrgencyBadge, OutOfStockOverlay } from "@/components/UrgencyBadge";
+import { isOutOfStock, getStockMessage } from "@/lib/stockHelpers";
 
 
 interface Bangle {
@@ -29,6 +31,7 @@ interface Bangle {
   category_id?: string;
   is_active: boolean;
   created_at: string;
+  number_of_stock?: number;
 }
 
 interface ParsedColor {
@@ -94,15 +97,15 @@ const DEFAULT_COLORS: ParsedColor[] = [
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, session } = useAuth();
+  const { user, session, canWholesale } = useAuth();
   const { toast } = useToast();
   const { addItem } = useCart();
   const { t } = useTranslation();
   // Zoom states
-const [isZooming, setIsZooming] = useState(false);
-const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-const imageRef = useRef<HTMLDivElement>(null);
-const galleryRef = useRef<HTMLDivElement>(null);
+  const [isZooming, setIsZooming] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const imageRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
   
   const [bangle, setBangle] = useState<Bangle | null>(null);
@@ -117,7 +120,7 @@ const galleryRef = useRef<HTMLDivElement>(null);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const isWholesale = !!session?.user;
+  const isWholesale = canWholesale;
   const priceToShow = useMemo(() => {
     const retail = bangle?.retail_price ?? bangle?.price ?? 0;
     const wholesale = bangle?.price ?? retail;
@@ -162,6 +165,8 @@ const galleryRef = useRef<HTMLDivElement>(null);
       setSelectedColor(firstActive ? firstActive.name : null);
     }
   }, [parsedColors, selectedColor]);
+
+  const enableZoom = !isMobile;
 
   const visibleColors = useMemo(() => {
     if (!parsedColors.length) return [];
@@ -231,8 +236,8 @@ const galleryRef = useRef<HTMLDivElement>(null);
   const fetchBangle = async () => {
     try {
       if (import.meta.env.DEV) console.log("Fetching bangle with id:", id);
-      const { data, error } = await supabase
-        .from("bangles")
+      const { data, error } = await (supabase as any)
+        .from("bangles_public")
         .select("*")
         .eq("id", id)
         .single();
@@ -249,7 +254,7 @@ const galleryRef = useRef<HTMLDivElement>(null);
         setBangle(null);
       } else if (data) {
         if (import.meta.env.DEV) console.log("Bangle fetched successfully:", data);
-        setBangle(data as any);
+        setBangle(data as Bangle);
         setIsInWishlist(getWishlistIds().includes(id!));
         
         // Fetch category name
@@ -263,12 +268,12 @@ const galleryRef = useRef<HTMLDivElement>(null);
         }
         
         // Fetch related products
-        const { data: related } = await supabase
-          .from("bangles")
+        const { data: related } = await (supabase as any)
+          .from("bangles_public")
           .select("*")
           .neq("id", id)
           .limit(4);
-        if (related) setRelatedProducts(related);
+        if (related) setRelatedProducts(related as Bangle[]);
       }
     } catch (err) {
       console.error("Failed to fetch product:", err);
@@ -320,7 +325,8 @@ const galleryRef = useRef<HTMLDivElement>(null);
     return allColorsSelected ? getAllColorsTotal() : getColorTotal(colorName);
   };
 
-  const inStock = Boolean(bangle?.is_active);
+  // Check if product is in stock (based on is_active flag and stock level)
+  const inStock = Boolean(bangle?.is_active) && !isOutOfStock(bangle?.number_of_stock);
 
   const selections = useMemo(() => {
     return Object.entries(quantities)
@@ -430,7 +436,7 @@ const handleSelectAll = (quantity: number) => {
         colorHex: getColorHex(selection.color),
         quantity: selection.quantity,
         imageUrl: primaryImage,
-        orderType: user ? "wholesale" : "retail",
+        orderType: canWholesale ? "wholesale" : "retail",
       });
     });
 
@@ -466,6 +472,23 @@ const handleSelectAll = (quantity: number) => {
       console.error("Error sharing:", err);
     }
   };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Link copied",
+        description: "Share it anywhere.",
+      });
+    } catch (err) {
+      toast({
+        title: "Copy failed",
+        description: "Please copy the URL from the address bar.",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (loading) {
     return (
@@ -506,6 +529,18 @@ const handleSelectAll = (quantity: number) => {
           <ArrowLeft className="w-4 h-4" />
           {t("productDetail.backToProducts")}
         </Button>
+          <div className="mb-6 rounded-lg border border-border bg-card/60 p-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            <Button variant="outline" onClick={handleCopyLink} className="gap-2">
+              <Copy className="w-4 h-4" />
+              Copy link
+            </Button>
+            <Button variant="outline" onClick={handleShare} className="gap-2">
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
+          </div>
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
           {/* Product Image Gallery with Zoom */}
@@ -515,14 +550,14 @@ const handleSelectAll = (quantity: number) => {
               onContextMenu={preventContextMenu}
             >
               {activeImage ? (
-                <div 
-                  ref={imageRef}
-                  className="relative w-full h-full cursor-zoom-in"
-                  onMouseEnter={() => setIsZooming(true)}
-                  onMouseLeave={() => setIsZooming(false)}
-                  onMouseMove={handleMouseMove}
-                  onContextMenu={preventContextMenu}
-                >
+                  <div
+                    ref={imageRef}
+                    className={`relative w-full h-full ${enableZoom ? "cursor-zoom-in" : "cursor-default"}`}
+                    onMouseEnter={() => enableZoom && setIsZooming(true)}
+                    onMouseLeave={() => enableZoom && setIsZooming(false)}
+                    onMouseMove={enableZoom ? handleMouseMove : undefined}
+                    onContextMenu={preventContextMenu}
+                  >
                   <img
                     src={activeImage}
                     alt={bangle.name}
@@ -535,7 +570,7 @@ const handleSelectAll = (quantity: number) => {
                   />
                   
                   {/* Zoomed Image Overlay */}
-                  {isZooming && (
+                  {enableZoom && isZooming && (
                     <div 
                       className="absolute inset-0 rounded-lg pointer-events-none"
                       style={{
@@ -548,10 +583,12 @@ const handleSelectAll = (quantity: number) => {
                   )}
                   
                   {/* Zoom Indicator */}
-                  <div className="hidden sm:flex absolute top-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-full text-xs items-center gap-1.5">
-                    <ZoomIn className="w-3 h-3" />
-                    {t("productDetail.hoverToZoom")}
-                  </div>
+                  {enableZoom && (
+                    <div className="hidden sm:flex absolute top-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-full text-xs items-center gap-1.5">
+                      <ZoomIn className="w-3 h-3" />
+                      {t("productDetail.hoverToZoom")}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center flex-col gap-4">
@@ -657,10 +694,22 @@ const handleSelectAll = (quantity: number) => {
               <p className="text-muted-foreground mb-6 leading-relaxed">{bangle.description}</p>
             )}
 
-           {/* Price */}
-<div className="bg-secondary p-4 rounded-lg mb-6">
+           {/* Price & Stock Status */}
+<div className="bg-secondary p-4 rounded-lg mb-6 space-y-3">
   <div className="text-sm text-muted-foreground mb-1">{t("productDetail.priceLabel")}</div>
   <div className="text-3xl sm:text-4xl font-bold text-accent">₹{Number(priceToShow)}</div>
+  
+  {/* Urgency Badge */}
+  <div className="pt-2">
+    {inStock ? (
+      <UrgencyBadge stock={bangle?.number_of_stock} variant="detailed" />
+    ) : (
+      <div className="flex items-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/30 rounded-md">
+        <div className="w-3 h-3 rounded-full bg-destructive animate-pulse" />
+        <span className="text-sm font-semibold text-destructive">{t("productDetail.outOfStock")}</span>
+      </div>
+    )}
+  </div>
 </div>  
 
 
@@ -1044,7 +1093,7 @@ const handleSelectAll = (quantity: number) => {
                       <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{product.name}</h3>
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-bold text-accent">
-                          ₹{Number(session?.user ? product.price : (product as any).retail_price ?? product.price)}
+                          ₹{Number(canWholesale ? product.price : (product as any).retail_price ?? product.price)}
                         </span>
                         <Badge variant="secondary" className="text-xs">
                           {t("productDetail.colorsCount", { count: productColors.length })}
@@ -1061,3 +1110,5 @@ const handleSelectAll = (quantity: number) => {
     </div>
   );
 }
+
+

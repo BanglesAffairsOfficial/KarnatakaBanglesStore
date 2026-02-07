@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { User, ShoppingCart, LogOut, Menu, X, Bell } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
   const { user, isAdmin, signOut, unreadNotifications = 0, clearUnread } = useAuth();
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [showVerificationBadge, setShowVerificationBadge] = useState(false);
   const location = useLocation();
   const { i18n, t } = useTranslation();
   // Treat root and common home aliases as "home"
@@ -46,6 +48,30 @@ export function Header() {
 
   const unreadCount = unreadNotifications || 0;
   const hasUnreadNotifications = unreadCount > 0;
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadVerification = async () => {
+      if (!user?.id) {
+        setShowVerificationBadge(false);
+        return;
+      }
+      const { data } = await (supabase as any)
+        .from("b2b_requests")
+        .select("status,business_proof_url")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (cancelled) return;
+      const needsProof = data?.status === "pending" && !data?.business_proof_url;
+      setShowVerificationBadge(Boolean(needsProof));
+    };
+    void loadVerification();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
@@ -110,6 +136,15 @@ export function Header() {
                 )}
               </Link>
             )}
+            {user && showVerificationBadge && isHome && (
+              <Link
+                to="/profile"
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-200 text-amber-900 border border-amber-400 animate-pulse shadow-sm"
+                aria-label="Verification pending. Upload business proof."
+              >
+                Verification pending — upload proof
+              </Link>
+            )}
             <Link to="/cart" className="relative p-2 hover:bg-secondary rounded-lg transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
@@ -165,6 +200,15 @@ export function Header() {
                     {unreadCount}
                   </span>
                 )}
+              </Link>
+            )}
+            {user && showVerificationBadge && isHome && (
+              <Link
+                to="/profile"
+                className="px-2 py-1 rounded-full text-[10px] font-semibold bg-amber-200 text-amber-900 border border-amber-400 animate-pulse shadow-sm"
+                aria-label="Verification pending. Upload business proof."
+              >
+                Verify profile
               </Link>
             )}
             <Link to="/cart" className="relative p-2">

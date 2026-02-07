@@ -29,13 +29,13 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AddressesPage from "./pages/Addresses";
 import AdminOrders from "./pages/AdminOrders";
-import AdminCustomers from "./pages/AdminCustomers";
 import AdminOrderDetail from "./pages/AdminOrderDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import Payment from "./pages/Payment";
 import PaymentSubmitted from "./pages/PaymentSubmitted";
 import Inbox from "./pages/Inbox";
 import AdminBroadcasts from "./pages/AdminBroadcasts";
+import AttentionBanner from "@/components/AttentionBanner";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +47,7 @@ const App = () => (
       <BrowserRouter future={{ v7_relativeSplatPath: true }}>
         <AuthProvider>
           <CartProvider>
+            <AttentionBanner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -59,7 +60,6 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
               <Route path="/admin/orders/:id" element={<AdminOrderDetail />} />
-              <Route path="/admin/customers" element={<AdminCustomers />} />
               <Route path="/admin/home-page" element={<EditHomePage />} />
               <Route path="/admin/broadcasts" element={<AdminBroadcasts />} />
               <Route path="/contact" element={<Contact />} />

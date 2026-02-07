@@ -25,15 +25,11 @@ interface OrderSummary {
     total_price?: number | null;
     size: string | null;
     color: string | null;
-    bangles?: {
-      name: string;
-      image_url: string | null;
-    } | null;
   }>;
 }
 
 export default function OrderHistory() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading, canWholesale } = useAuth();
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { t } = useTranslation();
@@ -41,6 +37,7 @@ export default function OrderHistory() {
   const [loading, setLoading] = useState(true);
   const [cancelingOrderId, setCancelingOrderId] = useState<string | null>(null);
   const [cancelingItemId, setCancelingItemId] = useState<string | null>(null);
+  const [bangleMetaById, setBangleMetaById] = useState<Record<string, { name: string; image_url: string | null }>>({});
   const isAdmin =
     Boolean(
       (user as any)?.is_admin ||
@@ -75,13 +72,35 @@ export default function OrderHistory() {
           unit_price,
           total_price,
           size,
-          color,
-          bangles:bangle_id(name, image_url)
+          color
         )
       `)
       .eq("user_id", user!.id)
       .order("created_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const ids = Array.from(
+        new Set(
+          data
+            .flatMap((o: any) => o.order_items || [])
+            .map((it: any) => it.bangle_id)
+            .filter(Boolean)
+        )
+      );
+      if (ids.length > 0) {
+        const { data: bangleRows } = await supabase
+          .from("bangles_public")
+          .select("id,name,image_url")
+          .in("id", ids);
+        if (bangleRows) {
+          const map: Record<string, { name: string; image_url: string | null }> = {};
+          bangleRows.forEach((b: any) => {
+            map[b.id] = { name: b.name, image_url: b.image_url || null };
+          });
+          setBangleMetaById(map);
+        }
+      }
+    }
     setLoading(false);
   };
 
@@ -155,7 +174,8 @@ export default function OrderHistory() {
                   const amount = o.total_amount ?? 0;
                   const rawStatus = o.status || "pending";
                   const status = formatStatus(rawStatus);
-                  const firstImage = o.order_items?.[0]?.bangles?.image_url || null;
+                  const firstItemId = o.order_items?.[0]?.bangle_id;
+                  const firstImage = firstItemId ? bangleMetaById[firstItemId]?.image_url || null : null;
                   const deliveryLabel = o.delivery_type ? o.delivery_type : "pickup";
                   const deliveryCost = o.delivery_charge ?? 0;
                   const canCancelOrder = !isAdmin && rawStatus === "pending";
@@ -210,14 +230,14 @@ export default function OrderHistory() {
                                   o.order_items.forEach((item) => {
                                     addItem({
                                       banglesId: item.bangle_id,
-                                      name: item.bangles?.name || "Bangle",
+                                      name: bangleMetaById[item.bangle_id]?.name || "Bangle",
                                       price: item.unit_price ?? 0,
-                                      imageUrl: item.bangles?.image_url || undefined,
+                                      imageUrl: bangleMetaById[item.bangle_id]?.image_url || undefined,
                                       size: item.size || "",
                                       color: item.color || "Default",
                                       colorHex: "#888888",
                                       quantity: item.quantity || 1,
-                                      orderType: user ? "wholesale" : "retail",
+                                      orderType: canWholesale ? "wholesale" : "retail",
                                     });
                                   });
                                   navigate("/cart");
@@ -247,3 +267,4 @@ export default function OrderHistory() {
     </div>
   );
 }
+

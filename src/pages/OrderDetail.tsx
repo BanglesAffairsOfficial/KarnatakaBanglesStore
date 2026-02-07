@@ -110,13 +110,13 @@ export default function OrderDetailPage() {
             id, status, payment_status, delivery_type, delivery_charge, total_amount, created_at, delivery_address_id, meta,
             order_items(
               id,
+              bangle_id,
               quantity,
               unit_price,
               total_price,
               size,
               color,
-              product_name,
-              bangles:bangle_id(name, image_url)
+              product_name
             )
           `
         )
@@ -156,16 +156,33 @@ export default function OrderDetailPage() {
         }
       }
 
+      const bangleIds = (data.order_items || [])
+        .map((it: any) => it.bangle_id)
+        .filter(Boolean);
+      let bangleMap = new Map<string, { name: string; image_url: string | null }>();
+      if (bangleIds.length > 0) {
+        const { data: bangleRows } = await supabase
+          .from("bangles_public")
+          .select("id,name,image_url")
+          .in("id", Array.from(new Set(bangleIds)));
+        if (bangleRows) {
+          bangleMap = new Map(bangleRows.map((b: any) => [b.id, { name: b.name, image_url: b.image_url || null }]));
+        }
+      }
+
       const items: OrderItem[] =
-        data.order_items?.map((it: any) => ({
-          id: it.id,
-          productName: it.product_name || it.bangles?.name || "Bangle",
-          image: it.bangles?.image_url || null,
-          price: Number(it.unit_price ?? 0),
-          quantity: Number(it.quantity ?? 0),
-          size: it.size,
-          color: it.color,
-        })) || [];
+        data.order_items?.map((it: any) => {
+          const meta = it.bangle_id ? bangleMap.get(it.bangle_id) : undefined;
+          return {
+            id: it.id,
+            productName: it.product_name || meta?.name || "Bangle",
+            image: meta?.image_url || null,
+            price: Number(it.unit_price ?? 0),
+            quantity: Number(it.quantity ?? 0),
+            size: it.size,
+            color: it.color,
+          };
+        }) || [];
 
       const paymentInfo: PaymentInfo = {
         method: paymentRow?.mode ? paymentRow.mode.replace("_", " ").toUpperCase() : "QR PAYMENT",

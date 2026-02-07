@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useFormCache } from "@/hooks/useFormCache";
 import { useUnsavedChangesWarning, useDetectChanges } from "@/hooks/useUnsavedChanges";
-import { Loader2, Plus, Pencil, Trash2, Package, Settings, Image as ImageIcon, Share2, Phone } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, Package, Settings, Image as ImageIcon, Share2, Phone, Video, Copy, Check, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +23,7 @@ interface ColorItem {
   name: string;
   hex: string;
   swatchImage?: string;
+  active?: boolean;
 }
 
 interface Bangle {
@@ -36,6 +37,21 @@ interface Bangle {
   available_sizes: string[];
   available_colors: string[];
   is_active: boolean;
+  number_of_stock?: number;
+}
+
+interface B2BRequest {
+  id: string;
+  user_id: string;
+  email: string | null;
+  full_name: string | null;
+  phone: string | null;
+  shop_name: string | null;
+  gst_number: string | null;
+  business_link: string | null;
+  business_proof_url: string | null;
+  status: string | null;
+  created_at: string;
 }
 
 const DEFAULT_SIZES = ["2.2", "2.4", "2.6", "2.8", "2.10"];
@@ -79,12 +95,14 @@ const DEFAULT_COLORS: ColorItem[] = [
 ];
 
 export default function Admin() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading, roleChecked } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [bangles, setBangles] = useState<Bangle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [b2bLoading, setB2bLoading] = useState(true);
+  const [b2bRequests, setB2bRequests] = useState<B2BRequest[]>([]);
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBangle, setEditingBangle] = useState<Bangle | null>(null);
@@ -100,12 +118,21 @@ export default function Admin() {
 
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [savingSocial, setSavingSocial] = useState(false);
+  const [reelCaption, setReelCaption] = useState("");
+  const [reelCreator, setReelCreator] = useState("@karnatakabangles");
+  const [reelUploading, setReelUploading] = useState(false);
+  const [reelUrl, setReelUrl] = useState("");
+  const [reelError, setReelError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const reelInputRef = useRef<HTMLInputElement | null>(null);
+  const [reelSaving, setReelSaving] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
     description: "",
     price: "",
     retail_price: "",
+    number_of_stock: "",
     image_url: "",
     secondary_image_url: "",
     available_sizes: DEFAULT_SIZES,
@@ -144,23 +171,23 @@ export default function Admin() {
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        navigate("/auth");
-      } else if (!isAdmin) {
-        toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
-        navigate("/");
-      } else {
-        fetchBangles();
-        fetchCategories();
-        
-        if (!hasLoadedSettings) {
-          fetchSettings();
-          setHasLoadedSettings(true);
-        }
+    if (authLoading || !roleChecked) return;
+    if (!user) {
+      navigate("/auth");
+    } else if (!isAdmin) {
+      toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
+      navigate("/");
+    } else {
+      fetchBangles();
+      fetchCategories();
+      fetchB2bRequests();
+      
+      if (!hasLoadedSettings) {
+        fetchSettings();
+        setHasLoadedSettings(true);
       }
     }
-  }, [user, isAdmin, authLoading, navigate, hasLoadedSettings]);
+  }, [user, isAdmin, authLoading, roleChecked, navigate, hasLoadedSettings]);
 
   const fetchCategories = async () => {
     const { data } = await (supabase as any).from("categories").select("*").order("display_order", { ascending: true });
@@ -171,6 +198,34 @@ export default function Admin() {
     const { data } = await supabase.from("bangles").select("*").order("created_at", { ascending: false });
     if (data) setBangles(data);
     setLoading(false);
+  };
+
+  const fetchB2bRequests = async () => {
+    setB2bLoading(true);
+    const { data } = await (supabase as any)
+      .from("b2b_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setB2bRequests(data);
+    setB2bLoading(false);
+  };
+
+  const updateB2bStatus = async (id: string, status: "approved" | "rejected") => {
+    try {
+      const { error } = await (supabase as any)
+        .from("b2b_requests")
+        .update({ status })
+        .eq("id", id);
+      if (error) throw error;
+      toast({ title: `B2B request ${status}` });
+      fetchB2bRequests();
+    } catch (err: any) {
+      toast({
+        title: "Failed to update status",
+        description: err?.message || "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const filteredBangles = bangles.filter((b) =>
@@ -198,8 +253,8 @@ export default function Admin() {
   };
 
   const resetForm = () => {
-    setForm({ name: "", description: "", price: "", retail_price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
-    setInitialForm({ name: "", description: "", price: "", retail_price: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setForm({ name: "", description: "", price: "", retail_price: "", number_of_stock: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
+    setInitialForm({ name: "", description: "", price: "", retail_price: "", number_of_stock: "", image_url: "", secondary_image_url: "", available_sizes: DEFAULT_SIZES, available_colors: DEFAULT_COLORS, is_active: true });
     setEditingBangle(null);
     setSelectedCategoryId(null);
     clearFormCache();
@@ -249,6 +304,7 @@ export default function Admin() {
       description: bangle.description || "",
       price: bangle.price?.toString() || "",
       retail_price: ((bangle as any).retail_price ?? bangle.price ?? 0).toString(),
+      number_of_stock: ((bangle as any).number_of_stock ?? 0).toString(),
       image_url: bangle.image_url || "",
       secondary_image_url: (bangle as any).secondary_image_url || (bangle as any).image_url_2 || "",
       available_sizes: bangle.available_sizes || DEFAULT_SIZES,
@@ -285,8 +341,8 @@ export default function Admin() {
       return;
     }
 
-    if (!form.name || !form.price || !form.retail_price) {
-      toast({ title: "Missing fields", description: "Please fill in name, wholesale price, and retail price.", variant: "destructive" });
+    if (!form.name || !form.price || !form.retail_price || !form.number_of_stock) {
+      toast({ title: "Missing fields", description: "Please fill in name, wholesale price, retail price, and stock quantity.", variant: "destructive" });
       return;
     }
     
@@ -314,6 +370,7 @@ export default function Admin() {
         description: form.description?.trim() || null,
         price: Math.max(0, parseFloat(form.price) || 0), // treat as wholesale/base
         retail_price: Math.max(0, parseFloat(form.retail_price) || 0),
+        number_of_stock: Math.max(0, parseInt(form.number_of_stock) || 0),
         image_url: form.image_url?.trim() || null,
         secondary_image_url: form.secondary_image_url?.trim() || null,
         available_sizes: sizesArray,
@@ -412,6 +469,66 @@ export default function Admin() {
     }
   };
 
+  const uploadReelToCloudinary = async (file: File) => {
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "ml_default";
+    if (!cloudName) throw new Error("Missing VITE_CLOUDINARY_CLOUD_NAME");
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", preset);
+    formData.append("folder", "samples/ecommerce");
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Upload failed");
+    }
+    return (await res.json()) as { secure_url: string };
+  };
+
+  const handleReelFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setReelError(null);
+    setReelUploading(true);
+    setCopied(false);
+    try {
+      const upload = await uploadReelToCloudinary(file);
+      const url = upload.secure_url.replace("/upload/", "/upload/w_1080,h_1920,c_fill,q_auto,f_auto/");
+      setReelUrl(url);
+      setReelSaving(true);
+      const payload = {
+        video_url: url,
+        caption: reelCaption?.trim() || file.name.replace(/\.[^.]+$/, ""),
+        creator: reelCreator?.trim() || "@karnatakabangles",
+        is_active: true,
+        display_order: 0,
+      };
+      const res = await (supabase as any).from("reels").insert(payload);
+      if (res.error) throw res.error;
+      toast({ title: "Reel uploaded", description: "Saved to Supabase and will appear on the home page." });
+    } catch (err: any) {
+      setReelError(err?.message || "Upload failed");
+      toast({ title: "Upload failed", description: err?.message || "Check preset/cloud name.", variant: "destructive" });
+    } finally {
+      setReelUploading(false);
+      setReelSaving(false);
+      if (reelInputRef.current) reelInputRef.current.value = "";
+    }
+  };
+
+  const copyReelUrl = async () => {
+    if (!reelUrl) return;
+    await navigator.clipboard.writeText(reelUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   const handleSaveCategory = async () => {
     if (!categoryForm.name.trim()) {
       toast({ title: "Missing name", description: "Please enter a category name.", variant: "destructive" });
@@ -471,7 +588,7 @@ export default function Admin() {
     setCategoryDialogOpen(true);
   };
 
-  if (authLoading || loading) {
+  if (authLoading || !roleChecked || loading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -502,10 +619,18 @@ export default function Admin() {
           </div>
         
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-8">
             <TabsTrigger value="products" className="gap-2">
               <Package className="w-4 h-4" />
               Products
+            </TabsTrigger>
+            <TabsTrigger value="b2b" className="gap-2">
+              <Users className="w-4 h-4" />
+              B2B Requests
+            </TabsTrigger>
+            <TabsTrigger value="reels" className="gap-2">
+              <Video className="w-4 h-4" />
+              Reels
             </TabsTrigger>
             <TabsTrigger value="banner" className="gap-2">
               <ImageIcon className="w-4 h-4" />
@@ -573,6 +698,16 @@ export default function Admin() {
                           value={form.retail_price}
                           onChange={(e) => setForm({ ...form, retail_price: e.target.value })}
                           placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Stock Quantity *</Label>
+                        <Input
+                          type="number"
+                          value={form.number_of_stock}
+                          onChange={(e) => setForm({ ...form, number_of_stock: e.target.value })}
+                          placeholder="0"
+                          min="0"
                         />
                       </div>
                     </div>
@@ -846,6 +981,168 @@ export default function Admin() {
                 </div>
               </DialogContent>
             </Dialog>
+          </TabsContent>
+
+          {/* B2B Requests Tab */}
+          <TabsContent value="b2b" className="space-y-4">
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  B2B Requests ({b2bRequests.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {b2bLoading ? (
+                  <div className="flex items-center justify-center py-10 text-muted-foreground">
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Loading requests...
+                  </div>
+                ) : b2bRequests.length === 0 ? (
+                  <div className="text-center py-10 text-muted-foreground">
+                    <Users className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                    <p>No B2B requests yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {b2bRequests.map((req) => (
+                      <div key={req.id} className="p-4 rounded-lg border border-border">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold text-foreground">
+                              {req.full_name || "Unnamed"}{" "}
+                              <span className="text-xs text-muted-foreground">({req.status || "pending"})</span>
+                            </h3>
+                            <p className="text-sm text-muted-foreground">Email: {req.email || "—"}</p>
+                            <p className="text-sm text-muted-foreground">Shop: {req.shop_name || "—"}</p>
+                            <p className="text-sm text-muted-foreground">Phone: {req.phone || "—"}</p>
+                            <p className="text-sm text-muted-foreground">GST: {req.gst_number || "—"}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Link:{" "}
+                              {req.business_link ? (
+                                <a
+                                  href={req.business_link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-primary hover:underline break-all"
+                                >
+                                  {req.business_link}
+                                </a>
+                              ) : (
+                                "—"
+                              )}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Submitted: {new Date(req.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="w-full max-w-sm">
+                            {req.business_proof_url ? (
+                              <a href={req.business_proof_url} target="_blank" rel="noreferrer">
+                                <img
+                                  src={req.business_proof_url}
+                                  alt="Visiting card or shop board"
+                                  className="w-full rounded-md border border-border object-cover"
+                                  loading="lazy"
+                                />
+                              </a>
+                            ) : (
+                              <div className="w-full h-32 rounded-md border border-dashed border-border flex items-center justify-center text-xs text-muted-foreground">
+                                No proof uploaded
+                              </div>
+                            )}
+                            <div className="mt-3 flex gap-2">
+                              <Button
+                                size="sm"
+                                className="flex-1"
+                                disabled={!req.business_proof_url || req.status === "approved"}
+                                onClick={() => updateB2bStatus(req.id, "approved")}
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1"
+                                disabled={req.status === "rejected"}
+                                onClick={() => updateB2bStatus(req.id, "rejected")}
+                              >
+                                Reject
+                              </Button>
+                            </div>
+                            {!req.business_proof_url && (
+                              <p className="mt-2 text-xs text-muted-foreground">
+                                Upload required before approval.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Reels Tab */}
+          <TabsContent value="reels" className="space-y-4">
+            <Card className="shadow-elegant">
+              <CardHeader className="flex flex-col gap-2">
+                <CardTitle className="font-display flex items-center gap-2">
+                  <Video className="w-5 h-5" />
+                  Reels Upload (Cloudinary)
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Uses unsigned preset <code>ml_default</code> (folder: samples/ecommerce). Uploaded reels are saved to Supabase and appear on the home page.
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Caption (optional)</Label>
+                    <Input value={reelCaption} onChange={(e) => setReelCaption(e.target.value)} placeholder="e.g., New Festive Drop" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Creator handle</Label>
+                    <Input value={reelCreator} onChange={(e) => setReelCreator(e.target.value)} placeholder="@karnatakabangles" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Upload vertical video (9:16)</Label>
+                  <Input
+                    ref={reelInputRef}
+                    type="file"
+                    accept="video/*"
+                    onChange={handleReelFileChange}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Requires VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET (unsigned) in .env.
+                  </p>
+                </div>
+                {reelError && <p className="text-sm text-destructive">{reelError}</p>}
+                <div className="flex items-center gap-2">
+                  <Button disabled={!reelUrl} variant="outline" size="sm" onClick={copyReelUrl} className="gap-2">
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copied ? "Copied" : "Copy URL"}
+                  </Button>
+                  <span className="text-xs text-muted-foreground break-all">{reelUrl || "Upload to get a URL"}</span>
+                </div>
+                {reelUrl && (
+                  <div className="aspect-[9/16] w-full max-w-xs rounded-xl overflow-hidden border">
+                    <video src={reelUrl} controls className="w-full h-full object-cover" />
+                    <div className="p-2 text-sm">
+                      <p className="font-semibold">{reelCaption || "New Reel"}</p>
+                      <p className="text-muted-foreground">{reelCreator}</p>
+                    </div>
+                  </div>
+                )}
+                <Button disabled={reelUploading || reelSaving} className="w-full gap-2" onClick={() => reelInputRef.current?.click()}>
+                  {(reelUploading || reelSaving) && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {reelUploading || reelSaving ? "Uploading..." : "Select & Upload Reel"}
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Banner Tab */}

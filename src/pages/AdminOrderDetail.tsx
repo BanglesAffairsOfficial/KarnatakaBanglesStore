@@ -3,9 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, ArrowLeft, ShoppingBag, Image as ImageIcon, Link as LinkIcon, CreditCard, MapPin } from "lucide-react";
+import { Loader2, ArrowLeft, CreditCard, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -26,24 +25,11 @@ interface OrderData {
   id: string;
   created_at: string;
   status: OrderStatus;
-  payment_status: string | null;
-  delivery_type: string | null;
-  delivery_charge: number | null;
   total_amount: number | null;
   delivery_address_id: string | null;
-  meta?: any;
+  meta?: Record<string, any> | null;
   profiles?: { full_name: string | null; phone: string | null; email: string | null } | null;
   order_items?: any[];
-}
-
-interface PaymentRecord {
-  id: string;
-  created_at: string;
-  amount: number | null;
-  mode: string | null;
-  reference: string | null;
-  screenshot_url: string | null;
-  status: string | null;
 }
 
 const STATUS_OPTIONS: Array<{ value: OrderStatus; label: string }> = [
@@ -56,29 +42,27 @@ const STATUS_OPTIONS: Array<{ value: OrderStatus; label: string }> = [
 
 export default function AdminOrderDetail() {
   const { id } = useParams<{ id: string }>();
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, roleChecked } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [order, setOrder] = useState<OrderData | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
-  const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [address, setAddress] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [paymentAssets, setPaymentAssets] = useState<Record<string, string | null>>({});
-  const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
+  const [payments, setPayments] = useState<any[]>([]);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
-  const [guest, setGuest] = useState<any | null>(null);
+  const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || !roleChecked) return;
     if (!isAdmin) {
       navigate("/auth");
       return;
     }
     if (id) void fetchOrder(id);
-  }, [authLoading, isAdmin, id, navigate]);
+  }, [authLoading, roleChecked, isAdmin, id, navigate]);
 
   const fetchOrder = async (orderId: string) => {
     setLoading(true);
@@ -86,8 +70,7 @@ export default function AdminOrderDetail() {
       .from("orders")
       .select(
         `
-        id, created_at, status, payment_status, delivery_type, delivery_charge, total_amount, delivery_address_id,
-        meta,
+        id, created_at, status, total_amount, delivery_address_id, meta,
         profiles:profiles!orders_user_id_fkey(full_name, phone, email),
         order_items(id, quantity, unit_price, total_price, size, color, product_name, bangles:bangle_id(name, image_url))
       `
@@ -102,8 +85,6 @@ export default function AdminOrderDetail() {
     }
 
     setOrder(data as any);
-    setInvoiceUrl((data as any)?.meta?.invoice_url || null);
-    setGuest((data as any)?.meta?.guest || null);
 
     const mappedItems: OrderItem[] =
       data.order_items?.map((it: any) => ({
@@ -128,33 +109,18 @@ export default function AdminOrderDetail() {
       setAddress(null);
     }
 
-    const { data: paymentRows, error: payErr } = await supabase
+    // invoice url (stored in meta.invoice_url) and payments for this order
+    setInvoiceUrl((data as any).meta?.invoice_url || null);
+
+    const { data: payRows } = await supabase
       .from("payments")
-      .select("id, created_at, amount, mode, reference, screenshot_url, status")
+      .select("id,order_id,amount,mode,reference,status,created_at,screenshot_url")
       .eq("order_id", orderId)
       .order("created_at", { ascending: false });
-    if (payErr) {
-      toast({ title: "Failed to load payments", description: payErr.message, variant: "destructive" });
-      setPayments([]);
-    } else {
-      setPayments(paymentRows || []);
-      await buildPaymentAssets(paymentRows || []);
-    }
+
+    setPayments(payRows || []);
 
     setLoading(false);
-  };
-
-  const buildPaymentAssets = async (rows: PaymentRecord[]) => {
-    const entries = await Promise.all(
-      rows.map(async (p) => {
-        const raw = p.screenshot_url || "";
-        if (!raw) return [p.id, null] as const;
-        if (/^https?:\/\//i.test(raw)) return [p.id, raw] as const;
-        const { data } = supabase.storage.from("payment-proof").getPublicUrl(raw);
-        return [p.id, data?.publicUrl || null] as const;
-      })
-    );
-    setPaymentAssets(Object.fromEntries(entries));
   };
 
   const handleStatusUpdate = async (nextStatus: OrderStatus) => {
@@ -167,22 +133,51 @@ export default function AdminOrderDetail() {
       return;
     }
     toast({ title: "Status updated" });
-    fetchOrder(id);
+    void fetchOrder(id);
+  };
+
+  const handleInvoiceUpload = async () => {
+    if (!id || !invoiceFile) return;
+    setSaving(true);
+    try {
+      const fileExt = invoiceFile.name.split(".").pop();
+      const filePath = `invoices/${id}/${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from("invoices").upload(filePath, invoiceFile, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from("invoices").getPublicUrl(filePath);
+      const publicUrl = urlData.publicUrl;
+      const existingMeta = (order as any)?.meta && typeof (order as any)?.meta === "object" ? (order as any)?.meta : {};
+      const { error: updateError } = await supabase
+        .from("orders")
+        .update({ meta: { ...existingMeta, invoice_url: publicUrl } })
+        .eq("id", id);
+      if (updateError) throw updateError;
+      setInvoiceUrl(publicUrl);
+      toast({ title: "Invoice uploaded" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err?.message || "", variant: "destructive" });
+    } finally {
+      setSaving(false);
+      setInvoiceFile(null);
+    }
   };
 
   const handlePaymentDecision = async (paymentId: string, decision: "approved" | "denied") => {
     if (!id) return;
     setSaving(true);
     try {
-      const { error: payErr } = await supabase.from("payments").update({ status: decision }).eq("id", paymentId);
-      if (payErr) throw payErr;
-      const nextPaymentStatus = decision === "approved" ? "paid" : "failed";
-      const { error: ordErr } = await supabase.from("orders").update({ payment_status: nextPaymentStatus }).eq("id", id);
-      if (ordErr) throw ordErr;
-      toast({ title: `Payment ${decision === "approved" ? "approved" : "denied"}` });
-      fetchOrder(id);
+      const status = decision === "approved" ? "approved" : "denied";
+      const { error } = await supabase.from("payments").update({ status }).eq("id", paymentId);
+      if (error) throw error;
+      if (decision === "approved") {
+        await supabase.from("orders").update({ payment_status: "paid" }).eq("id", id);
+        toast({ title: "Payment approved" });
+      } else {
+        toast({ title: "Payment denied" });
+      }
+      void fetchOrder(id);
     } catch (err: any) {
-      toast({ title: "Update failed", description: err?.message || "Please try again", variant: "destructive" });
+      toast({ title: "Action failed", description: err?.message || "", variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -215,41 +210,9 @@ export default function AdminOrderDetail() {
   }
 
   const amount = order.total_amount ?? 0;
-  const customerName = order.profiles?.full_name || guest?.full_name || "N/A";
-  const customerPhone = order.profiles?.phone || guest?.phone || "N/A";
-  const customerEmail = order.profiles?.email || guest?.email || "N/A";
-
-  const handleInvoiceUpload = async () => {
-    if (!id || !invoiceFile) {
-      toast({ title: "No file selected", variant: "destructive" });
-      return;
-    }
-    setSaving(true);
-    try {
-      const ext = invoiceFile.name.split(".").pop();
-      const filePath = `invoices/${id}/${crypto.randomUUID()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("payment-proof").upload(filePath, invoiceFile, {
-        cacheControl: "3600",
-        upsert: false,
-      });
-      if (uploadError) throw uploadError;
-
-      const { data: publicData } = supabase.storage.from("payment-proof").getPublicUrl(filePath);
-      const publicUrl = publicData?.publicUrl || null;
-
-      const nextMeta = { ...(order.meta || {}), invoice_url: publicUrl || filePath };
-      const { error: metaErr } = await supabase.from("orders").update({ meta: nextMeta }).eq("id", id);
-      if (metaErr) throw metaErr;
-
-      setInvoiceUrl(publicUrl || filePath);
-      toast({ title: "Invoice uploaded" });
-    } catch (err: any) {
-      toast({ title: "Invoice upload failed", description: err?.message || "Please try again", variant: "destructive" });
-    } finally {
-      setSaving(false);
-      setInvoiceFile(null);
-    }
-  };
+  const customerName = order.profiles?.full_name || "N/A";
+  const customerPhone = order.profiles?.phone || "N/A";
+  const customerEmail = order.profiles?.email || "N/A";
 
   return (
     <div className="min-h-screen bg-background">
@@ -269,7 +232,7 @@ export default function AdminOrderDetail() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <p className="font-semibold text-foreground">Created</p>
                   <p className="text-muted-foreground">
@@ -283,14 +246,8 @@ export default function AdminOrderDetail() {
                   </p>
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">Delivery</p>
-                  <p className="text-muted-foreground">
-                    {order.delivery_type || "pickup"} • Rs {Number(order.delivery_charge ?? 0).toLocaleString()}
-                  </p>
-                </div>
-                <div>
                   <p className="font-semibold text-foreground">Status</p>
-                  <Select value={order.status} onValueChange={(v) => handleStatusUpdate(v as OrderStatus)} disabled={saving}>
+                  <Select value={order.status} onValueChange={(value) => handleStatusUpdate(value as OrderStatus)} disabled={saving}>
                     <SelectTrigger className="h-9">
                       <SelectValue />
                     </SelectTrigger>
@@ -302,6 +259,25 @@ export default function AdminOrderDetail() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t">
+                <div>
+                  <p className="font-semibold text-foreground mb-2">Items ({items.length})</p>
+                  <div className="space-y-2">
+                    {items.map((item) => (
+                      <div key={item.id} className="text-sm flex justify-between">
+                        <div>
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="text-muted-foreground">Qty: {item.quantity} @ Rs {Number(item.unit_price).toLocaleString()}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">Rs {Number(item.unit_price * item.quantity).toLocaleString()}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -330,172 +306,110 @@ export default function AdminOrderDetail() {
                   <div className="text-muted-foreground space-y-1">
                     <p>{address.address_line1}</p>
                     {address.address_line2 && <p>{address.address_line2}</p>}
-                    <p>
-                      {address.city}, {address.state} - {address.pincode}
-                    </p>
+                    <p>{address.city}, {address.state} - {address.pincode}</p>
                     {address.phone && <p>Phone: {address.phone}</p>}
                   </div>
-                ) : guest ? (
-                  <div className="text-muted-foreground space-y-1">
-                    <p>{guest.address || "Pickup / no address"}</p>
-                    {(guest.city || guest.state || guest.pincode) && (
-                      <p>
-                        {[guest.city, guest.state].filter(Boolean).join(", ")}
-                        {guest.pincode ? ` - ${guest.pincode}` : ""}
-                      </p>
-                    )}
-                    {guest.phone && <p>Phone: {guest.phone}</p>}
-                  </div>
                 ) : (
-                  <p className="text-muted-foreground">Pickup / no address</p>
+                  <p className="text-sm text-muted-foreground">No delivery address on file.</p>
                 )}
+
+                <div className="pt-3">
+                  <label className="text-sm font-semibold text-foreground block">Invoice</label>
+                  <input
+                    type="file"
+                    accept=".pdf,image/png,image/jpeg"
+                    onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
+                    className="text-sm mt-1"
+                  />
+                  <div className="flex gap-2 mt-2">
+                    <Button size="sm" onClick={handleInvoiceUpload} disabled={saving || !invoiceFile}>
+                      {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                      Upload Invoice
+                    </Button>
+                    {invoiceUrl && (
+                      <Button size="sm" variant="outline" asChild>
+                        <a href={invoiceUrl} target="_blank" rel="noopener noreferrer">
+                          View Invoice
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="shadow-elegant">
-          <CardHeader>
-            <CardTitle>Items</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {items.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No items.</p>
-            ) : (
-              items.map((item) => (
-                <div key={item.id} className="p-3 rounded-lg border border-border flex items-center justify-between gap-3">
-                  <div className="w-16 h-16 rounded-md overflow-hidden border border-border bg-secondary flex-shrink-0 flex items-center justify-center">
-                    {item.image_url ? (
-                      <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <ShoppingBag className="w-5 h-5 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground line-clamp-1">{item.name}</p>
-                    <p className="text-sm text-muted-foreground flex items-center gap-3">
-                      <span>Qty {item.quantity}</span>
-                      <span>Size {item.size || "-"}</span>
-                      <span>Color {item.color || "-"}</span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-sm">Unit: Rs {(item.unit_price ?? 0).toLocaleString()}</p>
-                    <p className="font-bold text-accent">Subtotal: Rs {((item.unit_price ?? 0) * item.quantity).toLocaleString()}</p>
-                  </div>
-                </div>
-              ))
-            )}
-            <div className="flex justify-end border-t pt-3 text-sm">
-              <div className="text-right">
-                <p>Delivery: Rs {Number(order.delivery_charge ?? 0).toLocaleString()}</p>
-                <p className="font-bold text-accent">Total: Rs {Number(amount).toLocaleString()}</p>
-              </div>
+        <div className="pt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 font-semibold text-foreground">
+              <CreditCard className="w-4 h-4" />
+              Payments
             </div>
-          </CardContent>
-        </Card>
+            <p className="text-muted-foreground text-sm">
+              {payments.length === 0 ? "No payment submissions yet." : `${payments.length} payment${payments.length > 1 ? "s" : ""}`}
+            </p>
+          </div>
 
-          <Card className="shadow-elegant">
-            <CardHeader>
-              <CardTitle>Payments</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div className="flex flex-col gap-2">
-                <Label>Upload Invoice (PDF/JPG/PNG)</Label>
-                <input
-                  type="file"
-                  accept=".pdf,image/png,image/jpeg"
-                  onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
-                  className="text-sm"
-                />
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={handleInvoiceUpload} disabled={saving || !invoiceFile}>
-                    {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    Upload Invoice
-                  </Button>
-                  {invoiceUrl && (
-                    <Button size="sm" variant="outline" asChild>
-                      <a href={invoiceUrl} target="_blank" rel="noopener noreferrer">
-                        View Invoice
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              {payments.length === 0 ? (
-                <p className="text-muted-foreground">No payment submissions yet.</p>
-            ) : (
-              payments.map((p) => {
-                const screenshotUrl = paymentAssets[p.id];
-                return (
-                  <div key={p.id} className="p-3 border border-border rounded-lg space-y-2">
-                    <div className="flex items-center justify-between">
+          {payments.length > 0 && (
+            <div className="space-y-3 mt-3">
+              {payments.map((payment) => (
+                <Card key={payment.id} className="shadow-sm">
+                  <CardContent className="py-4">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
                       <div className="space-y-1">
-                        <p className="font-semibold text-foreground">Transaction ID</p>
-                        <p className="text-muted-foreground">{p.reference || "—"}</p>
+                        <p className="font-semibold text-foreground">Rs {Number(payment.amount ?? 0).toLocaleString()}</p>
+                        <p className="text-muted-foreground">
+                          Mode: {payment.mode || "N/A"} | Ref: {payment.reference || "N/A"}
+                        </p>
+                        <p className="text-muted-foreground">Status: {payment.status || "pending"}</p>
+                        <p className="text-muted-foreground">
+                          Submitted{" "}
+                          {new Date(payment.created_at).toLocaleString("en-IN", {
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-foreground">Status</p>
-                        <p className="text-muted-foreground capitalize">{p.status || "submitted"}</p>
+
+                      <div className="flex flex-wrap items-center gap-2">
+                        {payment.screenshot_url && (
+                          <Button size="sm" variant="outline" asChild>
+                            <a href={payment.screenshot_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1">
+                              <ImageIcon className="w-4 h-4" />
+                              View proof
+                            </a>
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={saving || payment.status === "approved"}
+                          onClick={() => handlePaymentDecision(payment.id, "approved")}
+                        >
+                          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={saving || payment.status === "denied"}
+                          onClick={() => handlePaymentDecision(payment.id, "denied")}
+                        >
+                          Deny
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" disabled={saving} onClick={() => handlePaymentDecision(p.id, "approved")}>
-                        Approve
-                      </Button>
-                      <Button size="sm" variant="destructive" disabled={saving} onClick={() => handlePaymentDecision(p.id, "denied")}>
-                        Deny
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-foreground">Amount</p>
-                        <p className="text-muted-foreground">Rs {Number(p.amount ?? amount).toLocaleString()}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-foreground">Mode</p>
-                        <p className="text-muted-foreground">{p.mode || "UPI"}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-semibold text-foreground">Screenshot</span>
-                      </div>
-                      {screenshotUrl ? (
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={screenshotUrl}
-                            alt="Payment screenshot"
-                            className="w-24 h-24 rounded-md border border-border object-cover"
-                          />
-                          <a href={screenshotUrl} download className="text-primary hover:underline flex items-center gap-1">
-                            <LinkIcon className="w-4 h-4" />
-                            Download
-                          </a>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Not provided</span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Submitted:{" "}
-                      {new Date(p.created_at).toLocaleString("en-IN", {
-                        year: "numeric",
-                        month: "short",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                );
-              })
-            )}
-          </CardContent>
-        </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+} 

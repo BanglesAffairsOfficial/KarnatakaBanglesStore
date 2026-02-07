@@ -7,6 +7,7 @@ interface NumericStepperProps {
   min?: number;
   max?: number;
   className?: string;
+  disabled?: boolean;
 }
 
 export function NumericStepper({ 
@@ -14,7 +15,8 @@ export function NumericStepper({
   onChange, 
   min = 0, 
   max = 999,
-  className = "" 
+  className = "",
+  disabled = false
 }: NumericStepperProps) {
   const handleDecrement = () => {
     if (value > min) {
@@ -36,7 +38,7 @@ export function NumericStepper({
         size="icon"
         className="h-8 w-8 rounded-full"
         onClick={handleDecrement}
-        disabled={value <= min}
+        disabled={disabled || value <= min}
         aria-label="Decrease quantity"
       >
         <Minus className="h-3 w-3" />
@@ -50,7 +52,7 @@ export function NumericStepper({
         size="icon"
         className="h-8 w-8 rounded-full"
         onClick={handleIncrement}
-        disabled={value >= max}
+        disabled={disabled || value >= max}
         aria-label="Increase quantity"
       >
         <Plus className="h-3 w-3" />

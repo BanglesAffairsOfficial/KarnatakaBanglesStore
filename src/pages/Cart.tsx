@@ -70,7 +70,7 @@ const checkProfileComplete = async (userId: string) => {
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, clearCart, totalAmount } = useCart();
-  const { user, session, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading, canWholesale } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -136,7 +136,7 @@ export default function Cart() {
 
   const deliveryCharge = user ? DELIVERY_CHARGES[deliveryOption] : 0;
   const finalTotal = totalAmount + deliveryCharge;
-  const isWholesale = !!session?.user;
+  const isWholesale = canWholesale;
 
   const handlePlaceOrder = async () => {
     if (items.length === 0) {
@@ -201,7 +201,7 @@ export default function Cart() {
       }
 
       const orderUserId = currentUser ? currentUser.id : null;
-      const orderType = orderUserId ? "wholesale" : "retail";
+      const orderType = orderUserId && canWholesale ? "wholesale" : "retail";
 
       const orderPayload = {
         user_id: orderUserId,
@@ -265,6 +265,11 @@ export default function Cart() {
       if (itemsError) {
         await supabase.from("orders").delete().eq("id", orderData.id);
         throw new Error(itemsError.message || "Failed to add order items");
+      }
+
+      const { error: stockError } = await (supabase as any).rpc("decrement_stock", { p_order_id: orderData.id });
+      if (stockError) {
+        console.warn("Stock decrement failed:", stockError);
       }
 
       toast({
@@ -627,3 +632,4 @@ export default function Cart() {
     </div>
   );
 }
+

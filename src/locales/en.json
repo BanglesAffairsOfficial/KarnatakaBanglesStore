@@ -37,6 +37,11 @@
     "logout": "Logout",
     "loginSignup": "Login / Sign Up"
   },
+  "homepage": {
+    "lastFewLeftTitle": "Last Few Left — Shop Now",
+    "lastFewLeftDesc": "These items are running low on stock. Grab them before they're gone!",
+    "viewAllLimited": "View All Limited Stock"
+  },
   "loginPage": {
     "branding": "Premium Glass Bangles - Wholesale & Retail",
     "title": "Welcome Back",
@@ -44,7 +49,7 @@
     "emailLabel": "Email Address",
     "emailPlaceholder": "wholesale@example.com",
     "passwordLabel": "Password",
-    "passwordPlaceholder": "????????",
+    "passwordPlaceholder": "Example: Abc@1234",
     "forgot": "Forgot?",
     "remember": "Remember me",
     "signIn": "Sign In",
@@ -97,8 +102,12 @@
   },
   "featured": {
     "badge": "Trending Now",
-    "title": "Featured Collection",
+    "title": "New & Featured Bangles",
     "searchPlaceholder": "Search bangles..."
+  },
+  "reels": {
+    "badge": "Social Reels",
+    "title": "Style in Motion"
   },
   "offers": {
     "checkTitle": "Check Now!",
@@ -441,6 +450,11 @@
     "colorsCount": "{{count}} colors",
     "deliveryInfo": "Delivery in 5-7 business days to {{pincode}}",
     "shareTitle": "Check out this bangle",
+    "stockUrgency": {
+      "lastFewLeft": "Last few left — shop now",
+      "buyBeforeSoldOut": "Buy now, before it sells out",
+      "limitedStock": "Limited stock available"
+    },
     "toast": {
       "loadErrorTitle": "Error loading product",
       "loadErrorDesc": "Could not load product details. Please try again.",
@@ -472,7 +486,7 @@
     "emailLabel": "Email Address",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
-    "passwordPlaceholder": "????????",
+    "passwordPlaceholder": "Example: Abc@1234",
     "confirmLabel": "Confirm Password",
     "confirmPlaceholder": "Re-enter password",
     "forgot": "Forgot?",
@@ -504,9 +518,10 @@
       "confirmPassword": "Passwords do not match"
     },
     "verification": {
-      "title": "Verify Your Email Address",
-      "desc": "Please check your inbox and click the verification link we just sent to",
-      "note": "You must verify your email to complete registration and access your account.",
+      "title": "Verify your email to finish signup",
+      "desc": "We just sent a verification email to",
+      "steps": "Open the email from “Supabase Auth” with subject “Verify your email – B2B access pending approval” and click the “Confirm my email” button to activate your account. Check Spam/Promotions if you don’t see it.",
+      "note": "After you verify, our team will review and approve B2B access. Until then you can browse with retail access.",
       "close": "OK",
       "resend": "Resend Email",
       "resendFailed": "Failed to resend",

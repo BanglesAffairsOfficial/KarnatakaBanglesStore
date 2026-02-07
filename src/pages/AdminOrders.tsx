@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Filter } from "lucide-react";
+import { Loader2, Filter, Download, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import * as XLSX from 'xlsx';
 
 interface AdminOrderRow {
   id: string;
@@ -37,7 +38,7 @@ const DELIVERY_OPTIONS = ["pickup", "delivery"];
 const PAGE_SIZE = 10;
 
 export default function AdminOrders() {
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, roleChecked } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -51,15 +52,20 @@ export default function AdminOrders() {
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [exportType, setExportType] = useState<"all" | "dateRange" | "monthly">("all");
+  const [exportDateFrom, setExportDateFrom] = useState<string>("");
+  const [exportDateTo, setExportDateTo] = useState<string>("");
+  const [exportMonth, setExportMonth] = useState<string>("");
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || !roleChecked) return;
     if (!isAdmin) {
       navigate("/auth");
       return;
     }
     fetchOrders();
-  }, [authLoading, isAdmin, navigate, page, statusFilter, deliveryFilter, dateFrom, dateTo]);
+  }, [authLoading, roleChecked, isAdmin, navigate, page, statusFilter, deliveryFilter, dateFrom, dateTo]);
 
   const buildFilters = () => {
     const filters: any[] = [];
@@ -152,6 +158,180 @@ export default function AdminOrders() {
     }
   };
 
+  const fetchOrdersForExport = async (filters: any[] = []) => {
+    let query = (supabase as any)
+      .from("orders")
+      .select(
+        `
+          id,
+          created_at,
+          status,
+          payment_status,
+          total_amount,
+          delivery_type,
+          delivery_charge,
+          profiles:profiles!orders_user_id_fkey(full_name, phone, email),
+          meta
+        `
+      );
+
+    filters.forEach((f) => {
+      query = query[f.op](f.column, f.value);
+    });
+
+    const { data, error } = await query.order("created_at", { ascending: false });
+    
+    if (error) {
+      throw new Error(error.message || "Failed to fetch orders for export");
+    }
+    
+    return data || [];
+  };
+
+  const formatOrdersForExcel = (orders: any[]) => {
+    return orders.map((order) => {
+      const guest = order.meta?.guest || null;
+      const customerName = order.profiles?.full_name || guest?.full_name || "Unknown";
+      const phone = order.profiles?.phone || guest?.phone || "-";
+      const email = order.profiles?.email || guest?.email || "-";
+      const typeLabel = guest ? "B2C" : "B2B";
+      const deliveryLabel = guest ? "location" : (order.delivery_type || "-");
+      const createdDate = new Date(order.created_at).toLocaleString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      return {
+        "Order ID": order.id.slice(0, 8),
+        "Full Order ID": order.id,
+        "Customer Name": customerName,
+        "Phone": phone,
+        "Email": email,
+        "Type": typeLabel,
+        "Delivery Type": deliveryLabel,
+        "Total Amount (Rs)": order.total_amount ?? 0,
+        "Delivery Charge (Rs)": order.delivery_charge ?? 0,
+        "Status": order.status === "shipped" ? "Ready for Shipping/Shipped" : (order.status || "pending"),
+        "Payment Status": order.payment_status || "pending",
+        "Created Date": createdDate,
+      };
+    });
+  };
+
+  const handleExportOrders = async () => {
+    try {
+      setExporting(true);
+
+      if (exportType === "all") {
+        const allOrders = await fetchOrdersForExport();
+        const formattedOrders = formatOrdersForExcel(allOrders);
+        const worksheet = XLSX.utils.json_to_sheet(formattedOrders);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "All Orders");
+        
+        // Set column widths
+        worksheet["!cols"] = [
+          { wch: 12 },
+          { wch: 25 },
+          { wch: 20 },
+          { wch: 15 },
+          { wch: 25 },
+          { wch: 8 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 18 },
+          { wch: 25 },
+          { wch: 15 },
+          { wch: 25 },
+        ];
+        
+        XLSX.writeFile(workbook, `orders_all_${new Date().toISOString().split('T')[0]}.xlsx`);
+        toast({ title: "Success", description: "Orders exported successfully!" });
+      } else if (exportType === "dateRange") {
+        if (!exportDateFrom || !exportDateTo) {
+          toast({ title: "Error", description: "Please select both start and end dates", variant: "destructive" });
+          return;
+        }
+
+        const filters = [
+          { column: "created_at", op: "gte", value: exportDateFrom },
+          { column: "created_at", op: "lte", value: `${exportDateTo}T23:59:59Z` },
+        ];
+
+        const filteredOrders = await fetchOrdersForExport(filters);
+        const formattedOrders = formatOrdersForExcel(filteredOrders);
+        const worksheet = XLSX.utils.json_to_sheet(formattedOrders);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders by Date");
+        
+        worksheet["!cols"] = [
+          { wch: 12 },
+          { wch: 25 },
+          { wch: 20 },
+          { wch: 15 },
+          { wch: 25 },
+          { wch: 8 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 18 },
+          { wch: 25 },
+          { wch: 15 },
+          { wch: 25 },
+        ];
+        
+        XLSX.writeFile(workbook, `orders_${exportDateFrom}_to_${exportDateTo}.xlsx`);
+        toast({ title: "Success", description: "Orders exported successfully!" });
+      } else if (exportType === "monthly") {
+        if (!exportMonth) {
+          toast({ title: "Error", description: "Please select a month", variant: "destructive" });
+          return;
+        }
+
+        const [year, month] = exportMonth.split("-");
+        const startDate = `${year}-${month}-01`;
+        const endDate = new Date(parseInt(year), parseInt(month), 0).toISOString().split('T')[0];
+
+        const filters = [
+          { column: "created_at", op: "gte", value: startDate },
+          { column: "created_at", op: "lte", value: `${endDate}T23:59:59Z` },
+        ];
+
+        const filteredOrders = await fetchOrdersForExport(filters);
+        const formattedOrders = formatOrdersForExcel(filteredOrders);
+        const worksheet = XLSX.utils.json_to_sheet(formattedOrders);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Monthly Orders");
+        
+        worksheet["!cols"] = [
+          { wch: 12 },
+          { wch: 25 },
+          { wch: 20 },
+          { wch: 15 },
+          { wch: 25 },
+          { wch: 8 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 18 },
+          { wch: 25 },
+          { wch: 15 },
+          { wch: 25 },
+        ];
+        
+        const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleString("en-IN", { month: "long", year: "numeric" });
+        XLSX.writeFile(workbook, `orders_${monthName.replace(" ", "_")}.xlsx`);
+        toast({ title: "Success", description: "Orders exported successfully!" });
+      }
+    } catch (err: any) {
+      toast({ title: "Export failed", description: err?.message || "Unknown error", variant: "destructive" });
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -208,6 +388,83 @@ export default function AdminOrders() {
               <Label>Date To</Label>
               <Input type="date" value={dateTo} onChange={(e) => { setPage(1); setDateTo(e.target.value); }} />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-elegant">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              Export Orders to Excel
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Export Type</Label>
+              <Select value={exportType} onValueChange={(v) => setExportType(v as "all" | "dateRange" | "monthly")}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select export type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Orders</SelectItem>
+                  <SelectItem value="dateRange">By Date Range</SelectItem>
+                  <SelectItem value="monthly">By Month</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {exportType === "dateRange" && (
+              <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div className="space-y-2">
+                  <Label>Start Date</Label>
+                  <Input 
+                    type="date" 
+                    value={exportDateFrom} 
+                    onChange={(e) => setExportDateFrom(e.target.value)}
+                    placeholder="Select start date"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>End Date</Label>
+                  <Input 
+                    type="date" 
+                    value={exportDateTo} 
+                    onChange={(e) => setExportDateTo(e.target.value)}
+                    placeholder="Select end date"
+                  />
+                </div>
+              </div>
+            )}
+
+            {exportType === "monthly" && (
+              <div className="space-y-2 p-4 bg-muted/50 rounded-lg">
+                <Label>Select Month</Label>
+                <Input 
+                  type="month" 
+                  value={exportMonth} 
+                  onChange={(e) => setExportMonth(e.target.value)}
+                  placeholder="Select month"
+                />
+              </div>
+            )}
+
+            <Button 
+              onClick={handleExportOrders}
+              disabled={exporting}
+              className="w-full md:w-auto"
+            >
+              {exporting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Exporting...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Excel
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
 
