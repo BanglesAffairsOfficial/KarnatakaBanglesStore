@@ -89,6 +89,36 @@ import { useTranslation } from "react-i18next";
       videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770187345/Searching_for_wholesale_bangles_to_start_your_business_Skip_the_hassle_Karnataka_Bangles_Stores_rnmufu.mp4",
       poster: "/reels/reel3.jpg",
     },
+    {
+      id: "reel-4",
+      caption: "Latest Glass Bangles Collection",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770187614/Introducing_Our_Latest_Glass_Bangles_Collection_Export_Quality_Straight_from_21_Years_of_M_epumud.mp4",
+    },
+    {
+      id: "reel-5",
+      caption: "Kashmiri Glass Bangles Sets",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770187775/Unveiling_our_stunning_Kashmiri_Glass_Bangles_Sets_bangle_kashmiri_ghungroo_raindropbangle_pbkslv.mp4",
+    },
+    {
+      id: "reel-6",
+      caption: "Raindrop Bangles Collection",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770188165/bangle_raindropbangles_bangleceremony_banglecollection_babyshower_seemantham_banglebusine_mhuwxz.mp4",
+    },
+    {
+      id: "reel-7",
+      caption: "Glass Bangles Tradition",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770188338/Glass_bangles_aren_t_just_an_accessories_they_symbolise_celebration_and_tradition._Pair_them_wit_szkl0v.mp4",
+    },
+    {
+      id: "reel-8",
+      caption: "Unboxing Metal Bangles",
+      creator: "@karnatakabangles",
+      videoUrl: "https://res.cloudinary.com/dct5qyha7/video/upload/w_1080,h_1920,c_fill,q_auto,f_auto/v1770272517/samples/ecommerce/Unboxing_the_perfect_blend_of_style_and_elegance-_our_new_metal_bangles_bmff2q.mp4",
+    },
   ];
 
 
@@ -590,8 +620,8 @@ import { useTranslation } from "react-i18next";
           <div className="container mx-auto px-3 sm:px-4">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <Badge className="mb-3">{t("reels.badge")}</Badge>
-                <h2 className="text-3xl sm:text-4xl font-display font-bold">{t("reels.title")}</h2>
+                <h2 className="text-3xl sm:text-4xl font-display font-bold">{t("reels.badge")}</h2>
+                <p className="mt-2 text-base sm:text-lg font-semibold text-foreground">{t("reels.title")}</p>
                 <p className="text-muted-foreground text-sm sm:text-base">Vertical 9:16 reels (1080x1920) - no cropping, rounded corners.</p>
               </div>
               <div className="hidden sm:flex gap-2">
