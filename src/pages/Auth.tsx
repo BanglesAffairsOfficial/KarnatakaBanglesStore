@@ -398,9 +398,20 @@ export default function Auth() {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="font-medium">
-                  {t("authPage.passwordLabel")}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="font-medium">
+                    {t("authPage.passwordLabel")}
+                  </Label>
+                  {isLogin && (
+                    <button
+                      type="button"
+                      onClick={() => navigate("/forgot-password")}
+                      className="text-xs text-primary hover:underline font-medium"
+                    >
+                      {t("authPage.forgot")}
+                    </button>
+                  )}
+                </div>
                 <div className="relative">
                   <Input
                     id="password"
