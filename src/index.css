@@ -142,6 +142,11 @@
     animation: attention-hop 2.2s ease-in-out infinite;
   }
 
+  @keyframes attention-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
   @keyframes attention-rgb {
     0% { background-color: rgb(255, 82, 82); }
     20% { background-color: rgb(255, 196, 82); }
@@ -151,8 +156,8 @@
     100% { background-color: rgb(255, 82, 82); }
   }
 
-  .animate-attention-rgb {
-    animation: attention-rgb 4s linear infinite;
+  .animate-attention-float-rgb {
+    animation: attention-rgb 3.2s linear infinite, attention-float 2.4s ease-in-out infinite;
     color: #1a1a1a;
   }
   

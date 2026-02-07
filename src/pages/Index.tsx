@@ -536,7 +536,7 @@ import { useTranslation } from "react-i18next";
                   <Button
                     variant="outline"
                     onClick={() => safeNavigate(navigate, "/shop")}
-                    className="animate-attention-hop animate-attention-rgb shadow-gold border-0"
+                    className="animate-attention-float-rgb shadow-gold border-0"
                   >
                     Shop our collection
                   </Button>
