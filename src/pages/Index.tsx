@@ -415,7 +415,7 @@ import { useTranslation } from "react-i18next";
         </header>
 
         {/* Hero - Responsive Banner */}
-        <section className="relative h-[200px] sm:h-[340px] md:h-[480px] lg:h-[600px] xl:h-[660px] overflow-hidden">
+        <section className="relative h-[42vh] sm:h-[340px] md:h-[480px] lg:h-[600px] xl:h-[660px] overflow-hidden">
           <div className="absolute inset-0">
             {heroSlides.map((slide, idx) => (
               <div 
@@ -443,7 +443,7 @@ import { useTranslation } from "react-i18next";
       </section>
 
         {/* Categories (should appear right after the hero banner) */}
-        <section id="categories" className="py-12 md:py-16">
+        <section id="categories" className="pt-0 pb-12 md:py-16">
           <div className="container mx-auto px-3 sm:px-4">
             <div className="text-center mb-8 md:mb-12">
               <Badge className="mb-4">{t("categories.badge")}</Badge>
