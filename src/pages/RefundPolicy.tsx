@@ -1,15 +1,17 @@
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "react-i18next";
 
 export default function RefundPolicy() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-10 max-w-4xl space-y-6">
         <div className="space-y-2">
-          <h1 className="text-3xl font-display font-bold">Refund & Cancellation Policy</h1>
-          <p className="text-muted-foreground">Updated: 2024</p>
+          <h1 className="text-3xl font-display font-bold">{t("refundPolicy.title")}</h1>
+          <p className="text-muted-foreground">{t("refundPolicy.updated")}</p>
         </div>
 
         <Card className="shadow-elegant">

@@ -1,15 +1,17 @@
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "react-i18next";
 
 export default function ShippingReturns() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-10 max-w-4xl space-y-8">
         <header>
-          <h1 className="text-4xl font-display font-bold mb-3">Shipping & Returns</h1>
-          <p className="text-muted-foreground">Learn about delivery timelines, fees, and return eligibility.</p>
+          <h1 className="text-4xl font-display font-bold mb-3">{t("shippingReturns.title")}</h1>
+          <p className="text-muted-foreground">{t("shippingReturns.description")}</p>
         </header>
 
         <Card>

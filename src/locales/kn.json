@@ -514,5 +514,49 @@
       "resendSuccess": "????? ????????????",
       "resendDesc": "???????? ????? ????? ????????????? ???????????????."
     }
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "description": "The basics of using our site and placing orders.",
+    "useOfSite": "Use of the Site",
+    "useOfSiteContent": "Don't misuse the site, attempt fraud, or violate applicable laws.",
+    "ordersAndPricing": "Orders & Pricing",
+    "ordersAndPricingContent": "Orders are confirmed upon payment authorization. Pricing and availability may change; obvious errors may be corrected.",
+    "liability": "Liability",
+    "liabilityContent": "We are not liable for indirect damages; remedies are limited to order value where applicable."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "How we collect, use, and protect your data.",
+    "dataCollect": "Data We Collect",
+    "dataCollectContent": "Account info (name, email), order details, payment confirmation status (not full card data), and site usage analytics.",
+    "howWeUseIt": "How We Use It",
+    "howWeUseItContent": "To process orders, improve the catalog, send order updates, and personalize recommendations.",
+    "yourControls": "Your Controls",
+    "yourControlsContent": "Request data export or deletion via Contact. Manage marketing opt-ins in your profile (coming soon)."
+  },
+  "shippingReturns": {
+    "title": "Shipping & Returns",
+    "description": "Learn about delivery timelines, fees, and return eligibility."
+  },
+  "refundPolicy": {
+    "title": "Refund & Cancellation Policy",
+    "updated": "Updated: 2024"
+  },
+  "aboutUs": {
+    "title": "About Us",
+    "story": "Our Story",
+    "mission": "Mission",
+    "vision": "Vision",
+    "values": "Core Values",
+    "chooseUs": "Why Choose Us?"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Oops! The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go to Home",
+    "continueShopping": "Continue Shopping",
+    "goBack": "Go Back",
+    "popularLinks": "Popular links"
   }
 }

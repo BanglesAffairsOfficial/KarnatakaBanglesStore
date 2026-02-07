@@ -2,9 +2,11 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home, ShoppingBag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -22,11 +24,11 @@ const NotFound = () => {
 
         {/* Main message */}
         <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-          Page Not Found
+          {t("notFound.title")}
         </h1>
         
         <p className="text-xl text-muted-foreground mb-2">
-          Oops! The page you're looking for doesn't exist or has been moved.
+          {t("notFound.message")}
         </p>
         
         <p className="text-muted-foreground mb-8">
@@ -38,14 +40,14 @@ const NotFound = () => {
           <Link to="/">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
               <Home className="w-4 h-4" />
-              Go to Home
+              {t("notFound.goHome")}
             </Button>
           </Link>
           
           <Link to="/shop">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
               <ShoppingBag className="w-4 h-4" />
-              Continue Shopping
+              {t("notFound.continueShopping")}
             </Button>
           </Link>
           
@@ -55,22 +57,22 @@ const NotFound = () => {
           >
             <Button size="lg" variant="ghost" className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Go Back
+              {t("notFound.goBack")}
             </Button>
           </button>
         </div>
 
         {/* Helpful suggestions */}
         <div className="mt-12 pt-8 border-t">
-          <p className="text-muted-foreground mb-4">Popular links:</p>
+          <p className="text-muted-foreground mb-4">{t("notFound.popularLinks")}:</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <Link to="/" className="text-primary hover:underline">Home</Link>
+            <Link to="/" className="text-primary hover:underline">{t("nav.home")}</Link>
             <span className="text-muted-foreground">/</span>
-            <Link to="/shop" className="text-primary hover:underline">Shop</Link>
+            <Link to="/shop" className="text-primary hover:underline">{t("nav.shop")}</Link>
             <span className="text-muted-foreground">/</span>
-            <Link to="/contact" className="text-primary hover:underline">Contact</Link>
+            <Link to="/contact" className="text-primary hover:underline">{t("nav.contact")}</Link>
             <span className="text-muted-foreground">/</span>
-            <Link to="/auth" className="text-primary hover:underline">Login</Link>
+            <Link to="/auth" className="text-primary hover:underline">{t("auth.login")}</Link>
           </div>
         </div>
       </div>

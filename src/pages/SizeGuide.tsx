@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Ruler, Download, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const SIZE_CHART = [
   { size: "2.2\"", circumference: "2.2 inches", wristCircumference: "5.5 cm" },
@@ -47,6 +48,7 @@ const MEASUREMENT_TIPS = [
 ];
 
 export default function SizeGuide() {
+  const { t } = useTranslation();
   const [selectedSize, setSelectedSize] = useState("2.6\"");
 
   const downloadGuide = () => {
