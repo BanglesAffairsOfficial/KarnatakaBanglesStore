@@ -415,7 +415,7 @@ import { useTranslation } from "react-i18next";
         </header>
 
         {/* Hero - Responsive Banner */}
-        <section className="relative h-[42vh] sm:h-[340px] md:h-[480px] lg:h-[600px] xl:h-[660px] overflow-hidden">
+        <section className="relative h-[320px] sm:h-[360px] md:h-[480px] lg:h-[560px] xl:h-[600px] overflow-hidden">
           <div className="absolute inset-0">
             {heroSlides.map((slide, idx) => (
               <div 
@@ -845,7 +845,17 @@ import { useTranslation } from "react-i18next";
               </div>
             </div>
             <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-              <p>© 2026 Karnataka Bangle Store. {t("footer.rights")}</p>
+              <p className="font-bold">
+                Made by{" "}
+                <a
+                  href="https://www.linkedin.com/in/bhavesh-kumar-tiwari-5043862b4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold hover:text-primary underline"
+                >
+                  Bhavesh Kumar Tiwari
+                </a>
+              </p>
             </div>
           </div>
         </footer>

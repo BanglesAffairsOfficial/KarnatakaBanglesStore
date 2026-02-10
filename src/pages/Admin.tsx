@@ -1143,7 +1143,7 @@ export default function Admin() {
                     </h3>
                     <div className="bg-white dark:bg-gray-900 p-4 rounded-md mb-4">
                       <p className="text-3xl font-bold text-center text-blue-600 mb-2">
-                        1920 × 600 pixels
+                        1920 × 900 pixels
                       </p>
                       <p className="text-center text-sm text-muted-foreground">
                         (Amazon-style responsive banner)
