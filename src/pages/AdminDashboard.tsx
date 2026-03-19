@@ -41,7 +41,7 @@ interface CategoryRow {
 const STATUS_BUCKETS = ["pending", "confirmed", "packed", "shipped", "delivered", "cancelled"];
 
 export default function AdminDashboard() {
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, roleChecked } = useAuth();
   const { toast } = useToast();
 
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -50,10 +50,10 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || !roleChecked) return;
     if (!isAdmin) return;
     fetchData();
-  }, [authLoading, isAdmin]);
+  }, [authLoading, roleChecked, isAdmin]);
 
   const fetchData = async () => {
     setLoading(true);

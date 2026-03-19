@@ -10,45 +10,199 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
+      b2b_requests: {
+        Row: {
+          business_link: string | null
+          business_proof_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          gst_number: string | null
+          id: string
+          phone: string | null
+          shop_name: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          business_link?: string | null
+          business_proof_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          gst_number?: string | null
+          id?: string
+          phone?: string | null
+          shop_name?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          business_link?: string | null
+          business_proof_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          gst_number?: string | null
+          id?: string
+          phone?: string | null
+          shop_name?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bangle_occasions: {
+        Row: {
+          bangle_id: string
+          created_at: string
+          id: string
+          occasion_id: string
+        }
+        Insert: {
+          bangle_id: string
+          created_at?: string
+          id?: string
+          occasion_id: string
+        }
+        Update: {
+          bangle_id?: string
+          created_at?: string
+          id?: string
+          occasion_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bangle_occasions_bangle_id_fkey"
+            columns: ["bangle_id"]
+            isOneToOne: false
+            referencedRelation: "bangles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bangle_occasions_bangle_id_fkey"
+            columns: ["bangle_id"]
+            isOneToOne: false
+            referencedRelation: "bangles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bangle_occasions_occasion_id_fkey"
+            columns: ["occasion_id"]
+            isOneToOne: false
+            referencedRelation: "occasions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bangles: {
         Row: {
           available_colors: string[] | null
           available_sizes: string[] | null
+          category_id: string | null
           created_at: string
           description: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           name: string
+          number_of_stock: number | null
           price: number
+          retail_price: number | null
+          secondary_image_url: string | null
+          slug: string | null
           updated_at: string
         }
         Insert: {
           available_colors?: string[] | null
           available_sizes?: string[] | null
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           name: string
+          number_of_stock?: number | null
           price?: number
+          retail_price?: number | null
+          secondary_image_url?: string | null
+          slug?: string | null
           updated_at?: string
         }
         Update: {
           available_colors?: string[] | null
           available_sizes?: string[] | null
+          category_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           name?: string
+          number_of_stock?: number | null
           price?: number
+          retail_price?: number | null
+          secondary_image_url?: string | null
+          slug?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      broadcasts: {
+        Row: {
+          audience: string | null
+          created_at: string | null
+          id: string
+          message: string | null
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
           updated_at?: string
         }
         Relationships: []
@@ -122,33 +276,96 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      occasions: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           bangle_id: string
+          cancelled_qty: number | null
           color: string
+          created_at: string
           id: string
           order_id: string
-          price: number
           quantity: number
           size: string
+          unit_price: number
+          updated_at: string
         }
         Insert: {
           bangle_id: string
+          cancelled_qty?: number | null
           color: string
+          created_at?: string
           id?: string
           order_id: string
-          price?: number
           quantity?: number
           size: string
+          unit_price?: number
+          updated_at?: string
         }
         Update: {
           bangle_id?: string
+          cancelled_qty?: number | null
           color?: string
+          created_at?: string
           id?: string
           order_id?: string
-          price?: number
           quantity?: number
           size?: string
+          unit_price?: number
+          updated_at?: string
         }
         Relationships: [
           {
@@ -156,6 +373,13 @@ export type Database = {
             columns: ["bangle_id"]
             isOneToOne: false
             referencedRelation: "bangles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_bangle_id_fkey"
+            columns: ["bangle_id"]
+            isOneToOne: false
+            referencedRelation: "bangles_public"
             referencedColumns: ["id"]
           },
           {
@@ -172,24 +396,30 @@ export type Database = {
           created_at: string
           delivery_address_id: string | null
           id: string
+          meta: Json | null
           status: string
           total_amount: number
+          updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           delivery_address_id?: string | null
           id?: string
+          meta?: Json | null
           status?: string
           total_amount?: number
+          updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           delivery_address_id?: string | null
           id?: string
+          meta?: Json | null
           status?: string
           total_amount?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
@@ -247,6 +477,48 @@ export type Database = {
         }
         Relationships: []
       }
+      settings: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          facebook_link: string | null
+          id: number
+          instagram_link: string | null
+          logo_url: string | null
+          site_name: string | null
+          social_links: Json | null
+          twitter_link: string | null
+          updated_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          facebook_link?: string | null
+          id: number
+          instagram_link?: string | null
+          logo_url?: string | null
+          site_name?: string | null
+          social_links?: Json | null
+          twitter_link?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          facebook_link?: string | null
+          id?: number
+          instagram_link?: string | null
+          logo_url?: string | null
+          site_name?: string | null
+          social_links?: Json | null
+          twitter_link?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -267,9 +539,61 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      bangles_public: {
+        Row: {
+          available_colors: string[] | null
+          available_sizes: string[] | null
+          category_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          image_url: string | null
+          is_active: boolean | null
+          name: string | null
+          number_of_stock: number | null
+          price: number | null
+          retail_price: number | null
+          secondary_image_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          available_colors?: string[] | null
+          available_sizes?: string[] | null
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          number_of_stock?: number | null
+          price?: never
+          retail_price?: never
+          secondary_image_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          available_colors?: string[] | null
+          available_sizes?: string[] | null
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          number_of_stock?: number | null
+          price?: never
+          retail_price?: never
+          secondary_image_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      can_wholesale: { Args: { uid: string }; Returns: boolean }
+      decrement_stock: { Args: { p_order_id: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -277,6 +601,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_b2b_proof: { Args: { p_url: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "customer"

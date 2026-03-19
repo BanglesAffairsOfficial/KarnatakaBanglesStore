@@ -24,7 +24,7 @@ interface HeroSlide {
 }
 
 export default function EditHomePage() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading, roleChecked } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -41,7 +41,7 @@ export default function EditHomePage() {
   });
 
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && roleChecked) {
       if (!user) {
         navigate("/auth");
       } else if (!isAdmin) {
@@ -51,7 +51,7 @@ export default function EditHomePage() {
         fetchSlides();
       }
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, isAdmin, authLoading, roleChecked, navigate, toast]);
 
   const fetchSlides = async () => {
     const { data } = await supabase
