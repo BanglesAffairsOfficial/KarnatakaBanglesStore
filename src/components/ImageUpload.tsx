@@ -174,11 +174,12 @@ export function ImageUpload({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
+    // Validate file type - must match bucket allowed MIME types
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
       toast({
         title: "Invalid file type",
-        description: "Please upload an image file.",
+        description: "Please upload a JPG, PNG, or WebP image.",
         variant: "destructive",
       });
       resetFileInput();
@@ -243,7 +244,7 @@ export function ImageUpload({
         type="file"
         ref={fileInputRef}
         onChange={handleUpload}
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         className="hidden"
       />
 
