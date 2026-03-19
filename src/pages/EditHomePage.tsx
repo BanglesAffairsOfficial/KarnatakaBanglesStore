@@ -171,7 +171,7 @@ export default function EditHomePage() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label>Background Image</Label>
-                  <p className="text-xs text-muted-foreground mb-2">Required:  1920×900 pixels, 16:9 aspect ratio, max 5MB</p>
+                  <p className="text-xs text-muted-foreground mb-2">Auto-resizes to 1920×900 pixels, max 5MB</p>
                   <ImageUpload
                     bucket="bangle-images"
                     folder="hero"

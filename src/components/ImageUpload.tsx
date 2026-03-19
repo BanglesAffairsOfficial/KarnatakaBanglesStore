@@ -127,17 +127,28 @@ const compressImageToLimit = async (
   }
 };
 
+const resizeImageToHeroDimensions = async (file: File): Promise<File> => {
+  const targetWidth = 1920;
+  const targetHeight = 900;
+
+  const image = await loadImageFromFile(file);
+  const mimeType = "image/jpeg";
+  const quality = 0.92;
+
+  const originalName = file.name.replace(/\.[^/.]+$/, "");
+
+  // Resize image to exactly 1920x900 pixels
+  const blob = await canvasToBlob(image, targetWidth, targetHeight, mimeType, quality);
+
+  return new File([blob], `${originalName}.jpg`, { type: mimeType });
+};
+
 const validateWideDimensions = async (file: File) => {
+  // Accept any image size, will be resized to 1920x900
   const { width, height } = await getImageDimensions(file);
-  const requiredWidth = 1920;
-  const requiredHeight = 600;
-
-  if (width < requiredWidth || height < requiredHeight) {
-    throw new Error(`Image too small. Required banner size is ${requiredWidth}x${requiredHeight} pixels.`);
-  }
-
-  if (Math.abs(width - requiredWidth) > 10 || Math.abs(height - requiredHeight) > 10) {
-    throw new Error(`Banner must be ${requiredWidth}x${requiredHeight} pixels. Your image is ${width}x${height}.`);
+  
+  if (width < 100 || height < 100) {
+    throw new Error(`Image is too small. Please use an image with reasonable dimensions.`);
   }
 };
 
@@ -178,14 +189,19 @@ export function ImageUpload({
 
     try {
       const isWide = aspectRatio === "wide";
-      const processedFile = await compressImageToLimit(
-        file,
-        isWide ? 1920 : MIN_DIMENSION_DEFAULT,
-        isWide ? 600 : MIN_DIMENSION_DEFAULT
-      );
-
+      
+      // For banner images, resize to exact 1920x900 dimensions
+      // For other images, compress while maintaining aspect ratio
+      let processedFile: File;
       if (isWide) {
-        await validateWideDimensions(processedFile);
+        await validateWideDimensions(file);
+        processedFile = await resizeImageToHeroDimensions(file);
+      } else {
+        processedFile = await compressImageToLimit(
+          file,
+          MIN_DIMENSION_DEFAULT,
+          MIN_DIMENSION_DEFAULT
+        );
       }
 
       const fileExt = processedFile.name.split(".").pop();
