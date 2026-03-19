@@ -596,8 +596,8 @@ export type Database = {
       decrement_stock: { Args: { p_order_id: string }; Returns: undefined }
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
       }

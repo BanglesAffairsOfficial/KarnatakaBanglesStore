@@ -23,7 +23,7 @@ USING (is_active = true);
 CREATE POLICY "Admins can manage hero slides"
 ON public.hero_slides
 FOR ALL
-USING (has_role(auth.uid(), 'admin'::app_role));
+USING (public.has_role(auth.uid()::uuid, 'admin'::app_role));
 
 -- Create trigger for automatic timestamp updates
 CREATE TRIGGER update_hero_slides_updated_at

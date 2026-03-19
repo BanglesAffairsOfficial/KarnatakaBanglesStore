@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS public.user_roles (
   PRIMARY KEY (user_id, role)
 );
 
--- Helper: has_role(role, user_uuid) -> boolean
-CREATE OR REPLACE FUNCTION public.has_role(r public.app_role, u uuid)
+-- Helper: has_role(user_uuid, role) -> boolean
+CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role public.app_role)
 RETURNS boolean LANGUAGE sql STABLE AS $$
-  SELECT EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = u AND ur.role = r);
+  SELECT EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = _user_id AND ur.role = _role);
 $$;
 
 -- A generic trigger function to update updated_at timestamp
@@ -195,15 +195,15 @@ BEGIN
     CREATE POLICY profiles_select_authenticated
       ON public.profiles
       FOR SELECT
-      USING (auth.role() = 'authenticated' OR public.has_role('admin', auth.uid()::uuid));
+      USING (auth.role() = 'authenticated' OR public.has_role(auth.uid()::uuid, 'admin'::public.app_role));
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profiles' AND policyname = 'profiles_manage_admins') THEN
     CREATE POLICY profiles_manage_admins
       ON public.profiles
       FOR ALL
-      USING (public.has_role('admin', auth.uid()::uuid))
-      WITH CHECK (public.has_role('admin', auth.uid()::uuid));
+      USING (public.has_role(auth.uid()::uuid, 'admin'::public.app_role))
+      WITH CHECK (public.has_role(auth.uid()::uuid, 'admin'::public.app_role));
   END IF;
 
   -- Settings: admins only for write, everyone can select (adjust as desired)
@@ -218,8 +218,8 @@ BEGIN
     CREATE POLICY settings_manage_admins
       ON public.settings
       FOR ALL
-      USING (public.has_role('admin', auth.uid()::uuid))
-      WITH CHECK (public.has_role('admin', auth.uid()::uuid));
+      USING (public.has_role(auth.uid()::uuid, 'admin'::public.app_role))
+      WITH CHECK (public.has_role(auth.uid()::uuid, 'admin'::public.app_role));
   END IF;
 
   -- Bangles: public read, admins manage
@@ -227,15 +227,15 @@ BEGIN
     CREATE POLICY bangles_select_public
       ON public.bangles
       FOR SELECT
-      USING (is_active = true OR public.has_role('admin', auth.uid()::uuid));
+      USING (is_active = true OR public.has_role(auth.uid()::uuid, 'admin'::public.app_role));
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'bangles' AND policyname = 'bangles_manage_admins') THEN
     CREATE POLICY bangles_manage_admins
       ON public.bangles
       FOR ALL
-      USING (public.has_role('admin', auth.uid()::uuid))
-      WITH CHECK (public.has_role('admin', auth.uid()::uuid));
+      USING (public.has_role(auth.uid()::uuid, 'admin'::public.app_role))
+      WITH CHECK (public.has_role(auth.uid()::uuid, 'admin'::public.app_role));
   END IF;
 END$$;
 
