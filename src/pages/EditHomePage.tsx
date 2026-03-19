@@ -41,17 +41,16 @@ export default function EditHomePage() {
   });
 
   useEffect(() => {
-    if (!authLoading && roleChecked) {
-      if (!user) {
-        navigate("/auth");
-      } else if (!isAdmin) {
-        toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
-        navigate("/");
-      } else {
-        fetchSlides();
-      }
+    if (authLoading || !roleChecked) return;
+    if (!user) {
+      navigate("/auth");
+    } else if (!isAdmin) {
+      toast({ title: "Access denied", description: "You don't have admin privileges.", variant: "destructive" });
+      navigate("/");
+    } else {
+      fetchSlides();
     }
-  }, [user, isAdmin, authLoading, roleChecked, navigate, toast]);
+  }, [user, isAdmin, authLoading, roleChecked, navigate]);
 
   const fetchSlides = async () => {
     const { data } = await supabase
