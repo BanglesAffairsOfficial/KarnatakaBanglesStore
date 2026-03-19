@@ -121,34 +121,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   const checkRoles = async (userId: string) => {
-    const [{ data: adminData, error: adminErr }, { data: b2bData, error: b2bErr }] = await Promise.all([
-      supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle(),
-      (supabase as any)
-        .from("b2b_requests")
-        .select("status")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-    ]);
+    // Use rpc instead of direct table query to bypass type inference issues
+    const { data: adminData, error: adminErr } = await supabase
+      .rpc('has_role', { _user_id: userId, _role: 'admin' });
 
-    // ADD THESE LOGS
     console.log("checkRoles userId:", userId);
-    console.log("adminData:", adminData);
+    console.log("adminData:", adminData);  
     console.log("adminErr:", adminErr);
 
-    const admin = !!adminData;
+    const admin = adminData === true;
     setIsAdmin(admin);
+
+    const { data: b2bData, error: b2bErr } = await (supabase as any)
+      .from("b2b_requests")
+      .select("status")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     const approved = !b2bErr && b2bData ? b2bData.status === "approved" : false;
     setCanWholesale(admin || approved);
     setRoleChecked(true);
 
-    // Ensure the user has a B2B request row; harmless if already exists
     if (!admin) {
       void ensureB2bRequest(userId);
     }
