@@ -173,7 +173,7 @@ export default function EditHomePage() {
                   <Label>Background Image</Label>
                   <p className="text-xs text-muted-foreground mb-2">Auto-resizes to 1920×900 pixels, max 5MB</p>
                   <ImageUpload
-                    bucket="bangle-images"
+                    bucket="banners"
                     folder="hero"
                     currentImageUrl={form.image_url || null}
                     onUpload={(url) => setForm({ ...form, image_url: url })}

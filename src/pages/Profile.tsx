@@ -716,7 +716,7 @@ export default function Profile() {
                   <div className="w-32">
                     <Label className="mb-2 block">{t("profile.photo")}</Label>
                     <ImageUpload
-                      bucket="profile-pics"
+                      bucket="profiles"
                       folder={user?.id || "temp"}
                       currentImageUrl={profile.profile_pic_url}
                       onUpload={(url) => setProfile({ ...profile, profile_pic_url: url })}
@@ -840,7 +840,7 @@ export default function Profile() {
                   </div>
                   {b2bProofType ? (
                     <ImageUpload
-                      bucket="b2b-verification"
+                      bucket="business_proofs"
                       folder="b2b-proofs"
                       currentImageUrl={b2bProofUrl || null}
                       onUpload={(url) => handleB2bProofUpload(url)}

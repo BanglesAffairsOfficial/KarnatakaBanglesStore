@@ -758,7 +758,7 @@ export default function Admin() {
                     <div className="space-y-2">
                       <Label>Product Image</Label>
                       <ImageUpload
-                        bucket="bangle-images"
+                        bucket="products"
                         folder="products"
                         currentImageUrl={form.image_url || null}
                         onUpload={(url) => setForm({ ...form, image_url: url })}
@@ -768,7 +768,7 @@ export default function Admin() {
                     <div className="space-y-2">
                       <Label>Secondary Image (optional)</Label>
                       <ImageUpload
-                        bucket="bangle-images"
+                        bucket="products"
                         folder="products"
                         currentImageUrl={form.secondary_image_url || null}
                         onUpload={(url) => setForm({ ...form, secondary_image_url: url })}
@@ -988,7 +988,7 @@ export default function Admin() {
                     <Label>Category Image (optional)</Label>
                     <p className="text-xs text-muted-foreground">If no image is set, a placeholder is shown on the home page.</p>
                     <ImageUpload
-                      bucket="bangle-images"
+                      bucket="categories"
                       folder="categories"
                       currentImageUrl={categoryForm.image_url || null}
                       onUpload={(url) => setCategoryForm({ ...categoryForm, image_url: url })}
