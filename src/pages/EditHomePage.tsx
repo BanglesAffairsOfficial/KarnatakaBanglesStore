@@ -80,7 +80,7 @@ export default function EditHomePage() {
     setSaving(true);
 
     const slideData = {
-      title: null,
+      title: form.image_url ? "Slide" : "New Slide", // fallback value
       subtitle: null,
       image_url: form.image_url || null,
       is_active: form.is_active,

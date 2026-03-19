@@ -121,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   const checkRoles = async (userId: string) => {
-    const [{ data: adminData }, { data: b2bData, error: b2bErr }] = await Promise.all([
+    const [{ data: adminData, error: adminErr }, { data: b2bData, error: b2bErr }] = await Promise.all([
       supabase
         .from("user_roles")
         .select("role")
@@ -136,6 +136,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .limit(1)
         .maybeSingle(),
     ]);
+
+    // ADD THESE LOGS
+    console.log("checkRoles userId:", userId);
+    console.log("adminData:", adminData);
+    console.log("adminErr:", adminErr);
 
     const admin = !!adminData;
     setIsAdmin(admin);
