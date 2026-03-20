@@ -330,11 +330,14 @@ export default function Admin() {
     }
 
     const { data: roleCheck, error: roleError } = await (supabase as any).rpc('has_role', { 
-      u: currentUser.id, 
-      r: 'admin' 
+      _user_id: currentUser.id, 
+      _role: 'admin' 
     });
+
+    // Fall back to the context value if the RPC call itself errors
+    const confirmedAdmin = roleError ? isAdmin : roleCheck === true;
     
-    if (!roleCheck) {
+    if (!confirmedAdmin) {
       toast({ 
         title: "Access denied", 
         description: "You don't have admin privileges.", 
