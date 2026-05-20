@@ -414,33 +414,62 @@ import { useTranslation } from "react-i18next";
           </div>
         </header>
 
-        {/* Hero - Responsive Banner */}
-        <section className="relative h-[320px] sm:h-[360px] md:h-[480px] lg:h-[560px] xl:h-[600px] overflow-hidden">
-          <div className="absolute inset-0">
+        {/* Hero - Fully Responsive Banner */}
+        <section className="relative w-full min-h-[280px] sm:min-h-[320px] md:min-h-[400px] lg:min-h-[500px] xl:min-h-[600px] overflow-hidden">
+          <div className="absolute inset-0 w-full h-full">
             {heroSlides.map((slide, idx) => (
               <div 
                 key={slide.id} 
-                className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`} 
+                className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`} 
                 style={{ 
                   backgroundImage: slide.image_url ? `url(${slide.image_url})` : 'linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)))', 
                   backgroundSize: 'cover', 
-                  backgroundPosition: 'center' 
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'fixed'
                 }}
               >
+                {/* Overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/20 sm:bg-black/10" />
               </div>
             ))}
           </div>
-          <div className="container mx-auto px-4 h-full flex items-center relative z-10" />
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+
+          {/* Content Container - Flexible Layout */}
+          <div className="container mx-auto px-3 sm:px-4 py-12 sm:py-16 md:py-20 lg:py-24 h-full flex items-center justify-center relative z-10">
+            <div className="text-center max-w-2xl mx-auto w-full">
+              {heroSlides[currentSlide]?.title && (
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-lg">
+                  {heroSlides[currentSlide].title}
+                </h1>
+              )}
+              {heroSlides[currentSlide]?.subtitle && (
+                <p className="text-sm sm:text-base md:text-lg text-white/90 mb-6 sm:mb-8 leading-relaxed drop-shadow-md max-w-xl mx-auto">
+                  {heroSlides[currentSlide].subtitle}
+                </p>
+              )}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Button 
+                  className="gradient-gold shadow-gold h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base font-semibold"
+                  onClick={() => safeNavigate(navigate, '/shop')}
+                >
+                  {t("header.shopNow")}
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Dots - Repositioned for Mobile */}
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
             {heroSlides.map((_, idx) => (
               <button 
                 key={idx} 
                 onClick={() => setCurrentSlide(idx)} 
-                className={`h-2 rounded-full transition-all ${idx === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/50'}`} 
+                className={`h-2 rounded-full transition-all duration-300 hover:bg-white ${idx === currentSlide ? 'w-8 bg-white shadow-lg' : 'w-2 bg-white/60'}`}
+                aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
         {/* Categories (should appear right after the hero banner) */}
         <section id="categories" className="pt-0 pb-12 md:py-16">
